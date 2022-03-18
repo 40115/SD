@@ -18,7 +18,7 @@ public class ProjectMainServer {
     /**
      * Remote interface that will hold reference MAIL_TO_ADDR the Servant impl
      */
-    private ProjectMainRIServer projectServerMainRI;
+    private ProjectMainRI projectServerMainRI;
 
     public static void main(String[] args) {
         if (args != null && args.length < 3) {
@@ -61,7 +61,7 @@ public class ProjectMainServer {
             //Bind service on rmiregistry and wait for calls
             if (registry != null) {
                 //============ Create Servant ============
-                projectServerMainRI= new ProjectMainImplServer();
+                projectServerMainRI= new ProjectMainImpl();
 
                 //Get service url (including servicename)
                 String serviceUrl = contextRMI.getServicesUrl(0);

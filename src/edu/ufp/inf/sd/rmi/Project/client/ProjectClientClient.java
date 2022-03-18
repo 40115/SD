@@ -1,7 +1,9 @@
 package edu.ufp.inf.sd.rmi.Project.client;
 
 
-import edu.ufp.inf.sd.rmi.Project.server.ProjectMainRIServer;
+import edu.ufp.inf.sd.rmi.Project.server.DB;
+import edu.ufp.inf.sd.rmi.Project.server.ProjectMainImpl;
+import edu.ufp.inf.sd.rmi.Project.server.ProjectMainRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 
 import java.io.BufferedReader;
@@ -11,22 +13,24 @@ import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ProjectClient {
+public class ProjectClientClient {
     private SetupContextRMI contextRMI;
     /**
      * Remote interface that will hold the Servant proxy
      */
-   private ProjectMainRIServer projectServerMainRI;
-    public static void main(String[] args) throws IOException {
+   private ProjectMainRI projectServerMainRI;
+    public static void main(String[] args) throws IOException, SQLException {
         if (args != null && args.length < 2) {
             System.err.println("usage: java [options] edu.ufp.sd.inf.rmi._01_helloworld.server.HelloWorldClient <rmi_registry_ip> <rmi_registry_port> <service_name>");
             System.exit(-1);
         } else {
             //1. ============ Setup client RMI context ============
-           ProjectClient hwc=new ProjectClient(args);
+           ProjectClientClient hwc=new ProjectClientClient(args);
             //2. ============ Lookup service ============
             hwc.lookupService();
             //3. ============ Play with service ============
@@ -34,7 +38,7 @@ public class ProjectClient {
         }
     }
 
-    public ProjectClient(String args[]) {
+    public ProjectClientClient(String[] args) {
         try {
             //List ans set args
             SetupContextRMI.printArgs(this.getClass().getName(), args);
@@ -44,7 +48,7 @@ public class ProjectClient {
             //Create a context for RMI setup
             contextRMI = new SetupContextRMI(this.getClass(), registryIP, registryPort, new String[]{serviceName});
         } catch (RemoteException e) {
-            Logger.getLogger(ProjectClient.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ProjectClientClient.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
@@ -59,7 +63,7 @@ public class ProjectClient {
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "going MAIL_TO_ADDR lookup service @ {0}", serviceUrl);
 
                 //============ Get proxy MAIL_TO_ADDR HelloWorld service ============
-                projectServerMainRI = (ProjectMainRIServer)  registry.lookup(serviceUrl);
+                projectServerMainRI = (ProjectMainRI)  registry.lookup(serviceUrl);
             } else {
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "registry not bound (check IPs). :(");
                 //registry = LocateRegistry.createRegistry(1099);
@@ -70,7 +74,7 @@ public class ProjectClient {
         return projectServerMainRI;
     }
 
-    private void playService() throws IOException {
+    private void playService() throws IOException, SQLException {
         //============ Call HelloWorld remote service ============
 
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "going MAIL_TO_ADDR finish, bye. ;)");
@@ -84,6 +88,43 @@ public class ProjectClient {
         // Reading data using readLine
         String name = reader.readLine();
         op=Integer.parseInt(name);
+        switch (op){
+            case 1:
+                DB k=new DB(new ArrayList<>());
+                k.GetQuery(" ");
+                break;
+
+            case 2:
+
+                break;
+
+            case 3:
+
+                break;
+
+            default:
+                System.out.println("Not Valied Input");
+        }
+
     }while(op!=3);
     }
+
+    public ProjectMainImpl Register() throws IOException {
+        System.out.println("Enter Name:\n");
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
+
+        // Reading data using readLine
+        String name = reader.readLine();
+        System.out.println("Enter Password:\n");
+         reader = new BufferedReader(
+                new InputStreamReader(System.in));
+         String password= reader.readLine();
+
+
+
+        return null;
+
+    }
 }
+
