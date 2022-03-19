@@ -14,7 +14,7 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
 
     @Override
     public String Connect()  throws RemoteException {
-        return "Hello, Welcome to City 17 you have chosen or been Chosen to...\n" +"Select An option:" + "1-Register" + "2-Login In" + "3-Leave";
+        return "\nHello, Welcome to City 17 you have chosen or been Chosen to...\n" +"Select An option:\n" + "1-Register\n" + "2-Login In\n" + "3-Leave\n";
     }
     public boolean Register()  throws RemoteException {
 

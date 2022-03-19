@@ -24,7 +24,7 @@ public class ProjectClientClient {
      * Remote interface that will hold the Servant proxy
      */
    private ProjectMainRI projectServerMainRI;
-    public static void main(String[] args) throws IOException, SQLException {
+    public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         if (args != null && args.length < 2) {
             System.err.println("usage: java [options] edu.ufp.sd.inf.rmi._01_helloworld.server.HelloWorldClient <rmi_registry_ip> <rmi_registry_port> <service_name>");
             System.exit(-1);
@@ -74,7 +74,7 @@ public class ProjectClientClient {
         return projectServerMainRI;
     }
 
-    private void playService() throws IOException, SQLException {
+    private void playService() throws IOException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         //============ Call HelloWorld remote service ============
 
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "going MAIL_TO_ADDR finish, bye. ;)");
@@ -110,7 +110,7 @@ public class ProjectClientClient {
     }
 
     public ProjectMainImpl Register() throws IOException {
-        System.out.println("Enter Name:\n");
+        System.out.println("\nEnter Name:\n");
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(System.in));
 
