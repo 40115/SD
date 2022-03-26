@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rmi.Project.client;
 
 
 import edu.ufp.inf.sd.rmi.Project.server.DB;
+import edu.ufp.inf.sd.rmi.Project.server.GameSessionRI;
 import edu.ufp.inf.sd.rmi.Project.server.ProjectMainImpl;
 import edu.ufp.inf.sd.rmi.Project.server.ProjectMainRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
@@ -74,7 +75,7 @@ public class ProjectClientClient {
         return projectServerMainRI;
     }
 
-    private void playService() throws IOException, SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void playService() throws IOException, RemoteException{
         //============ Call HelloWorld remote service ============
 
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "going MAIL_TO_ADDR finish, bye. ;)");
@@ -90,12 +91,17 @@ public class ProjectClientClient {
         op=Integer.parseInt(name);
         switch (op){
             case 1:
-                DB k=new DB(new ArrayList<>());
-                k.GetQuery(" ");
+Register();
                 break;
 
             case 2:
+ GameSessionRI h=Login();
+ if(h==null){
+     System.out.println("\n Login Invalid\n");
+ }else {
+     System.out.println("\n Login valid\n");
 
+ }
                 break;
 
             case 3:
@@ -109,22 +115,37 @@ public class ProjectClientClient {
     }while(op!=3);
     }
 
-    public ProjectMainImpl Register() throws IOException {
+    public void Register() throws IOException,RemoteException {
         System.out.println("\nEnter Name:\n");
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(System.in));
 
         // Reading data using readLine
         String name = reader.readLine();
-        System.out.println("Enter Password:\n");
+        System.out.println("\nEnter Password:\n");
          reader = new BufferedReader(
                 new InputStreamReader(System.in));
          String password= reader.readLine();
+             if( this.projectServerMainRI.Register(name, password)) {
+                 System.out.println("\n User Registered\n");
+return;
+             }
+             System.out.println("\n User Already EXists\n");
 
 
+    }
+    public GameSessionRI Login() throws IOException ,RemoteException{
+        System.out.println("\nEnter Name:\n");
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
 
-        return null;
-
+        // Reading data using readLine
+        String name = reader.readLine();
+        System.out.println("\nEnter Password:\n");
+        reader = new BufferedReader(
+                new InputStreamReader(System.in));
+        String password= reader.readLine();
+return this.projectServerMainRI.Login(name,password);
     }
 }
 

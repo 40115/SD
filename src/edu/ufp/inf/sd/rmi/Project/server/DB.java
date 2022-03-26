@@ -1,32 +1,31 @@
 package edu.ufp.inf.sd.rmi.Project.server;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.sql.*;
+
 public class DB {
-    private final ArrayList<Util> users;// = new ArrayList();
-    Connection con = null;
-    public DB(ArrayList<Util> users) {
-        this.users = users;
+ArrayList<Util>Database=new ArrayList<>();
+
+    public DB() {
+        Database.add(new Util("Ruben","1234"));
+        Database.add(new Util("Joana","2345"));
 
     }
-     public Statement connection()  {
- try {
-     Class.forName("com.mysql.jdbc.Driver");
-     Connection con = DriverManager.getConnection(
-             "jdbc:mysql://localhost:3307/marta", "root", "JaneMarta123_");
-     return con.createStatement();
- } catch (SQLException | ClassNotFoundException e) {
-     e.printStackTrace();
- }
-         return null;
-     }
-    public ArrayList GetQuery(String Quer) {
-     Statement k= this.connection();
-     if(k!=null) {
-         System.out.println(k.getClass());
-         return null;
-     }
-     System.out.println("null");
-        return null;
+    public Boolean Check_Util(String Username,String Password) throws RemoteException {
+        return !Database.contains(new Util(Username, Password));
+    }
+    public boolean Insert_Util(String Username,String Password) throws RemoteException {
+        if (Check_Util(Username,Password)){
+            return false;
+        }else {
+            Database.add(new Util(Username,Password));
+            return true;
+        }
+
+        }
+
+
+
+
     }
 
-}
+

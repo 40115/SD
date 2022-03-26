@@ -24,8 +24,8 @@ public class DibLibFactoryImpl extends UnicastRemoteObject implements DibLibFact
 
 
        if (db.exists(Username,Password)){
-           HAsh.put(Username,new DibLibSessionImpl(this));
-           return new DibLibSessionImpl(this);
+           HAsh.put(Username,new DibLibSessionImpl(this,new User(Username,Password)));
+           return new DibLibSessionImpl(this,new User(Username,Password));
        }
 
 
