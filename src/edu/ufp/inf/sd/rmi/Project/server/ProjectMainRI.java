@@ -2,7 +2,6 @@ package edu.ufp.inf.sd.rmi.Project.server;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.sql.SQLException;
 
 public interface ProjectMainRI extends Remote {
 String Connect() throws RemoteException;

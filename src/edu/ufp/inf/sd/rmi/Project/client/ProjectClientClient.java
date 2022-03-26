@@ -151,7 +151,7 @@ return this.projectServerMainRI.Login(name,password);
     public void Gamesession(GameSessionRI Si) throws IOException {
         int op;
         do{
-            System.out.println(  Si.connect());
+            System.out.println(  Si.Connect());
 
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(System.in));

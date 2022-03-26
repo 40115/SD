@@ -4,5 +4,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface GameSessionRI extends Remote {
-    public void LogOut() throws RemoteException;
+    void LogOut() throws RemoteException;
+    void ConnectSessionToServer() throws RemoteException;
+    String Connect() throws RemoteException;
 }
