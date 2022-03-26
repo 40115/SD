@@ -13,7 +13,9 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         this.Util=util;
     }
     public void ConnectSessionToServer()throws RemoteException{
-        Logger.getLogger("Lista: "+ PM.Database);
+        for(int i =0; i<PM.Database.Database.size(); i++){
+            Logger.getLogger("Lista: "+ PM.Database.Database.get(i));
+        }
     }
 
     public void LogOut()throws RemoteException{
