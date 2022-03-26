@@ -89,13 +89,14 @@ public class ProjectClientClient {
         // Reading data using readLine
         String name = reader.readLine();
         op=Integer.parseInt(name);
+        GameSessionRI h=null;
         switch (op){
             case 1:
 Register();
                 break;
 
             case 2:
- GameSessionRI h=Login();
+  h=Login();
  if(h==null){
      System.out.println("\n Login Invalid\n");
  }else {
@@ -146,6 +147,44 @@ return;
                 new InputStreamReader(System.in));
         String password= reader.readLine();
 return this.projectServerMainRI.Login(name,password);
+    }
+    public void Gamesession(GameSessionRI Si) throws IOException {
+        int op;
+        do{
+            System.out.println(  Si.connect());
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(System.in));
+
+            // Reading data using readLine
+            String name = reader.readLine();
+            op=Integer.parseInt(name);
+
+            switch (op){
+                case 1:
+
+                    break;
+
+                case 2:
+
+                    break;
+
+                case 3:
+
+                    break;
+
+                default:
+                    System.out.println("Not Valied Input");
+            }
+
+        }while(op!=3);
+
+
+    }
+    public void GameList(GameSessionRI Si){
+
+
+
     }
 }
 
