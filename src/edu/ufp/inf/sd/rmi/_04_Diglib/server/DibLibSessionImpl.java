@@ -5,10 +5,13 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class DibLibSessionImpl extends UnicastRemoteObject implements DibLibSessionRI{
      DBMockup h;
-    public DibLibSessionImpl(DibLibFactoryImpl d) throws RemoteException {
+    DibLibFactoryImpl D;
+    User j;
+    public DibLibSessionImpl(DibLibFactoryImpl d,User j) throws RemoteException {
         super();
         this.h=d.db;
-
+        this.D=d;
+        this.j=j;
     }
 
 
@@ -20,6 +23,6 @@ public class DibLibSessionImpl extends UnicastRemoteObject implements DibLibSess
 
     @Override
     public void Logout() {
-
+      this.D.HAsh.remove(this.j.getUname());
     }
 }

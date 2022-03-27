@@ -1,4 +1,4 @@
-package edu.ufp.inf.sd.rmi.Project.server;
+package edu.ufp.inf.sd.rmi._05_Observer.server;
 
 
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
@@ -13,12 +13,16 @@ import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ProjectMainServer {
+public class SubjectServer {
+
+    /**
+     * Context for running a RMI Servant on a SMTP_HOST_ADDR
+     */
     private SetupContextRMI contextRMI;
     /**
      * Remote interface that will hold reference MAIL_TO_ADDR the Servant impl
      */
-    private ProjectMainRI projectServerMainRI;
+    private SubjectRI subjectRI;
 
     public static void main(String[] args) {
         if (args != null && args.length < 3) {
@@ -26,21 +30,18 @@ public class ProjectMainServer {
             System.exit(-1);
         } else {
             //1. ============ Create Servant ============
-            ProjectMainServer hws = new ProjectMainServer(args);
+            SubjectServer hws = new SubjectServer(args);
             //2. ============ Rebind servant on rmiregistry ============
             hws.rebindService();
         }
-        /*
-        try {
-            loadProperties();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
+
     }
 
-
-    public ProjectMainServer(String[] args) {
+    /**
+     *
+     * @param args
+     */
+    public SubjectServer(String args[]) {
         try {
             //============ List and Set args ============
             SetupContextRMI.printArgs(this.getClass().getName(), args);
@@ -61,7 +62,7 @@ public class ProjectMainServer {
             //Bind service on rmiregistry and wait for calls
             if (registry != null) {
                 //============ Create Servant ============
-                projectServerMainRI= new ProjectMainImpl();
+                subjectRI= new SubjectImpl();
 
                 //Get service url (including servicename)
                 String serviceUrl = contextRMI.getServicesUrl(0);
@@ -69,7 +70,7 @@ public class ProjectMainServer {
 
                 //============ Rebind servant ============
                 //Naming.bind(serviceUrl, helloWorldRI);
-                registry.rebind(serviceUrl,   projectServerMainRI);
+                registry.rebind(serviceUrl, subjectRI);
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, "service bound and running. :)");
             } else {
                 //System.out.println("HelloWorldServer - Constructor(): create registry on port 1099");
@@ -102,5 +103,4 @@ public class ProjectMainServer {
         props.store(out, "---No Comment---");
         out.close();
     }
-
 }

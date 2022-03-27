@@ -11,4 +11,8 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
     }
 
 
+    @Override
+    public void start_Game() {
+
+    }
 }
