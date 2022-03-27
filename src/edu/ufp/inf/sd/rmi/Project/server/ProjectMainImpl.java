@@ -25,14 +25,14 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
     }
 
     @Override
-    public GameSessionRI Login(String Username, String Password) throws RemoteException {
-        if (Database.Check_Util(Username, Password)){
-            if (users.get(new Util(Username,Password))==null){
-                GameSessionRI j=new GameSessionImpl(this,new Util(Username,Password));
-                users.put(new Util(Username,Password),j);
+    public GameSessionRI Login(String Email, String Password) throws RemoteException {
+        if (Database.Check_Util(Email, Password)){
+            if (users.get(new Util(Email,Password))==null){
+                GameSessionRI j=new GameSessionImpl(this,new Util(Email,Password));
+                users.put(new Util(Email,Password),j);
                 return j;
             }
-            return users.get(new Util(Username,Password));
+            return users.get(new Util(Email,Password));
         }
         return null;
 

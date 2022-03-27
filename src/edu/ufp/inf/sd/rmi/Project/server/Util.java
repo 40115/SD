@@ -1,21 +1,21 @@
 package edu.ufp.inf.sd.rmi.Project.server;
 
 public class Util {
-    private String Username;
+    private String Email;
     private String Password;
 
 
-    public Util(String username, String password) {
-        Username = username;
+    public Util(String Email, String password) {
+        Email = Email;
         Password = password;
     }
 
-    public String getUsername() {
-        return Username;
+    public String getEmail() {
+        return Email;
     }
 
-    public void setUsername(String username) {
-        Username = username;
+    public void setEmail(String email) {
+        Email = email;
     }
 
     public String getPassword() {
