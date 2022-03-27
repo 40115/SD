@@ -184,7 +184,6 @@ return this.projectServerMainRI.Login(name,password);
     public void GameList(GameSessionRI Si){
 
 
-
     }
 }
 
