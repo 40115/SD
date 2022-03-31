@@ -25,7 +25,7 @@ public class ProjectClientClient {
      * Remote interface that will hold the Servant proxy
      */
    private ProjectMainRI projectServerMainRI;
-    public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, RemoteException {
         if (args != null && args.length < 2) {
             System.err.println("usage: java [options] edu.ufp.sd.inf.rmi._01_helloworld.server.HelloWorldClient <rmi_registry_ip> <rmi_registry_port> <service_name>");
             System.exit(-1);
@@ -39,7 +39,7 @@ public class ProjectClientClient {
         }
     }
 
-    public ProjectClientClient(String[] args) {
+    public ProjectClientClient(String[] args) throws RemoteException{
         try {
             //List ans set args
             SetupContextRMI.printArgs(this.getClass().getName(), args);
@@ -123,10 +123,12 @@ Register();
 
         // Reading data using readLine
         String name = reader.readLine();
+
         System.out.println("\nEnter Password:\n");
          reader = new BufferedReader(
                 new InputStreamReader(System.in));
          String password= reader.readLine();
+
              if( this.projectServerMainRI.Register(name, password)) {
                  System.out.println("\n User Registered\n");
 return;
@@ -148,7 +150,7 @@ return;
         String password= reader.readLine();
 return this.projectServerMainRI.Login(name,password);
     }
-    public void Gamesession(GameSessionRI Si) throws IOException {
+    public void Gamesession(GameSessionRI Si) throws IOException ,RemoteException{
         int op;
         do{
             System.out.println(  Si.Connect());
@@ -181,7 +183,7 @@ return this.projectServerMainRI.Login(name,password);
 
 
     }
-    public void GameList(GameSessionRI Si){
+    public void GameList(GameSessionRI Si) throws RemoteException{
 
 
     }

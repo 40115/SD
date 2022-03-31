@@ -1,17 +1,16 @@
 package edu.ufp.inf.sd.rmi.Project.server;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+
 import java.util.logging.Logger;
 
 public class GameSessionImpl extends UnicastRemoteObject implements GameSessionRI{
    private final Util Util;
    private final ProjectMainImpl PM;
-   private enum Difficulty{
-       LOW,
-       MEDIUM,
-       HIGH;
-   };
+
     public GameSessionImpl (ProjectMainImpl pm,Util util) throws RemoteException {
         super();
         this.PM=pm;
@@ -35,21 +34,18 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         return "\nGame Froogger...\n" +"Select An option:\n" + "1-ListGames\n" + "2-\n" + "3-Leave\n";
 
     }
-    public Difficulty Difficulty(int difficulty) throws RemoteException{
-        Difficulty var;
-        switch (difficulty){
-            case 1:
-                var=Difficulty.LOW;
-                return var/*"Easy difficult has been selected\n"*/;
-            case 2:
-                var=Difficulty.MEDIUM;
-                return var /*"Normal difficult has been selected\n"*/;
-            case 3:
-                var=Difficulty.HIGH;
-                return var;
-            default:
-                var=Difficulty.MEDIUM;
-                return var;
+    public void List_Games(){
+        StringBuilder j= new StringBuilder("List of Games:\n");
+        for (int i = 0; i <this.PM.Games.size() ; i++) {
+            j.append(i).append("- ");
+            for (int k = 0; k <this.PM.Games.get(i).size() ; k++) {
+                j.append(this.PM.Games.get(i).get(k));
+            }
+
         }
+
     }
+
+
+
 }

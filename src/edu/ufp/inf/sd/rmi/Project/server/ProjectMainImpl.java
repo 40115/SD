@@ -11,6 +11,7 @@ import java.util.HashMap;
 public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainRI {
    DB Database=new DB();
    HashMap<Util,GameSessionRI> users = new HashMap<>();
+   HashMap<FroggerGame,ArrayList<GameSessionRI>> Games=new HashMap<>();
     public ProjectMainImpl() throws RemoteException {
         super();
     }
@@ -32,6 +33,7 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
                 users.put(new Util(Email,Password),j);
                 return j;
             }
+
             return users.get(new Util(Email,Password));
         }
         return null;

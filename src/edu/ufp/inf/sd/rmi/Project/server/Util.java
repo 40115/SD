@@ -6,8 +6,8 @@ public class Util {
 
 
     public Util(String Email, String password) {
-        Email = Email;
-        Password = password;
+        this.Email = Email;
+        this.Password = password;
     }
 
     public String getEmail() {

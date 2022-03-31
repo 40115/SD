@@ -1,6 +1,7 @@
 package edu.ufp.inf.sd.rmi.Project.server;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DB {
 ArrayList<Util>Database=new ArrayList<>();
@@ -11,7 +12,14 @@ ArrayList<Util>Database=new ArrayList<>();
 
     }
     public Boolean Check_Util(String Username,String Password) throws RemoteException {
-        return !Database.contains(new Util(Username, Password));
+        for (int i = 0; i <this.Database.size() ; i++) {
+            Util k=this.Database.get(i);
+
+            if (Objects.equals(k.getEmail(), Username) && Objects.equals(k.getPassword(), Password)){
+                return true;
+            }
+        }
+        return false;
     }
     public boolean Insert_Util(String Username,String Password) throws RemoteException {
         if (Check_Util(Username,Password)){
