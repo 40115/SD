@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainRI {
    DB Database=new DB();
    HashMap<Util,GameSessionRI> users = new HashMap<>();
-   HashMap<FroggerGame,ArrayList<GameSessionRI>> Games=new HashMap<>();
+   ArrayList<FroggerGame> Game=new ArrayList<>();
     public ProjectMainImpl() throws RemoteException {
         super();
     }

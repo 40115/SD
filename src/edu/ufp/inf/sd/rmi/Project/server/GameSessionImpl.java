@@ -5,6 +5,8 @@ import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class GameSessionImpl extends UnicastRemoteObject implements GameSessionRI{
@@ -36,16 +38,31 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
     }
     public void List_Games(){
         StringBuilder j= new StringBuilder("List of Games:\n");
-        for (int i = 0; i <this.PM.Games.size() ; i++) {
-            j.append(i).append("- ");
-            for (int k = 0; k <this.PM.Games.get(i).size() ; k++) {
-                j.append(this.PM.Games.get(i).get(k));
-            }
+        for (int i = 0; i <this.PM.Game.size() ; i++) {
 
         }
 
-    }
 
+    }
+    public FroggerGame Create_Game(){
+
+
+
+return null;
+    }
+    public boolean Check_Games(){
+        for (int i = 0; i <this.PM.Game.size() ; i++) {
+            FroggerGame k=this.PM.Game.get(i);
+           if (k.check_Util(this.Util.getEmail())){
+               return true;
+           }
+
+        }
+
+
+     return false;
+
+    }
 
 
 }

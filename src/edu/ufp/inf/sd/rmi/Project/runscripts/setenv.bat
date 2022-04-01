@@ -88,6 +88,7 @@ IF "%CURRENT_IDE%"=="%INTELLIJ%" (
 @set JAVAPROJ_JAR_FILE=%JAVAPROJ_NAME%.jar
 
 @set CLASSPATH=.;%JAVAPROG_CLASSES_FOLDER%;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\mysql-connector-java-8.0.27.jar
+@set CLASSPATH=.;%JAVAPROG_CLASSES_FOLDER%;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\fusionauth-jwt-master.zip
 @REM @set CLASSPATH=.;%JAVAPROJ_DIST_FOLDER%/%JAVAPROJ_JAR_FILE%.jar
 
 @Set ABSPATH2CLASSES=%JAVAPROJ%\%JAVAPROJ_CLASSES%

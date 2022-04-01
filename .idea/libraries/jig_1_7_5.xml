@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="jig-1.7.5">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/edu/ufp/inf/sd/rmi/Project/client/FroggerGame/lib/jig-1.7.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/edu/ufp/inf/sd/rmi/Project/client/FroggerGame/lib/spi/tritonus_share.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/edu/ufp/inf/sd/rmi/Project/client/FroggerGame/lib/ogg-spi/jogg-0.0.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/edu/ufp/inf/sd/rmi/Project/client/FroggerGame/lib/ogg-spi/jorbis-0.0.15.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/edu/ufp/inf/sd/rmi/Project/client/FroggerGame/lib/ogg-spi/tritonus_jorbis-0.3.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/src/edu/ufp/inf/sd/rmi/Project/client/FroggerGame/lib/jig-1.7.5.jar!/" />
+    </SOURCES>
+  </library>
+</component>

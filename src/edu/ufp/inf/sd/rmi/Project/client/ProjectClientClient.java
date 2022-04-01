@@ -7,6 +7,7 @@ import edu.ufp.inf.sd.rmi.Project.server.ProjectMainImpl;
 import edu.ufp.inf.sd.rmi.Project.server.ProjectMainRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 
+import javax.xml.crypto.dsig.spec.HMACParameterSpec;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,6 +17,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -123,7 +125,6 @@ Register();
 
         // Reading data using readLine
         String name = reader.readLine();
-
         System.out.println("\nEnter Password:\n");
          reader = new BufferedReader(
                 new InputStreamReader(System.in));
