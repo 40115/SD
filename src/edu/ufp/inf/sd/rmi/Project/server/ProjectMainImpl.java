@@ -21,20 +21,21 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
     public String Connect()  throws RemoteException {
         return "\nHello, Welcome to City 17 you have chosen or been Chosen to...\n" +"Select An option:\n" + "1-Register\n" + "2-Login In\n" + "3-Leave\n";
     }
-    public boolean Register(String Username, String Password) throws RemoteException{
-            return Database.Insert_Util(Username, Password);
+    public boolean Register(String Username, String Password,ProjectClientRI projectClientRI) throws RemoteException{
+            return Database.Insert_Util(Username, Password,projectClientRI);
     }
 
     @Override
-    public GameSessionRI Login(String Email, String Password) throws RemoteException {
+    public GameSessionRI Login(String Email, String Password,ProjectClientRI projectClientRI) throws RemoteException {
         if (Database.Check_Util(Email, Password)){
-            if (users.get(new Util(Email,Password))==null){
-                GameSessionRI j=new GameSessionImpl(this,new Util(Email,Password));
-                users.put(new Util(Email,Password),j);
+            if (users.get(new Util(Email,Password,projectClientRI))==null){
+                GameSessionRI j=new GameSessionImpl(this,new Util(Email,Password,projectClientRI));
+                users.put(new Util(Email,Password,projectClientRI),j);
+                System.out.println("DOesnt\n");
                 return j;
             }
-
-            return users.get(new Util(Email,Password));
+            System.out.println("DO\n");
+            return users.get(new Util(Email,Password,projectClientRI));
         }
         return null;
 

@@ -1,12 +1,10 @@
 package edu.ufp.inf.sd.rmi.Project.server;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes;
-
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public class GameSessionImpl extends UnicastRemoteObject implements GameSessionRI{
@@ -36,20 +34,32 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         return "\nGame Froogger...\n" +"Select An option:\n" + "1-ListGames\n" + "2-\n" + "3-Leave\n";
 
     }
-    public void List_Games(){
+    public String List_Games(){
         StringBuilder j= new StringBuilder("List of Games:\n");
         for (int i = 0; i <this.PM.Game.size() ; i++) {
+            j.append(i).append("- ");
+            for (int k = 0; k <this.PM.Game.get(i).Utils.size() ; k++) {
+       Util l=this.PM.Game.get(k).Utils.get(k);
 
+                j.append(l.getEmail()).append(" | ");
+
+            }
+            j.append("\n ");
         }
-
+return j.toString();
 
     }
-    public FroggerGame Create_Game(){
-
-
-
-return null;
+    public FroggerGame Create_Game(String D){
+if (this.Check_Games()){
+ return null;
+}else{
+    ArrayList<Util> k=new ArrayList<>();
+    k.add(this.Util);
+    return new FroggerGame(k,D);
+}
     }
+
+
     public boolean Check_Games(){
         for (int i = 0; i <this.PM.Game.size() ; i++) {
             FroggerGame k=this.PM.Game.get(i);

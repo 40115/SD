@@ -2,7 +2,6 @@ package edu.ufp.inf.sd.rmi.Project.server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class FroggerGame {
@@ -20,11 +19,10 @@ public class FroggerGame {
     }
 
     public String Difficulty(int difficulty) throws RemoteException {
-
-
         switch (difficulty){
             case 1:
                 this.Dific= String.valueOf(Difficulty.LOW);
+
                 return "Dificulty has been set at" + Dific;
 
             case 2:
@@ -36,7 +34,7 @@ public class FroggerGame {
                 return "Dificulty has been set at" + Dific;
 
             default:
-                this.Dific=String.valueOf(Difficulty.MEDIUM);
+                this.Dific= String.valueOf(Difficulty.MEDIUM);
                 return "Invalied option Default has been selected" + Dific;
         }
     }

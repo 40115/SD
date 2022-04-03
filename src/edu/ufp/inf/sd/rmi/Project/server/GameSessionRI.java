@@ -7,4 +7,5 @@ public interface GameSessionRI extends Remote {
     void LogOut() throws RemoteException;
     void ConnectSessionToServer() throws RemoteException;
     String Connect() throws RemoteException;
+    public String List_Games();
 }
