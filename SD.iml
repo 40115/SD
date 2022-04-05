@@ -7,8 +7,9 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="library" exported="" name="mysql-connector-java-8.0.27" level="project" />
     <orderEntry type="library" name="jig-1.7.5" level="project" />
-    <orderEntry type="library" name="java" level="project" />
+    <orderEntry type="library" name="rabbitmq.amqp.client" level="project" />
+    <orderEntry type="library" name="slf4j.simple" level="project" />
+    <orderEntry type="library" name="auth0.java.jwt" level="project" />
   </component>
 </module>

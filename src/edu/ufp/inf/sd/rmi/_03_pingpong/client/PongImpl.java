@@ -61,7 +61,7 @@ public class PongImpl extends UnicastRemoteObject implements PongRI {
 
     protected void playService() {
         try {
-            var ball = new Ball(1);
+            Ball ball = new Ball(1);
             this.PingRI.ping(ball, (PongRI) this);
         } catch (RemoteException ex) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
@@ -70,7 +70,7 @@ public class PongImpl extends UnicastRemoteObject implements PongRI {
 
     @Override
     public void pong(Ball bola) throws RemoteException{
-        var ball = new Ball(1);
+       Ball ball = new Ball(1);
         this.PingRI.ping(ball, this);
     }
 
