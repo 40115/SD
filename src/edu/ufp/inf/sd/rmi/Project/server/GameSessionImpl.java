@@ -25,15 +25,15 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
 
     @Override
     public void ConnectSessionToServer()throws RemoteException{
-        for(int i =0; i<PM.Database.Database.size(); i++){
-            Logger.getLogger("Lista: "+ PM.Database.Database.get(i));
+        for(int i =0; i<this.PM.Database.Database.size(); i++){
+            Logger.getLogger("Lista: "+ PM.Database.Database.get(i).getEmail());
         }
     }
 
     @Override
     public String Connect() throws RemoteException {
         if (this.PM.Valid(this.Token,this.Util)) {
-            return "\nGame Froogger...\n" + "Select An option:\n" + "1-ListGames\n" + "2-\n" + "3-Leave\n";
+            return "\nGame Froogger...\n" + "Select An option:\n" + "1-ListGames\n" + "2-Join Game\n" +"3-Create Game\n" + "4-Log Out\n";
         }
         return  "\nInvalid";
     }

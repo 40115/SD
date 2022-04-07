@@ -63,7 +63,7 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
         //============ Call HelloWorld remote service ============
 
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "going MAIL_TO_ADDR finish, bye. ;)");
-        int op;
+        int op=-1;
         do{
             System.out.println(  this.projectServerMainRI.Connect());
 
@@ -135,7 +135,8 @@ Gamesession(h);
         return this.projectServerMainRI.Login(name,password,this);
     }
     public void Gamesession(GameSessionRI Si) throws IOException ,RemoteException{
-        int op;
+
+        int op=-1;
         do{
             System.out.println(  Si.Connect());
 
@@ -148,29 +149,29 @@ Gamesession(h);
 
             switch (op){
                 case 1:
-
+                     System.out.println(Si.List_Games());
                     break;
 
                 case 2:
 
                     break;
-
                 case 3:
 
                     break;
+
+                case 4:
+      Si.LogOut();
+
 
                 default:
                     System.out.println("Not Valied Input");
             }
 
-        }while(op!=3);
+        }while(op != 3);
 
 
     }
-    public void GameList(GameSessionRI Si) throws RemoteException{
 
-
-    }
 
     @Override
     public void start_Game()throws RemoteException {
