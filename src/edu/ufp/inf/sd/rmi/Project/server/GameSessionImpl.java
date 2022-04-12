@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -57,7 +56,7 @@ if (this.Check_Games()){
 }else{
     HashMap<Util,GameState> j=new HashMap<>();
     j.put(this.Util,new GameState());
-    FroggerGame l=new FroggerGame(j,D,j.size());
+    FroggerGame l=new FroggerGame(j,D,j.size(),getPM());
     this.PM.Game.add(l);
     return l;
 }

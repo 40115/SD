@@ -1,5 +1,6 @@
 package edu.ufp.inf.sd.rmi.Project.client;
 
+import edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Main;
 import edu.ufp.inf.sd.rmi.Project.server.FroggerGame;
 import edu.ufp.inf.sd.rmi.Project.server.GameSessionRI;
 import edu.ufp.inf.sd.rmi.Project.server.GameState;
@@ -176,8 +177,9 @@ Join_Game(Si);
 
 
     @Override
-    public void start_Game()throws RemoteException {
+    public void start_Game(GameState j, FroggerGame k)throws RemoteException {
 
+        Main.main(k);
 
     }
 

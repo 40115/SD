@@ -18,16 +18,14 @@ public class Util {
         return Email;
     }
 
-    public void setEmail(String email) {
-        Email = email;
-    }
 
     public String getPassword() {
         return Password;
     }
 
-    public void setPassword(String password) {
-        Password = password;
+    public ProjectClientRI getProjectClientRI() {
+        return ProjectClientRI;
     }
+
 
 }

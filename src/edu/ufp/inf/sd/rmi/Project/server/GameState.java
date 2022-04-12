@@ -9,19 +9,12 @@ import jig.engine.util.Vector2D;
 import java.util.ArrayList;
 
 public class GameState {
-    static final int WORLD_WIDTH = (13*32);
-    static final int WORLD_HEIGHT = (14*32);
-    static final Vector2D FROGGER_START = new Vector2D(6*32,WORLD_HEIGHT-32);
 
-    static final String RSC_PATH = "edu/ufp/inf/sd/rmi/Project/client/FroggerGame/src/resources/";
-    static final String SPRITE_SHEET = RSC_PATH + "frogger_sprites.png";
-
-    static final int FROGGER_LIVES      = 5;
-    static final int STARTING_LEVEL     = 1;
-    static final int DEFAULT_LEVEL_TIME = 60;
 
     private ArrayList<FroggerCollisionDetection> frogCol=new ArrayList<>();
-    private ProjectClientRI CLientReference;
+
+
+    public FroggerGame c;
     private ArrayList<Frogger> frog=new ArrayList<>();
     private ArrayList<AudioEfx> audiofx=new ArrayList<>();
     private FroggerUI ui;
@@ -46,6 +39,9 @@ public class GameState {
 
     private ImageBackgroundLayer backgroundLayer;
     private int dig;
+    static final int FROGGER_LIVES      = 5;
+    static final int STARTING_LEVEL     = 1;
+    static final int DEFAULT_LEVEL_TIME = 60;
     static final int GAME_INTRO        = 0;
     static final int GAME_PLAY         = 1;
     static final int GAME_FINISH_LEVEL = 2;
@@ -72,12 +68,12 @@ public class GameState {
         this.frogCol = frogCol;
     }
 
-    public ProjectClientRI getCLientReference() {
-        return CLientReference;
+    public FroggerGame getC() {
+        return c;
     }
 
-    public void setCLientReference(ProjectClientRI CLientReference) {
-        this.CLientReference = CLientReference;
+    public void setC(FroggerGame c) {
+        this.c = c;
     }
 
     public ArrayList<Frogger> getFrog() {

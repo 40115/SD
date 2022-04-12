@@ -15,11 +15,13 @@ public class FroggerGame {
         MEDIUM,
         HIGH;
     };
+    private final ProjectMainImpl PM;
 
-    public FroggerGame(HashMap<Util,GameState> utils, String dific,Integer n ) {
+    public FroggerGame(HashMap<Util,GameState> utils, String dific, Integer n, ProjectMainImpl pm) {
         this.Utils = utils;
         this.Dific = dific;
         this.N=n;
+       this.PM = pm;
     }
 
     public String Difficulty(int difficulty) throws RemoteException {
@@ -50,12 +52,33 @@ public class FroggerGame {
         return false;
     }
 
-    public void update_the_game(GameState j){
+    public void update_the_game(GameState j) throws RemoteException {
         for (Util l : this.Utils.keySet()) {
-
+          l.getProjectClientRI().update_the_game(j);
 
         }
 
+    }
+
+    public HashMap<Util, GameState> getUtils() {
+        return Utils;
+    }
+
+
+
+    public int getDific() {
+        return Dific;
+    }
+
+
+
+    public int getN() {
+        return N;
+    }
+
+
+    public boolean isRun() {
+        return Run;
     }
 
 
