@@ -1,6 +1,8 @@
 package edu.ufp.inf.sd.rmi.Project.client;
 
+import edu.ufp.inf.sd.rmi.Project.server.FroggerGame;
 import edu.ufp.inf.sd.rmi.Project.server.GameSessionRI;
+import edu.ufp.inf.sd.rmi.Project.server.GameState;
 import edu.ufp.inf.sd.rmi.Project.server.ProjectMainRI;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 
@@ -153,7 +155,7 @@ Gamesession(h);
                     break;
 
                 case 2:
-
+Join_Game(Si);
                     break;
                 case 3:
 
@@ -178,4 +180,26 @@ Gamesession(h);
 
 
     }
+
+    public void Join_Game(GameSessionRI h) throws IOException {
+        System.out.println("\n What game would you like to play with\n");
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
+
+        // Reading data using readLine
+       Integer Id = Integer.valueOf(reader.readLine());
+        FroggerGame l=h.join_Game(Id);
+
+
+do{
+
+}while(true);
+    }
+
+    public void update_the_game(GameState j)throws RemoteException{
+
+
+
+    }
+
 }

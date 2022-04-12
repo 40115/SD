@@ -5,6 +5,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class GameSessionImpl extends UnicastRemoteObject implements GameSessionRI{
@@ -41,10 +42,8 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         StringBuilder j= new StringBuilder("List of Games:\n");
         for (int i = 0; i <this.PM.Game.size() ; i++) {
             j.append(i).append("- ");
-            for (int k = 0; k <this.PM.Game.get(i).Utils.size() ; k++) {
-       Util l=this.PM.Game.get(k).Utils.get(k);
-
-                j.append(l.getEmail()).append(" | ");
+            for (Util k :this.PM.Game.get(i).Utils.keySet()) {
+           j.append(k.getEmail()).append(" ");
 
             }
             j.append("\n ");
@@ -56,12 +55,24 @@ return j.toString();
 if (this.Check_Games()){
  return null;
 }else{
-    ArrayList<Util> k=new ArrayList<>();
-    k.add(this.Util);
-    return new FroggerGame(k,D);
+    HashMap<Util,GameState> j=new HashMap<>();
+    j.put(this.Util,new GameState());
+    FroggerGame l=new FroggerGame(j,D,j.size());
+    this.PM.Game.add(l);
+    return l;
 }
     }
+    public FroggerGame join_Game(Integer I) throws RemoteException {
+        if (this.Check_Games()){
+          return null;
 
+        }else {
+            this.PM.Game.get(I).Utils.put(this.Util,new GameState());
+            return this.PM.Game.get(I);
+
+        }
+
+    }
 
     public boolean Check_Games()throws RemoteException{
         for (int i = 0; i <this.PM.Game.size() ; i++) {

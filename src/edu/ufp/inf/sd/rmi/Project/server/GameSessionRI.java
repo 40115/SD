@@ -12,4 +12,6 @@ void LogOut() throws RemoteException;
     Util getUtil()throws RemoteException;
     ProjectMainImpl getPM()throws RemoteException;
     String getToken()throws RemoteException;
+    public FroggerGame join_Game(Integer I) throws RemoteException;
+
 }

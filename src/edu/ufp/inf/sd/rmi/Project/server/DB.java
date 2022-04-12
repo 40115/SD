@@ -10,16 +10,16 @@ ArrayList<Util>Database=new ArrayList<>();
 
     public DB() {
     }
-    public Boolean Check_Util(String Username,String Password) throws RemoteException {
+    public Boolean Check_Util(String Username) throws RemoteException {
         for (Util k : this.Database) {
-            if (Objects.equals(k.getEmail(), Username) && Objects.equals(k.getPassword(), Password)) {
+            if (Objects.equals(k.getEmail(), Username) ) {
                 return true;
             }
         }
         return false;
     }
     public boolean Insert_Util(String Username, String Password, ProjectClientRI projectClientRI) throws RemoteException {
-        if (Check_Util(Username,Password)){
+        if (Check_Util(Username)){
             return false;
         }else {
             Database.add(new Util(Username,Password,projectClientRI));

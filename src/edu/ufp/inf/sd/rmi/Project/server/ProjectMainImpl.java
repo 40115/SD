@@ -34,7 +34,7 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
 
     @Override
     public GameSessionRI Login(String Email, String Password,ProjectClientRI projectClientRI) throws RemoteException {
-        if (Database.Check_Util(Email, Password)){
+        if (Database.Check_Util(Email)){
             if (users.get(new Util(Email,Password,projectClientRI))==null){
                 try {
                     Algorithm algorithm = Algorithm.HMAC256(Email+Password);
