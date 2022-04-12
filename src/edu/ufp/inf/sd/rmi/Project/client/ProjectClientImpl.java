@@ -178,8 +178,8 @@ Join_Game(Si);
 
     @Override
     public void start_Game(GameState j, FroggerGame k)throws RemoteException {
-
-        Main.main(k);
+if (j!=null && k!=null)
+        Main.main(k,j);
 
     }
 

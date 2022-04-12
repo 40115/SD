@@ -66,7 +66,7 @@ public class FroggerGame {
 
 
 
-    public int getDific() {
+    public String getDific() {
         return Dific;
     }
 
