@@ -10,7 +10,7 @@ ArrayList<Util>Database=new ArrayList<>();
 
     public DB() {
     }
-    public Boolean Check_Util(String Username) throws RemoteException {
+    public boolean Check_Util(String Username) throws RemoteException {
         for (Util k : this.Database) {
             if (Objects.equals(k.getEmail(), Username) ) {
                 return true;
