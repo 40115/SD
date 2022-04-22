@@ -8,10 +8,10 @@ void LogOut() throws RemoteException;
     void ConnectSessionToServer() throws RemoteException;
    String Connect() throws RemoteException;
     String List_Games() throws RemoteException;
-    FroggerGame Create_Game(String D) throws RemoteException;
+    FroggerGameRI Create_Game() throws RemoteException;
     Util getUtil()throws RemoteException;
     ProjectMainImpl getPM()throws RemoteException;
     String getToken()throws RemoteException;
-    public FroggerGame join_Game(Integer I) throws RemoteException;
+    public FroggerGameRI join_Game(Integer I) throws RemoteException;
 
 }

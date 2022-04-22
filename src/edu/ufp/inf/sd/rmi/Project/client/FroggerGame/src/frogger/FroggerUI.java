@@ -57,7 +57,7 @@ public class FroggerUI implements ViewableLayer {
 			new Font("Sans Serif", Font.BOLD, 14), Color.black, null );
 	
 	Main game;
-	public GameState vd=new GameState();
+	public GameState vd;
 	
 	public FroggerUI(final Main g) {
 		game = g;

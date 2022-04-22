@@ -25,10 +25,9 @@
 
 package edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import java.rmi.RemoteException;
 
-import edu.ufp.inf.sd.rmi.Project.client.ProjectClientRI;
-import edu.ufp.inf.sd.rmi.Project.server.FroggerGame;
+import edu.ufp.inf.sd.rmi.Project.server.FroggerGameImpl;
 import edu.ufp.inf.sd.rmi.Project.server.GameState;
 import jig.engine.ImageResource;
 import jig.engine.PaintableCanvas;
@@ -39,8 +38,6 @@ import jig.engine.hli.ImageBackgroundLayer;
 import jig.engine.hli.StaticScreenGame;
 import jig.engine.physics.AbstractBodyLayer;
 import jig.engine.util.Vector2D;
-
-import static edu.ufp.inf.sd.rmi.Project.server.GameState.*;
 
 public class Main extends StaticScreenGame {
 	static final int WORLD_WIDTH = (13*32);
@@ -61,10 +58,10 @@ public class Main extends StaticScreenGame {
     /**
 	 * Initialize game objects
 	 */
-	public Main (FroggerGame game,GameState k ) {
+	public Main (String[] args,GameState j) {
 		
 		super(WORLD_WIDTH, WORLD_HEIGHT, false);
-		
+		vd=j;
 		gameframe.setTitle("Frogger");
 		
 		ResourceFactory.getFactory().loadResources(RSC_PATH, "resources.xml");
@@ -79,29 +76,32 @@ public class Main extends StaticScreenGame {
 		//  4x4 is a tiny sphere
 		PaintableCanvas.loadDefaultFrames("col", 30, 30, 2, JIGSHAPE.RECTANGLE, null);
 		PaintableCanvas.loadDefaultFrames("colSmall", 4, 4, 2, JIGSHAPE.RECTANGLE, null);
-		int n= game.getUtils().size();
-		for (int i = 0; i <n ; i++) {
-			vd.getFrog().add(new Frogger(this));
-			vd.getFrogCol().add(new FroggerCollisionDetection(vd.getFrog().get(i)));
-			vd.getAudiofx().add(new AudioEfx(vd.getFrogCol().get(i),vd.getFrog().get(i)));
+try {
+	for (int i = 0; i < vd.c.getUtils().size(); i++) {
+		vd.getFrog().add(new Frogger(this));
+
+		vd.getFrogCol().add(new FroggerCollisionDetection(vd.getFrog().get(i)));
+		vd.getAudiofx().add(new AudioEfx(vd.getFrogCol().get(i), vd.getFrog().get(i)));
+	}
+}catch (RemoteException e){
+	System.out.println(e);
 		}
 
-vd.setRefe(game.getN());
 		vd.setUi(new FroggerUI(this));
 		vd.setWind(new WindGust());
 		vd.setHwave(new HeatWave());
 		vd.setGoalmanager(new GoalManager());
 		vd.setMovingObjectsLayer(new AbstractBodyLayer.IterativeUpdate<MovingEntity>());
 	vd.setParticleLayer(new AbstractBodyLayer.IterativeUpdate<MovingEntity>());
-	vd.setDig(Integer.parseInt(game.getDific()));
-		initializeLevel(1+vd.getDig());
+
+		initializeLevel(1);
 	}
 
 
 	public void initializeLevel(int level) {
 
 		/* dV is the velocity multiplier for all moving objects at the current game level */
-		double dV = level*0.05 + 1;
+		double dV = level*0.05 + 1+vd.getDig();
 		vd.getMovingObjectsLayer().clear();
 
 		/* River Traffic */
@@ -153,50 +153,71 @@ vd.setRefe(game.getN());
 	 * @param deltaMs
 	 */
 	public void cycleTraffic(long deltaMs) {
-		MovingEntity m;
-		/* Road traffic updates */
-		vd.getRoadLine1().update(deltaMs);
-	    if ((m = vd.getRoadLine1().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
 
-		vd.getRoadLine2().update(deltaMs);
-	    if ((m = vd.getRoadLine2().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
+			MovingEntity m;
+			/* Road traffic updates */
 
-		vd.getRoadLine3().update(deltaMs);
-	    if ((m = vd.getRoadLine3().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
-
-		vd.getRoadLine4().update(deltaMs);
-	    if ((m = vd.getRoadLine4().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
-
-		vd.getRoadLine5().update(deltaMs);
-	    if ((m = vd.getRoadLine5().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
-	    
-		
-		/* River traffic updates */
-		vd.getRiverLine1().update(deltaMs);
-	    if ((m = vd.getRiverLine1().buildShortLogWithTurtles(40)) != null) vd.getMovingObjectsLayer().add(m);
-
-		vd.getRiverLine2().update(deltaMs);
-	    if ((m = vd.getRiverLine2().buildLongLogWithCrocodile(30)) != null) vd.getMovingObjectsLayer().add(m);
-
-		vd.getRiverLine3().update(deltaMs);
-	    if ((m = vd.getRiverLine3().buildShortLogWithTurtles(50)) != null) vd.getMovingObjectsLayer().add(m);
-
-		vd.getRiverLine4().update(deltaMs);
-	    if ((m = vd.getRiverLine4().buildLongLogWithCrocodile(20)) != null) vd.getMovingObjectsLayer().add(m);
-
-		vd.getRiverLine5().update(deltaMs);
-	    if ((m = vd.getRiverLine5().buildShortLogWithTurtles(10)) != null) vd.getMovingObjectsLayer().add(m);
-	    
-	    // Do Wind
-	    if ((m = vd.getWind().genParticles(vd.getGameLevel())) != null) vd.getParticleLayer().add(m);
-	    
-	    // HeatWave
-		for (int i = 0; i <vd.getFrog().size() ; i++) {
-			if ((m = vd.getHwave().genParticles(vd.getFrog().get(i).getCenterPosition())) != null) vd.getParticleLayer().add(m);
+			vd.getRoadLine1().update(deltaMs);
+		if (this.vd.isMAster() ) {
+			if ((m = vd.getRoadLine1().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
+		}
+			vd.getRoadLine2().update(deltaMs);
+		if (this.vd.isMAster() ) {
+			if ((m = vd.getRoadLine2().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
+		}
+			vd.getRoadLine3().update(deltaMs);
+		if (this.vd.isMAster() ) {
+			if ((m = vd.getRoadLine3().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
+		}
+			vd.getRoadLine4().update(deltaMs);
+		if (this.vd.isMAster() ) {
+			if ((m = vd.getRoadLine4().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
+		}
+			vd.getRoadLine5().update(deltaMs);
+		if (this.vd.isMAster() ) {
+			if ((m = vd.getRoadLine5().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
 		}
 
-	    vd.getMovingObjectsLayer().update(deltaMs);
-	    vd.getParticleLayer().update(deltaMs);
+			/* River traffic updates */
+			vd.getRiverLine1().update(deltaMs);
+			if (this.vd.isMAster() ){
+				if ((m = vd.getRiverLine1().buildShortLogWithTurtles(40)) != null) vd.getMovingObjectsLayer().add(m);
+			}
+			vd.getRiverLine2().update(deltaMs);
+			if (this.vd.isMAster()) {
+				if ((m = vd.getRiverLine2().buildLongLogWithCrocodile(30)) != null) vd.getMovingObjectsLayer().add(m);
+			}
+			vd.getRiverLine3().update(deltaMs);
+			if (this.vd.isMAster() ) {
+				if ((m = vd.getRiverLine3().buildShortLogWithTurtles(50)) != null) vd.getMovingObjectsLayer().add(m);
+			}
+
+			vd.getRiverLine4().update(deltaMs);
+			if (this.vd.isMAster() ) {
+				if ((m = vd.getRiverLine4().buildLongLogWithCrocodile(20)) != null) vd.getMovingObjectsLayer().add(m);
+			}
+			vd.getRiverLine5().update(deltaMs);
+			if (this.vd.isMAster() ) {
+				if ((m = vd.getRiverLine5().buildShortLogWithTurtles(10)) != null) vd.getMovingObjectsLayer().add(m);
+			}
+			// Do Wind
+			if ((m = vd.getWind().genParticles(vd.getGameLevel())) != null) vd.getParticleLayer().add(m);
+
+			// HeatWave
+			for (int i = 0; i < vd.getFrog().size(); i++) {
+				if ((m = vd.getHwave().genParticles(vd.getFrog().get(i).getCenterPosition())) != null)
+					vd.getParticleLayer().add(m);
+			}
+
+			vd.getMovingObjectsLayer().update(deltaMs);
+			vd.getParticleLayer().update(deltaMs);
+			try {
+				vd.c.update_the_game(this.vd);
+			}catch (RemoteException e){
+				System.out.println("Exception in the program");
+			}
+
+
 	}
 	
 	/**
@@ -425,16 +446,16 @@ vd.setRefe(game.getN());
 		case GAME_FINISH_LEVEL:
 		case GAME_PLAY:
 			vd.getBackgroundLayer().render(rc);
-			
-			if (vd.getFrog().get(vd.getRefe()).isAlive) {
-				vd.getMovingObjectsLayer().render(rc);
-				//frog.collisionObjects.get(0).render(rc);
-				vd.getFrog().get(vd.getRefe()).render(rc);
-			} else {
-				vd.getFrog().get(vd.getRefe()).render(rc);
-				vd.getMovingObjectsLayer().render(rc);
+			for (int i = 0; i < vd.getFrog().size(); i++) {
+				if (vd.getFrog().get(i).isAlive) {
+					vd.getMovingObjectsLayer().render(rc);
+					//frog.collisionObjects.get(0).render(rc);
+					vd.getFrog().get(i).render(rc);
+				} else {
+					vd.getFrog().get(i).render(rc);
+					vd.getMovingObjectsLayer().render(rc);
+				}
 			}
-			
 			vd.getParticleLayer().render(rc);
 			vd.getUi().render(rc);
 			break;
@@ -449,9 +470,8 @@ vd.setRefe(game.getN());
 		}
 	}
 	
-	public static void main (FroggerGame game,GameState k ) {
-
-		Main f = new Main(game,k);
+	public static void main (String[] args,GameState j ) {
+		Main f = new Main(args,j);
 		f.run();
 	}
 

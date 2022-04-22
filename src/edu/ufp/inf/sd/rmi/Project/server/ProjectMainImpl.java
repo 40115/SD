@@ -6,7 +6,6 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
-import com.sun.jmx.snmp.SnmpOidTableSupport;
 import edu.ufp.inf.sd.rmi.Project.client.ProjectClientRI;
 
 import java.rmi.RemoteException;
@@ -18,7 +17,7 @@ import java.util.Objects;
 public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainRI {
    DB Database=new DB();
    HashMap<Util,GameSessionRI> users = new HashMap<>();
-   ArrayList<FroggerGame> Game=new ArrayList<>();
+   ArrayList<FroggerGameRI> Game=new ArrayList<>();
     public ProjectMainImpl() throws RemoteException {
         super();
     }
@@ -34,22 +33,28 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
 
     @Override
     public GameSessionRI Login(String Email, String Password,ProjectClientRI projectClientRI) throws RemoteException {
-        if (Database.Check_Util(Email)){
-            if (users.get(new Util(Email,Password,projectClientRI))==null){
-                try {
-                    Algorithm algorithm = Algorithm.HMAC256(Email+Password);
-                    String token = JWT.create().withIssuer("auth0").sign(algorithm);
-                GameSessionRI j=new GameSessionImpl(this,new Util(Email,Password,projectClientRI),token);
-                users.put(new Util(Email,Password,projectClientRI),j);
+        if (Database.Check_Util(Email,Password)){
+
+            for (Util l:this.users.keySet()) {
+                if (Objects.equals(l.getEmail(), Email) && Objects.equals(l.getPassword(), Password)){
+                    return this.users.get(l);
+                }
+
+            }
+
+            try {
+                Algorithm algorithm = Algorithm.HMAC256(Email+Password);
+                String token = JWT.create().withIssuer("auth0").sign(algorithm);
+                Util at=new Util(Email,Password,projectClientRI);
+                GameSessionRI j=new GameSessionImpl(this,at,token);
+                users.put(at,j);
 
                 return j;
-                } catch (JWTCreationException exception){
-                   return null;
-                }
+            } catch (JWTCreationException exception){
+                return null;
             }
-            System.out.println("DO\n");
-            return users.get(new Util(Email,Password,projectClientRI));
         }
+        System.out.println(Email+Password);
         return null;
 
     }
@@ -72,6 +77,15 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
         }
 
         return false;
+    }
+    protected void Remove_Game(FroggerGameRI h) throws RemoteException{
+        for (int i = 0; i <this.Game.size() ; i++) {
+            if (h==this.Game.get(i)){
+                this.Game.remove(i);
+                return;
+            }
+
+        }
     }
 
 }

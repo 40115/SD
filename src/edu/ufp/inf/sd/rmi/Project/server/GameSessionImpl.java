@@ -33,6 +33,7 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
     @Override
     public String Connect() throws RemoteException {
         if (this.PM.Valid(this.Token,this.Util)) {
+            System.out.println(this.Util.getEmail());
             return "\nGame Froogger...\n" + "Select An option:\n" + "1-ListGames\n" + "2-Join Game\n" +"3-Create Game\n" + "4-Log Out\n";
         }
         return  "\nInvalid";
@@ -41,7 +42,7 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         StringBuilder j= new StringBuilder("List of Games:\n");
         for (int i = 0; i <this.PM.Game.size() ; i++) {
             j.append(i).append("- ");
-            for (Util k :this.PM.Game.get(i).Utils.keySet()) {
+            for (Util k :this.PM.Game.get(i).getUtils().keySet()) {
            j.append(k.getEmail()).append(" ");
 
             }
@@ -50,32 +51,41 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
 return j.toString();
 
     }
-    public FroggerGame Create_Game(String D) throws RemoteException{
+    public FroggerGameRI Create_Game() throws RemoteException{
 if (this.Check_Games()){
  return null;
 }else{
     HashMap<Util,GameState> j=new HashMap<>();
-    j.put(this.Util,new GameState());
-    FroggerGame l=new FroggerGame(j,D,j.size(),getPM());
+    GameState m=new GameState();
+    m.setMAster(true);
+    m.setRefe(0);
+
+    j.put(this.Util,m);
+    FroggerGameRI l=new FroggerGameImpl(j,j.size(),getPM());
+    m.setC(l);
     this.PM.Game.add(l);
     return l;
 }
     }
-    public FroggerGame join_Game(Integer I) throws RemoteException {
-        if (this.Check_Games()){
+
+    public FroggerGameRI join_Game(Integer I) throws RemoteException {
+        if (this.Check_Games()||this.PM.Game.get(I)==null){
           return null;
 
         }else {
-            this.PM.Game.get(I).Utils.put(this.Util,new GameState());
-            return this.PM.Game.get(I);
 
+            GameState m=new GameState();
+            m.setRefe( this.PM.Game.get(I).getUtils().size());
+            m.setC(this.PM.Game.get(I));
+            this.PM.Game.get(I).getUtils().put(this.Util,m);
+            return this.PM.Game.get(I);
         }
 
     }
 
     public boolean Check_Games()throws RemoteException{
         for (int i = 0; i <this.PM.Game.size() ; i++) {
-            FroggerGame k=this.PM.Game.get(i);
+            FroggerGameRI k=this.PM.Game.get(i);
            if (k.check_Util(this.Util.getEmail())){
                return true;
            }

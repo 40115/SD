@@ -1,10 +1,7 @@
 package edu.ufp.inf.sd.rmi.Project.client;
 
 import edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Main;
-import edu.ufp.inf.sd.rmi.Project.server.FroggerGame;
-import edu.ufp.inf.sd.rmi.Project.server.GameSessionRI;
-import edu.ufp.inf.sd.rmi.Project.server.GameState;
-import edu.ufp.inf.sd.rmi.Project.server.ProjectMainRI;
+import edu.ufp.inf.sd.rmi.Project.server.*;
 import edu.ufp.inf.sd.rmi.util.rmisetup.SetupContextRMI;
 
 import java.io.BufferedReader;
@@ -159,7 +156,7 @@ Gamesession(h);
 Join_Game(Si);
                     break;
                 case 3:
-
+Create_Game(Si);
                     break;
 
                 case 4:
@@ -177,9 +174,13 @@ Join_Game(Si);
 
 
     @Override
-    public void start_Game(GameState j, FroggerGame k)throws RemoteException {
-if (j!=null && k!=null)
-        Main.main(k,j);
+    public void start_Game(GameState j)throws RemoteException {
+if (j!=null ){
+    String[] f =new String[2];
+    System.out.println("Start ");
+Main.main(f,j);
+}
+
 
     }
 
@@ -189,19 +190,70 @@ if (j!=null && k!=null)
                 new InputStreamReader(System.in));
 
         // Reading data using readLine
-       Integer Id = Integer.valueOf(reader.readLine());
-        FroggerGame l=h.join_Game(Id);
+       int Id = Integer.parseInt(reader.readLine());
+        FroggerGameRI l=h.join_Game(Id);
+if (l==null){
+    System.out.println("\nGame not Found\n");
+    return;
+}
+Id=-1;
+do{
+    System.out.println("\nGame Found\n 0-Ready\n 1-Left\n");
+    reader = new BufferedReader(
+            new InputStreamReader(System.in));
+    Id = Integer.parseInt(reader.readLine());
+    if (Id==1){
+        l.leve_the_game(h);
+        return;
+    }
+}while(Id!=0);
+while(true){
+    System.out.println("\nGame Ready\n1-Left\n");
+    reader = new BufferedReader(
+            new InputStreamReader(System.in));
+    Id = Integer.parseInt(reader.readLine());
+    if (Id==1){
+        l.leve_the_game(h);
+        return;
+    }
 
+
+}
+
+    }
+    public void Create_Game(GameSessionRI h) throws IOException {
+        System.out.println("\n Creating Game\n");
+        int n=0;
+        FroggerGameRI l=h.Create_Game();
+        if (l==null){
+            System.out.println("\nGame not Made \n your probably already in a game\n");
+            return;
+        }
+        do{
+            System.out.println("\n Select Dificulty 1-Low 2-Medium 3-Hard\n");
+            BufferedReader   reader = new BufferedReader(
+                    new InputStreamReader(System.in));
+           n = Integer.parseInt(reader.readLine());
+           System.out.println(l.Difficulty(n));
+        }while (n<0 ||n>3);
+        int Id=-1;
+        do{
+        System.out.println("\nGame Created\n 0-Ready\n 1-Left\n");
+     BufferedReader   reader = new BufferedReader(
+                new InputStreamReader(System.in));
+        Id = Integer.parseInt(reader.readLine());
+        if (Id==1){
+            l.leve_the_game(h);
+            return;
+        }
+       l.ready_the_game(h.getUtil());
+    }while(Id!=0);
 
 do{
+
 
 }while(true);
     }
 
-    public void update_the_game(GameState j)throws RemoteException{
-
-
-
-    }
 
 }
