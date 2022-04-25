@@ -8,5 +8,5 @@ import java.rmi.RemoteException;
 
 public interface ProjectClientRI extends Remote {
 public void start_Game(GameState j)throws RemoteException;
-
+public void test() throws RemoteException;
 }

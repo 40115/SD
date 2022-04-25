@@ -184,6 +184,11 @@ Main.main(f,j);
 
     }
 
+    @Override
+    public void test()throws RemoteException {
+        System.out.println("Start ");
+    }
+
     public void Join_Game(GameSessionRI h) throws IOException {
         System.out.println("\n What game would you like to play with\n");
         BufferedReader reader = new BufferedReader(
@@ -207,6 +212,7 @@ do{
         return;
     }
 }while(Id!=0);
+l.ready_the_game(h.getUtil());
 while(true){
     System.out.println("\nGame Ready\n1-Left\n");
     reader = new BufferedReader(

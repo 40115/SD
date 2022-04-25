@@ -15,8 +15,8 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     private enum Difficulty{
         LOW,
         MEDIUM,
-        HIGH;
-    };
+        HIGH
+    }
     private final ProjectMainImpl PM;
 
     public FroggerGameImpl(HashMap<Util,GameState> utils,  Integer n, ProjectMainImpl pm) throws RemoteException {
@@ -45,14 +45,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
                 return "Invalied option Default has been selected " + Dific;
         }
     }
-    public boolean check_Util(String User) throws RemoteException{
-        for (Util l : this.Utils.keySet()) {
-            if (Objects.equals(l.getEmail(), User)) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     public void update_the_game(GameState j) throws RemoteException {
         for (GameState l : this.Utils.values()) {
@@ -85,9 +78,10 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         }
 
     }
-    public void ready_the_game(Util k) throws RemoteException{
+    public void ready_the_game(Util h) throws RemoteException{
         for (Util f:this.Utils.keySet()) {
-            if (f==k){
+            if (f==h){
+                System.out.println("G");
                 this.Utils.get(f).setReady(true);
               if ( this.check_Ready()){
                   this.start_Game();
@@ -99,6 +93,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     }
 
     private void start_Game() throws RemoteException{
+
         for (Util f:this.Utils.keySet()) {
        f.getProjectClientRI().start_Game(this.Utils.get(f));
 
@@ -106,8 +101,9 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     }
 
     private boolean check_Ready()throws RemoteException {
-        if (this.Utils.size()>=2){
-            return true;
+
+        if (this.Utils.size()<2){
+            return false;
         }
         for (GameState f:this.Utils.values()) {
             if (!f.isReady()){

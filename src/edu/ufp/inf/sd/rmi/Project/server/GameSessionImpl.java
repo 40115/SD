@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class GameSessionImpl extends UnicastRemoteObject implements GameSessionRI{
-   private final Util Util;
-   private final ProjectMainImpl PM;
-   private final String Token;
+   private  Util Util;
+   private  ProjectMainImpl PM;
+   private String Token;
     public GameSessionImpl (ProjectMainImpl pm,Util util,String token) throws RemoteException {
         super();
         this.PM=pm;
@@ -23,12 +23,7 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         this.PM.users.remove(Util);
     }
 
-    @Override
-    public void ConnectSessionToServer()throws RemoteException{
-        for(int i =0; i<this.PM.Database.Database.size(); i++){
-            Logger.getLogger("Lista: "+ PM.Database.Database.get(i).getEmail());
-        }
-    }
+
 
     @Override
     public String Connect() throws RemoteException {
@@ -59,7 +54,6 @@ if (this.Check_Games()){
     GameState m=new GameState();
     m.setMAster(true);
     m.setRefe(0);
-
     j.put(this.Util,m);
     FroggerGameRI l=new FroggerGameImpl(j,j.size(),getPM());
     m.setC(l);
@@ -73,10 +67,10 @@ if (this.Check_Games()){
           return null;
 
         }else {
-
             GameState m=new GameState();
             m.setRefe( this.PM.Game.get(I).getUtils().size());
             m.setC(this.PM.Game.get(I));
+
             this.PM.Game.get(I).getUtils().put(this.Util,m);
             return this.PM.Game.get(I);
         }
@@ -86,7 +80,7 @@ if (this.Check_Games()){
     public boolean Check_Games()throws RemoteException{
         for (int i = 0; i <this.PM.Game.size() ; i++) {
             FroggerGameRI k=this.PM.Game.get(i);
-           if (k.check_Util(this.Util.getEmail())){
+           if (k.getUtils().containsKey(this.Util)){
                return true;
            }
         }

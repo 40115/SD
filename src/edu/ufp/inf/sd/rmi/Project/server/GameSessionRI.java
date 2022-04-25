@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 
 public interface GameSessionRI extends Remote {
 void LogOut() throws RemoteException;
-    void ConnectSessionToServer() throws RemoteException;
+
    String Connect() throws RemoteException;
     String List_Games() throws RemoteException;
     FroggerGameRI Create_Game() throws RemoteException;

@@ -3,13 +3,17 @@ package edu.ufp.inf.sd.rmi.Project.server;
 import edu.ufp.inf.sd.rmi.Project.client.ProjectClientRI;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
-public class Util implements Serializable {
+
+public class Util  extends UnicastRemoteObject {
     private final String Email;
     private final String Password;
     private final ProjectClientRI ProjectClientRI;
 
-    public Util(String Email, String password,ProjectClientRI projectClientRI) {
+    public Util(String Email, String password,ProjectClientRI projectClientRI) throws RemoteException {
+        super();
         this.Email = Email;
         this.Password = password;
         this.ProjectClientRI=projectClientRI;

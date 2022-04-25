@@ -87,7 +87,7 @@ IF "%CURRENT_IDE%"=="%INTELLIJ%" (
 @set JAVAPROJ_DIST_FOLDER=%JAVAPROJ%\%JAVAPROJ_DIST%
 @set JAVAPROJ_JAR_FILE=%JAVAPROJ_NAME%.jar
 
-@set CLASSPATH=.;%JAVAPROG_CLASSES_FOLDER%;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\mysql-connector-java-8.0.27.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\java-jwt-3.19.1.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\jackson-core-2.13.2.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\jackson-databind-2.13.2.2.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\jackson-annotations-2.13.2.jar
+@set CLASSPATH=.;%JAVAPROG_CLASSES_FOLDER%;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\mysql-connector-java-8.0.27.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\java-jwt-3.19.1.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\jackson-core-2.13.2.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\jackson-databind-2.13.2.2.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\jackson-annotations-2.13.2.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\src\\edu\\ufp\\inf\\sd\\rmi\\Project\\client\\FroggerGame\\lib\\jig-1.7.5.jar
 
 
 @REM @set CLASSPATH=.;%JAVAPROJ_DIST_FOLDER%/%JAVAPROJ_JAR_FILE%.jar

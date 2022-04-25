@@ -28,11 +28,12 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
         return "\nHello, Welcome to City 17 you have chosen or been Chosen to...\n" +"Select An option:\n" + "1-Register\n" + "2-Login In\n" + "3-Leave\n";
     }
     public boolean Register(String Username, String Password,ProjectClientRI projectClientRI) throws RemoteException{
-            return Database.Insert_Util(Username, Password,projectClientRI);
+            return Database.Insert_Util(Username, Password);
     }
 
     @Override
     public GameSessionRI Login(String Email, String Password,ProjectClientRI projectClientRI) throws RemoteException {
+
         if (Database.Check_Util(Email,Password)){
 
             for (Util l:this.users.keySet()) {
@@ -45,16 +46,16 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
             try {
                 Algorithm algorithm = Algorithm.HMAC256(Email+Password);
                 String token = JWT.create().withIssuer("auth0").sign(algorithm);
-                Util at=new Util(Email,Password,projectClientRI);
-                GameSessionRI j=new GameSessionImpl(this,at,token);
-                users.put(at,j);
-
+                Util aj=new Util(Email,Password,projectClientRI);
+                GameSessionRI j=new GameSessionImpl(this,aj,token);
+                this.users.put(aj,j);
+              aj.getProjectClientRI().test();
                 return j;
             } catch (JWTCreationException exception){
                 return null;
             }
         }
-        System.out.println(Email+Password);
+
         return null;
 
     }
