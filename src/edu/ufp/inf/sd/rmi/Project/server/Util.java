@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 
-public class Util  extends UnicastRemoteObject {
+public class Util  extends UnicastRemoteObject implements UtilRI{
     private final String Email;
     private final String Password;
     private final ProjectClientRI ProjectClientRI;

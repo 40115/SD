@@ -80,6 +80,8 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     }
     public void ready_the_game(Util h) throws RemoteException{
         for (Util f:this.Utils.keySet()) {
+            f.hashCode();
+            h.hashCode();
             if (f==h){
                 System.out.println("G");
                 this.Utils.get(f).setReady(true);
