@@ -5,7 +5,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
 public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameRI{
-    HashMap<UtilRI,GameState> Utils;
+    HashMap<UtilRI,GameStateRI> Utils;
     private String Dific=String.valueOf(Difficulty.MEDIUM);
     int N;
 
@@ -18,7 +18,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     }
     private final ProjectMainImpl PM;
 
-    public FroggerGameImpl(HashMap<UtilRI,GameState> utils,  Integer n, ProjectMainImpl pm) throws RemoteException {
+    public FroggerGameImpl( HashMap<UtilRI,GameStateRI>  utils,  Integer n, ProjectMainImpl pm) throws RemoteException {
         super();
         this.Utils = utils;
         this.N=n;
@@ -46,8 +46,8 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     }
 
 
-    public void update_the_game(GameState j) throws RemoteException {
-        for (GameState l : this.Utils.values()) {
+    public void update_the_game(GameStateRI j) throws RemoteException {
+        for (GameStateRI l : this.Utils.values()) {
             if (j.isMAster()) {
                 l.setRoadLine1(j.getRoadLine1());
                 l.setRoadLine2(j.getRoadLine2());
@@ -104,7 +104,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         if (this.Utils.size()<2){
             return false;
         }
-        for (GameState f:this.Utils.values()) {
+        for (GameStateRI f:this.Utils.values()) {
             if (!f.isReady()){
              return false;
             }
@@ -116,7 +116,7 @@ return true;
         return End;
     }
 
-    public HashMap<UtilRI, GameState> getUtils() throws RemoteException{
+    public HashMap<UtilRI, GameStateRI> getUtils() throws RemoteException{
         return Utils;
     }
 

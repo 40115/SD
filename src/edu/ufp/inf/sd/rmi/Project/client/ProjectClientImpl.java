@@ -174,7 +174,7 @@ Create_Game(Si);
 
 
     @Override
-    public void start_Game(GameState j)throws RemoteException {
+    public void start_Game(GameStateRI j)throws RemoteException {
 if (j!=null ){
     String[] f =new String[2];
     System.out.println("Start ");

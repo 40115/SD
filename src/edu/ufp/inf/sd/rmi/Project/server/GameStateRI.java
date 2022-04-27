@@ -1,8 +1,80 @@
 package edu.ufp.inf.sd.rmi.Project.server;
 
+import edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.*;
+import jig.engine.hli.ImageBackgroundLayer;
+import jig.engine.physics.AbstractBodyLayer;
+
 import java.rmi.Remote;
+import java.util.ArrayList;
 
 public interface GameStateRI extends Remote {
-
+    public boolean isReady();
+    public void setReady(boolean ready);
+    public ArrayList<FroggerCollisionDetection> getFrogCol();
+    public void setFrogCol(ArrayList<FroggerCollisionDetection> frogCol);
+    public boolean isHAsended();
+    public void setHAsended(boolean HAsended);
+    public FroggerGameRI getC();
+    public void setC(FroggerGameRI c);
+    public ArrayList<Frogger> getFrog();
+    public void setFrog(ArrayList<Frogger> frog);
+    public ArrayList<AudioEfx> getAudiofx();
+    public void setAudiofx(ArrayList<AudioEfx> audiofx);
+    public FroggerUI getUi();
+    public void setUi(FroggerUI ui);
+    public WindGust getWind();
+    public void setWind(WindGust wind);
+    public HeatWave getHwave();
+    public void setHwave(HeatWave hwave);
+    public GoalManager getGoalmanager();
+    public void setGoalmanager(GoalManager goalmanager);
+    public Integer getRefe();
+    public void setRefe(Integer refe);
+    public AbstractBodyLayer<MovingEntity> getMovingObjectsLayer();
+    public void setMovingObjectsLayer(AbstractBodyLayer<MovingEntity> movingObjectsLayer);
+    public AbstractBodyLayer<MovingEntity> getParticleLayer();
+    public void setParticleLayer(AbstractBodyLayer<MovingEntity> particleLayer);
+    public MovingEntityFactory getRoadLine1();
+    public void setRoadLine1(MovingEntityFactory roadLine1);
+    public MovingEntityFactory getRoadLine2();
+    public void setRoadLine2(MovingEntityFactory roadLine2);
+    public MovingEntityFactory getRoadLine3();
+    public void setRoadLine3(MovingEntityFactory roadLine3);
+    public MovingEntityFactory getRoadLine4();
+    public void setRoadLine4(MovingEntityFactory roadLine4);
+    public MovingEntityFactory getRoadLine5();
+    public void setRoadLine5(MovingEntityFactory roadLine5);
+    public MovingEntityFactory getRiverLine1();
+    public void setRiverLine1(MovingEntityFactory riverLine1);
+    public MovingEntityFactory getRiverLine2();
+    public void setRiverLine2(MovingEntityFactory riverLine2);
+    public MovingEntityFactory getRiverLine3();
+    public void setRiverLine3(MovingEntityFactory riverLine3);
+    public MovingEntityFactory getRiverLine4();
+    public void setRiverLine4(MovingEntityFactory riverLine4);
+    public MovingEntityFactory getRiverLine5();
+    public void setRiverLine5(MovingEntityFactory riverLine5);
+    public ImageBackgroundLayer getBackgroundLayer();
+    public void setBackgroundLayer(ImageBackgroundLayer backgroundLayer);
+    public int getDig();
+    public void setDig(int dig);
+    public int getGameState();
+    public void setGameState(int gameState);
+    public int getGameLevel();
+    public void setGameLevel(int gameLevel);
+    public int getGameLives();
+    public void setGameLives(int gameLives);
+    public int getGameScore();
+    public void setGameScore(int gameScore);
+    public int getLevelTimer();
+    public void setLevelTimer(int levelTimer);
+    public boolean isSpace_has_been_released();
+    public void setSpace_has_been_released(boolean space_has_been_released);
+    public boolean isKeyPressed();
+    public void setKeyPressed(boolean keyPressed);
+    public boolean isListenInput();
+    public void setListenInput(boolean listenInput);
+    public boolean isMAster();
+    public void setMAster(boolean MAster);
 
 }

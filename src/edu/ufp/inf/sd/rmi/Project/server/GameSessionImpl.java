@@ -7,8 +7,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
 public class GameSessionImpl extends UnicastRemoteObject implements GameSessionRI{
-   private  UtilRI Util;
-   private  ProjectMainImpl PM;
+   private final UtilRI Util;
+   private final ProjectMainImpl PM;
    private String Token;
     public GameSessionImpl (ProjectMainImpl pm,UtilRI util,String token) throws RemoteException {
         super();
@@ -49,7 +49,7 @@ return j.toString();
 if (this.Check_Games()){
  return null;
 }else{
-    HashMap<UtilRI,GameState> j=new HashMap<>();
+    HashMap<UtilRI,GameStateRI> j=new HashMap<>();
     GameState m=new GameState();
     m.setMAster(true);
     m.setRefe(0);
@@ -66,7 +66,7 @@ if (this.Check_Games()){
           return null;
 
         }else {
-            GameState m=new GameState();
+            GameStateRI m=new GameState();
             m.setRefe( this.PM.Game.get(I).getUtils().size());
             m.setC(this.PM.Game.get(I));
 

@@ -26,6 +26,7 @@
 package edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger;
 
 import edu.ufp.inf.sd.rmi.Project.server.GameState;
+import edu.ufp.inf.sd.rmi.Project.server.GameStateRI;
 import jig.engine.util.Vector2D;
 
 /**
@@ -64,7 +65,7 @@ public class Frogger extends MovingEntity {
     public boolean cheating = false;
     
     public boolean hw_hasMoved = false;
-	public GameState vd;
+	public GameStateRI vd;
 
     private Main game;
     
@@ -264,7 +265,7 @@ public class Frogger extends MovingEntity {
 		    followObject = null;
 		    isAlive = false;
 		    currentFrame = 4;	// dead sprite   
-		    vd.GameLives--;
+		    vd.setGameLives(vd.getGameLives()-1);
 		    hw_hasMoved = true;
 		}
 		
@@ -278,11 +279,11 @@ public class Frogger extends MovingEntity {
 	public void reach(final Goal g) {
 		if (!g.isReached) {
 			AudioEfx.frogGoal.play(0.4);
-			vd.GameScore += 100;
-			vd.GameScore += vd.getLevelTimer();
+			vd.setGameScore(vd.getGameScore()+180);
+			vd.setGameScore(vd.getLevelTimer()+vd.getGameScore());
 			if (g.isBonus) {
 				AudioEfx.bonus.play(0.2);
-				vd.GameLives++;
+				vd.setGameLives(vd.getGameLives()+1);
 			}
 			g.reached();
 			resetFrog();
@@ -293,7 +294,7 @@ public class Frogger extends MovingEntity {
 	}
 	
 	public void update(final long deltaMs) {
-		if (vd.GameLives <= 0)
+		if (vd.getGameLives() <= 0)
 			return;
 		
 		// if dead, stay dead for 2 seconds.
@@ -308,10 +309,10 @@ public class Frogger extends MovingEntity {
 		deltaTime += deltaMs;
 		if (deltaTime > 1000) {
 			deltaTime = 0;
-			vd.levelTimer--;
+			vd.setLevelTimer(vd.getLevelTimer()-1);
 		}
 		
-		if (vd.levelTimer <= 0)
+		if (vd.getLevelTimer() <= 0)
 			die();
 	}
 }
