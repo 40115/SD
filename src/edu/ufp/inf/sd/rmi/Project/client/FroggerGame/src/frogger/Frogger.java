@@ -25,9 +25,10 @@
 
 package edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger;
 
-import edu.ufp.inf.sd.rmi.Project.server.GameState;
 import edu.ufp.inf.sd.rmi.Project.server.GameStateRI;
 import jig.engine.util.Vector2D;
+
+import java.rmi.RemoteException;
 
 /**
  * Main sprite in the game that a player can control
@@ -72,7 +73,7 @@ public class Frogger extends MovingEntity {
     /**
      * Build frogger!
      */
-	public Frogger (Main g) {
+	public Frogger (Main g) throws RemoteException {
 		super(Main.SPRITE_SHEET + "#frog");
 		game = g;
 		resetFrog();
@@ -82,7 +83,7 @@ public class Frogger extends MovingEntity {
 	/**
 	 * Reset the Frogger to default state and position
 	 */
-	public void resetFrog() {
+	public void resetFrog() throws RemoteException {
 		isAlive = true;
 		isAnimating = false;
 		currentFrame = 0;
@@ -256,7 +257,7 @@ public class Frogger extends MovingEntity {
     /**
      * Frogger dies
      */
-	public void die() {
+	public void die() throws RemoteException {
 		if (isAnimating)
 			return;
 		
@@ -276,7 +277,7 @@ public class Frogger extends MovingEntity {
 	/**
 	 * Frogger reaches a goal
 	 */
-	public void reach(final Goal g) {
+	public void reach(final Goal g) throws RemoteException {
 		if (!g.isReached) {
 			AudioEfx.frogGoal.play(0.4);
 			vd.setGameScore(vd.getGameScore()+180);
@@ -294,12 +295,21 @@ public class Frogger extends MovingEntity {
 	}
 	
 	public void update(final long deltaMs) {
-		if (vd.getGameLives() <= 0)
-			return;
-		
+		try {
+			if (vd.getGameLives() <= 0)
+				return;
+		} catch (RemoteException e) {
+			throw new RuntimeException(e);
+		}
+
 		// if dead, stay dead for 2 seconds.
-		if (!isAlive && timeOfDeath + 2000 < System.currentTimeMillis())
+		if (!isAlive && timeOfDeath + 2000 < System.currentTimeMillis()) {
+			try {
 				resetFrog();
+			} catch (RemoteException e) {
+				throw new RuntimeException(e);
+			}
+		}
 		
 		updateAnimation();	
 		updateFollow(deltaMs);
@@ -309,10 +319,18 @@ public class Frogger extends MovingEntity {
 		deltaTime += deltaMs;
 		if (deltaTime > 1000) {
 			deltaTime = 0;
-			vd.setLevelTimer(vd.getLevelTimer()-1);
+			try {
+				vd.setLevelTimer(vd.getLevelTimer()-1);
+			} catch (RemoteException e) {
+				throw new RuntimeException(e);
+			}
 		}
-		
-		if (vd.getLevelTimer() <= 0)
-			die();
+
+		try {
+			if (vd.getLevelTimer() <= 0)
+				die();
+		} catch (RemoteException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
