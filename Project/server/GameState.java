@@ -1,20 +1,20 @@
 package edu.ufp.inf.sd.rmi.Project.server;
 
 import edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.*;
-import edu.ufp.inf.sd.rmi.Project.client.ProjectClientRI;
 import jig.engine.hli.ImageBackgroundLayer;
 import jig.engine.physics.AbstractBodyLayer;
-import jig.engine.util.Vector2D;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class GameState {
+public class GameState extends UnicastRemoteObject implements GameStateRI{
 
 
     private ArrayList<FroggerCollisionDetection> frogCol=new ArrayList<>();
 
 
-    public FroggerGame c;
+    public FroggerGameRI c;
     private ArrayList<Frogger> frog=new ArrayList<>();
     private ArrayList<AudioEfx> audiofx=new ArrayList<>();
     private FroggerUI ui;
@@ -59,6 +59,21 @@ public class GameState {
     private boolean space_has_been_released = false;
     private boolean keyPressed = false;
     private boolean listenInput = true;
+      private boolean isMAster=false;
+    private boolean HAsended=false;
+    private boolean Ready=false;
+
+    protected GameState() throws RemoteException {
+        super();
+    }
+
+    public boolean isReady() {
+        return Ready;
+    }
+
+    public void setReady(boolean ready) {
+        Ready = ready;
+    }
 
     public ArrayList<FroggerCollisionDetection> getFrogCol() {
         return frogCol;
@@ -68,11 +83,19 @@ public class GameState {
         this.frogCol = frogCol;
     }
 
-    public FroggerGame getC() {
+    public boolean isHAsended() {
+        return HAsended;
+    }
+
+    public void setHAsended(boolean HAsended) {
+        this.HAsended = HAsended;
+    }
+
+    public FroggerGameRI getC() {
         return c;
     }
 
-    public void setC(FroggerGame c) {
+    public void setC(FroggerGameRI c) {
         this.c = c;
     }
 
@@ -306,5 +329,13 @@ public class GameState {
 
     public void setListenInput(boolean listenInput) {
         this.listenInput = listenInput;
+    }
+
+    public boolean isMAster() {
+        return isMAster;
+    }
+
+    public void setMAster(boolean MAster) {
+        isMAster = MAster;
     }
 }

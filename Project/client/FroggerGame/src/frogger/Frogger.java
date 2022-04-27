@@ -64,7 +64,7 @@ public class Frogger extends MovingEntity {
     public boolean cheating = false;
     
     public boolean hw_hasMoved = false;
-	public GameState vd=new GameState();
+	public GameState vd;
 
     private Main game;
     

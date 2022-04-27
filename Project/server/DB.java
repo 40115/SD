@@ -3,34 +3,27 @@ import edu.ufp.inf.sd.rmi.Project.client.ProjectClientRI;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class DB {
-ArrayList<Util>Database=new ArrayList<>();
+HashMap<String,String>Database=new HashMap<>();
 
     public DB() {
+
+    }
+    public boolean Check_Util(String Username,String Password) throws RemoteException {
+        return Objects.equals(this.Database.get(Username), Password);
     }
     public boolean Check_Util(String Username) throws RemoteException {
-        for (Util k : this.Database) {
-            if (Objects.equals(k.getEmail(), Username) ) {
-                return true;
-            }
-        }
-        return false;
+        return this.Database.get(Username) != null;
     }
-    public boolean Insert_Util(String Username, String Password, ProjectClientRI projectClientRI) throws RemoteException {
+    public boolean Insert_Util(String Username, String Password) throws RemoteException {
         if (Check_Util(Username)){
             return false;
         }else {
-            Database.add(new Util(Username,Password,projectClientRI));
+            Database.put(Username,Password);
             return true;
         }
-
-        }
-
-
-
-
     }
-
-
+}
