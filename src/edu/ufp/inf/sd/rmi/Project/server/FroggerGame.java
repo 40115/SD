@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class FroggerGame {
-    ArrayList<Util> Utils;
+    ArrayList<UtilRI> Utils;
     private String Dific;
     private enum Difficulty{
         LOW,
@@ -13,7 +13,7 @@ public class FroggerGame {
         HIGH;
     };
 
-    public FroggerGame(ArrayList<Util> utils, String dific) {
+    public FroggerGame(ArrayList<UtilRI> utils, String dific) {
         this.Utils = utils;
         this.Dific = dific;
     }
@@ -39,7 +39,7 @@ public class FroggerGame {
         }
     }
     public boolean check_Util(String User){
-        for (Util util : this.Utils) {
+        for (UtilRI util : this.Utils) {
             if (Objects.equals(util.getEmail(), User)) {
                 return true;
             }
