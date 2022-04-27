@@ -3,10 +3,9 @@ package edu.ufp.inf.sd.rmi.Project.server;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameRI{
-    HashMap<Util,GameState> Utils;
+    HashMap<UtilRI,GameState> Utils;
     private String Dific=String.valueOf(Difficulty.MEDIUM);
     int N;
 
@@ -19,7 +18,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     }
     private final ProjectMainImpl PM;
 
-    public FroggerGameImpl(HashMap<Util,GameState> utils,  Integer n, ProjectMainImpl pm) throws RemoteException {
+    public FroggerGameImpl(HashMap<UtilRI,GameState> utils,  Integer n, ProjectMainImpl pm) throws RemoteException {
         super();
         this.Utils = utils;
         this.N=n;
@@ -67,7 +66,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
 
     }
     public void leve_the_game(GameSessionRI j) throws RemoteException{
-        for (Util l : this.Utils.keySet()) {
+        for (UtilRI l : this.Utils.keySet()) {
             if (l==j.getUtil()){
                 this.Utils.remove(l);
                 if(this.Utils.size()==0){
@@ -78,11 +77,9 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         }
 
     }
-    public void ready_the_game(Util h) throws RemoteException{
-        for (Util f:this.Utils.keySet()) {
-            f.hashCode();
-            h.hashCode();
-            if (f==h){
+    public void ready_the_game(UtilRI h) throws RemoteException{
+        for (UtilRI f:this.Utils.keySet()) {
+            if (f.hashCode()==h.hashCode()){
                 System.out.println("G");
                 this.Utils.get(f).setReady(true);
               if ( this.check_Ready()){
@@ -96,7 +93,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
 
     private void start_Game() throws RemoteException{
 
-        for (Util f:this.Utils.keySet()) {
+        for (UtilRI f:this.Utils.keySet()) {
        f.getProjectClientRI().start_Game(this.Utils.get(f));
 
         }
@@ -119,7 +116,7 @@ return true;
         return End;
     }
 
-    public HashMap<Util, GameState> getUtils() throws RemoteException{
+    public HashMap<UtilRI, GameState> getUtils() throws RemoteException{
         return Utils;
     }
 

@@ -16,7 +16,7 @@ import java.util.Objects;
 
 public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainRI {
    DB Database=new DB();
-   HashMap<Util,GameSessionRI> users = new HashMap<>();
+    HashMap<UtilRI,GameSessionRI> users = new HashMap<>();
    ArrayList<FroggerGameRI> Game=new ArrayList<>();
     public ProjectMainImpl() throws RemoteException {
         super();
@@ -36,7 +36,7 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
 
         if (Database.Check_Util(Email,Password)){
 
-            for (Util l:this.users.keySet()) {
+            for (UtilRI l:this.users.keySet()) {
                 if (Objects.equals(l.getEmail(), Email) && Objects.equals(l.getPassword(), Password)){
                     return this.users.get(l);
                 }
@@ -46,7 +46,7 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
             try {
                 Algorithm algorithm = Algorithm.HMAC256(Email+Password);
                 String token = JWT.create().withIssuer("auth0").sign(algorithm);
-                Util aj=new Util(Email,Password,projectClientRI);
+                UtilRI aj=new Util(Email,Password,projectClientRI);
                 GameSessionRI j=new GameSessionImpl(this,aj,token);
                 this.users.put(aj,j);
               aj.getProjectClientRI().test();
@@ -59,7 +59,7 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
         return null;
 
     }
-    protected Boolean Valid(String Token,Util j) throws RemoteException{
+    protected Boolean Valid(String Token,UtilRI j) throws RemoteException{
         for (GameSessionRI k:this.users.values()) {
             if (Objects.equals(j.getPassword(), k.getUtil().getPassword())&& Objects.equals(j.getEmail(), k.getUtil().getEmail()))
             try {

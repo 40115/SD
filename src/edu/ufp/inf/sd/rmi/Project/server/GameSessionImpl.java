@@ -5,13 +5,12 @@ import java.rmi.server.UnicastRemoteObject;
 
 
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 public class GameSessionImpl extends UnicastRemoteObject implements GameSessionRI{
-   private  Util Util;
+   private  UtilRI Util;
    private  ProjectMainImpl PM;
    private String Token;
-    public GameSessionImpl (ProjectMainImpl pm,Util util,String token) throws RemoteException {
+    public GameSessionImpl (ProjectMainImpl pm,UtilRI util,String token) throws RemoteException {
         super();
         this.PM=pm;
         this.Util=util;
@@ -37,7 +36,7 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         StringBuilder j= new StringBuilder("List of Games:\n");
         for (int i = 0; i <this.PM.Game.size() ; i++) {
             j.append(i).append("- ");
-            for (Util k :this.PM.Game.get(i).getUtils().keySet()) {
+            for (UtilRI k :this.PM.Game.get(i).getUtils().keySet()) {
            j.append(k.getEmail()).append(" ");
 
             }
@@ -50,7 +49,7 @@ return j.toString();
 if (this.Check_Games()){
  return null;
 }else{
-    HashMap<Util,GameState> j=new HashMap<>();
+    HashMap<UtilRI,GameState> j=new HashMap<>();
     GameState m=new GameState();
     m.setMAster(true);
     m.setRefe(0);
@@ -88,7 +87,7 @@ if (this.Check_Games()){
     }
 
 
-    public Util getUtil()throws RemoteException {
+    public UtilRI getUtil()throws RemoteException {
         return Util;
     }
 

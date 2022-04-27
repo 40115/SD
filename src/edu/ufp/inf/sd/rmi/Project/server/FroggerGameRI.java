@@ -7,9 +7,9 @@ import java.util.HashMap;
 public interface FroggerGameRI extends Remote {
 
     public void update_the_game(GameState j) throws RemoteException;
-    public HashMap<Util, GameState> getUtils() throws RemoteException;
+    public HashMap<UtilRI, GameState> getUtils() throws RemoteException;
     public String getDific() throws RemoteException;
-    public void ready_the_game(Util h) throws RemoteException;
+    public void ready_the_game(UtilRI h) throws RemoteException;
     public int getN() throws RemoteException;
     public boolean isRun() throws RemoteException;
     public String Difficulty(int difficulty) throws RemoteException;
