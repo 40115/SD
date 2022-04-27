@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class GameState extends UnicastRemoteObject {
+public class GameState extends UnicastRemoteObject implements GameStateRI{
 
 
     private ArrayList<FroggerCollisionDetection> frogCol=new ArrayList<>();
