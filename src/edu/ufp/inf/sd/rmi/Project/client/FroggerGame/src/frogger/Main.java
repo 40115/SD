@@ -27,8 +27,7 @@ package edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger;
 import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 
-import edu.ufp.inf.sd.rmi.Project.server.FroggerGameImpl;
-import edu.ufp.inf.sd.rmi.Project.server.GameState;
+
 import edu.ufp.inf.sd.rmi.Project.server.GameStateRI;
 import jig.engine.ImageResource;
 import jig.engine.PaintableCanvas;
@@ -46,7 +45,7 @@ public class Main extends StaticScreenGame {
 	static final Vector2D FROGGER_START = new Vector2D(6*32,WORLD_HEIGHT-32);
 
 	static final String RSC_PATH = "edu/ufp/inf/sd/rmi/Project/client/FroggerGame/src/resources/";
-	static final String SPRITE_SHEET = RSC_PATH + "frogger_sprites.png";
+
 	static final int FROGGER_LIVES      = 5;
 	static final int STARTING_LEVEL     = 1;
 	static final int DEFAULT_LEVEL_TIME = 60;
@@ -56,13 +55,16 @@ public class Main extends StaticScreenGame {
 	static final int GAME_OVER         = 4;
 	static final int GAME_INTRO        = 0;
 	public GameStateRI vd;
+	static  String SPRITE_SHEET = RSC_PATH ;
 	/**
 	 * Initialize game objects
 	 */
 	public Main (String[] args,GameStateRI j) throws RemoteException {
 
 		super(WORLD_WIDTH, WORLD_HEIGHT, false);
-		vd=j;
+		vd=j;if (vd.getRefe()!=0) SPRITE_SHEET+="frogger_sprites"+vd.getRefe()+1+".png";
+
+
 		gameframe.setTitle("Frogger");
 
 		ResourceFactory.getFactory().loadResources(RSC_PATH, "resources.xml");
