@@ -28,9 +28,11 @@ package edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.geom.AffineTransform;
+import java.rmi.RemoteException;
 import java.util.List;
 
 import edu.ufp.inf.sd.rmi.Project.server.GameState;
+import edu.ufp.inf.sd.rmi.Project.server.GameStateRI;
 import jig.engine.FontResource;
 import jig.engine.ImageResource;
 import jig.engine.RenderingContext;
@@ -57,7 +59,7 @@ public class FroggerUI implements ViewableLayer {
 			new Font("Sans Serif", Font.BOLD, 14), Color.black, null );
 	
 	Main game;
-	public GameState vd;
+	public GameStateRI vd;
 	
 	public FroggerUI(final Main g) {
 		game = g;
@@ -65,58 +67,90 @@ public class FroggerUI implements ViewableLayer {
 	
 	
 	public void render(RenderingContext rc) {
-		
-		font.render("Time: " + vd.levelTimer, rc,
-				AffineTransform.getTranslateInstance(180, 7));
-		
-		font.render("Score: " + vd.GameScore, rc,
-				AffineTransform.getTranslateInstance(310, 7));
-		
-		if (vd.GameLives > 0) {
-			int dx = 0;
-			
-			// if player has more than 10 lives, draw only 10 hearts
-			int maxHearts = vd.GameLives;
-			if (maxHearts > 10)
-				maxHearts = 10;
-			else 
-				maxHearts = vd.GameLives;
-			
-			for (int i = 0; i < maxHearts; i++ ) {
-				heart.get(0).render(rc, 
-						AffineTransform.getTranslateInstance(dx+8, 8));
-				dx = 16 * (i + 1);
-			}
+
+		try {
+			font.render("Time: " + vd.getLevelTimer(), rc,
+					AffineTransform.getTranslateInstance(180, 7));
+		} catch (RemoteException e) {
+			throw new RuntimeException(e);
 		}
 
-		font.render("L" + vd.getGameLevel(), rc,
-				AffineTransform.getTranslateInstance(270, 7));
-		
-		if (vd.getGameState() == Main.GAME_INTRO) {
-			   introTitle.get(0).render(rc, 
+		try {
+			font.render("Score: " + vd.getGameScore(), rc,
+					AffineTransform.getTranslateInstance(310, 7));
+		} catch (RemoteException e) {
+			throw new RuntimeException(e);
+		}
+
+		try {
+			if (vd.getGameLives() > 0) {
+				int dx = 0;
+
+				// if player has more than 10 lives, draw only 10 hearts
+				int maxHearts = vd.getGameLives();
+				if (maxHearts > 10)
+					maxHearts = 10;
+				else
+					maxHearts = vd.getGameLives();
+
+				for (int i = 0; i < maxHearts; i++ ) {
+					heart.get(0).render(rc,
+							AffineTransform.getTranslateInstance(dx+8, 8));
+					dx = 16 * (i + 1);
+				}
+			}
+		} catch (RemoteException e) {
+			throw new RuntimeException(e);
+		}
+
+		try {
+			font.render("L" + vd.getGameLevel(), rc,
+					AffineTransform.getTranslateInstance(270, 7));
+		} catch (RemoteException e) {
+			throw new RuntimeException(e);
+		}
+
+		try {
+			if (vd.getGameState() == Main.GAME_INTRO) {
+				   introTitle.get(0).render(rc,
+							AffineTransform.getTranslateInstance(
+									(Main.WORLD_WIDTH - introTitle.get(0).getWidth())/2, 150));
+				   return;
+			}
+		} catch (RemoteException e) {
+			throw new RuntimeException(e);
+		}
+
+		try {
+			if (vd.getGameState() == Main.GAME_INSTRUCTIONS) {
+				   instructions.get(0).render(rc,
+							AffineTransform.getTranslateInstance(
+									(Main.WORLD_WIDTH - instructions.get(0).getWidth())/2, 100));
+				   return;
+			}
+		} catch (RemoteException e) {
+			throw new RuntimeException(e);
+		}
+
+		try {
+			if (vd.getGameState() == Main.GAME_OVER) {
+			   gameOver.get(0).render(rc,
 						AffineTransform.getTranslateInstance(
-								(Main.WORLD_WIDTH - introTitle.get(0).getWidth())/2, 150));
+								(Main.WORLD_WIDTH - gameOver.get(0).getWidth())/2, 150));
 			   return;
+			}
+		} catch (RemoteException e) {
+			throw new RuntimeException(e);
 		}
-		
-		if (vd.getGameState() == Main.GAME_INSTRUCTIONS) {
-			   instructions.get(0).render(rc, 
-						AffineTransform.getTranslateInstance(
-								(Main.WORLD_WIDTH - instructions.get(0).getWidth())/2, 100));
-			   return;			
-		}
-		
-		if (vd.getGameState() == Main.GAME_OVER) {
-		   gameOver.get(0).render(rc, 
-					AffineTransform.getTranslateInstance(
-							(Main.WORLD_WIDTH - gameOver.get(0).getWidth())/2, 150));
-		   return;
-		}
-		
-		if (vd.getGameState() == Main.GAME_FINISH_LEVEL) {
-			 levelFinish.get(0).render(rc, 
-						AffineTransform.getTranslateInstance(
-								(Main.WORLD_WIDTH - levelFinish.get(0).getWidth())/2, 150));		 
+
+		try {
+			if (vd.getGameState() == Main.GAME_FINISH_LEVEL) {
+				 levelFinish.get(0).render(rc,
+							AffineTransform.getTranslateInstance(
+									(Main.WORLD_WIDTH - levelFinish.get(0).getWidth())/2, 150));
+			}
+		} catch (RemoteException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

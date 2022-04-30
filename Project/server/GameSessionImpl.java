@@ -7,8 +7,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
 public class GameSessionImpl extends UnicastRemoteObject implements GameSessionRI{
-   private  UtilRI Util;
-   private  ProjectMainImpl PM;
+   private final UtilRI Util;
+   private final ProjectMainImpl PM;
    private String Token;
     public GameSessionImpl (ProjectMainImpl pm,UtilRI util,String token) throws RemoteException {
         super();
@@ -21,6 +21,8 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
     public void LogOut() throws RemoteException {
         this.PM.users.remove(Util);
     }
+
+
 
     @Override
     public String Connect() throws RemoteException {
@@ -40,22 +42,23 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
             }
             j.append("\n ");
         }
-        return j.toString();
+return j.toString();
+
     }
     public FroggerGameRI Create_Game() throws RemoteException{
-        if (this.Check_Games()){
-            return null;
-        }else{
-            HashMap<UtilRI,GameStateRI> j=new HashMap<>();
-            GameStateRI m=new GameState();
-            m.setMAster(true);
-            m.setRefe(0);
-            j.put(this.Util,m);
-            FroggerGameRI l=new FroggerGameImpl(j,j.size(),getPM());
-            m.setC(l);
-            this.PM.Game.add(l);
-            return l;
-        }
+if (this.Check_Games()){
+ return null;
+}else{
+    HashMap<UtilRI,GameStateRI> j=new HashMap<>();
+    GameState m=new GameState();
+    m.setMAster(true);
+    m.setRefe(0);
+    j.put(this.Util,m);
+    FroggerGameRI l=new FroggerGameImpl(j,j.size(),getPM());
+    m.setC(l);
+    this.PM.Game.add(l);
+    return l;
+}
     }
 
     public FroggerGameRI join_Game(Integer I) throws RemoteException {
@@ -70,6 +73,7 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
             this.PM.Game.get(I).getUtils().put(this.Util,m);
             return this.PM.Game.get(I);
         }
+
     }
 
     public boolean Check_Games()throws RemoteException{
@@ -81,6 +85,7 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         }
      return false;
     }
+
 
     public UtilRI getUtil()throws RemoteException {
         return Util;

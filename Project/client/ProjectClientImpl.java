@@ -66,7 +66,10 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
         int op=-1;
         do{
             System.out.println(  this.projectServerMainRI.Connect());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(System.in));
+
             // Reading data using readLine
             String name = reader.readLine();
             op=Integer.parseInt(name);
@@ -75,17 +78,22 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
                 case 1:
                     Register();
                     break;
+
                 case 2:
                     h=Login();
                     if(h==null){
                         System.out.println("\n Login Invalid\n");
                     }else {
                         System.out.println("\n Login valid\n");
-                        Gamesession(h);
+Gamesession(h);
                     }
+
                     break;
+
                 case 3:
+
                     break;
+
                 default:
                     System.out.println("Not Valied Input");
             }
@@ -95,12 +103,14 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
 
     public void Register() throws IOException,RemoteException {
         System.out.println("\nEnter Name:\n");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
 
         // Reading data using readLine
         String name = reader.readLine();
         System.out.println("\nEnter Password:\n");
-        reader = new BufferedReader(new InputStreamReader(System.in));
+        reader = new BufferedReader(
+                new InputStreamReader(System.in));
         String password= reader.readLine();
 
         if( this.projectServerMainRI.Register(name, password,this)) {
@@ -109,15 +119,18 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
         }
         System.out.println("\n User Already EXists\n");
 
+
     }
     public GameSessionRI Login() throws IOException ,RemoteException{
         System.out.println("\nEnter Name:\n");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
 
         // Reading data using readLine
         String name = reader.readLine();
         System.out.println("\nEnter Password:\n");
-        reader = new BufferedReader(new InputStreamReader(System.in));
+        reader = new BufferedReader(
+                new InputStreamReader(System.in));
         String password= reader.readLine();
         return this.projectServerMainRI.Login(name,password,this);
     }
@@ -126,7 +139,9 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
         int op=-1;
         do{
             System.out.println(  Si.Connect());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(System.in));
 
             // Reading data using readLine
             String name = reader.readLine();
@@ -136,31 +151,39 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
                 case 1:
                      System.out.println(Si.List_Games());
                     break;
+
                 case 2:
-                    Join_Game(Si);
+Join_Game(Si);
                     break;
                 case 3:
-                    Create_Game(Si);
+Create_Game(Si);
                     break;
+
                 case 4:
-                    Si.LogOut();
-                    break;
+      Si.LogOut();
+
+
                 default:
                     System.out.println("Not Valied Input");
             }
+
         }while(op != 3);
+
+
     }
 
 
     @Override
     public void start_Game(GameStateRI j)throws RemoteException {
-        if (j!=null ){
-            String[] f =new String[2];
-            System.out.println("Start ");
-            Main.main(f, j);
-        }
+if (j!=null ){
+    String[] f =new String[2];
+    System.out.println("Start ");
+Main.main(f,j);
+}
+
+
     }
-    
+
     @Override
     public void test()throws RemoteException {
         System.out.println("Start ");
@@ -168,39 +191,45 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
 
     public void Join_Game(GameSessionRI h) throws IOException {
         System.out.println("\n What game would you like to play with\n");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
 
         // Reading data using readLine
-        int Id = Integer.parseInt(reader.readLine());
+       int Id = Integer.parseInt(reader.readLine());
         FroggerGameRI l=h.join_Game(Id);
-        if (l==null){
-            System.out.println("\nGame not Found\n");
-            return;
-        }
-        Id=-1;
-        do{
-            System.out.println("\nGame Found\n 0-Ready\n 1-Left\n");
-            reader = new BufferedReader(new InputStreamReader(System.in));
-            Id = Integer.parseInt(reader.readLine());
-            if (Id==1){
-                l.leve_the_game(h);
-                return;
-            }
-        }while(Id!=0);
-        l.ready_the_game(h.getUtil());
-        while(true){
-            System.out.println("\nGame Ready\n1-Left\n");
-            reader = new BufferedReader(new InputStreamReader(System.in));
-            Id = Integer.parseInt(reader.readLine());
-            if (Id==1){
-                l.leve_the_game(h);
-                return;
-            }
-        }
+if (l==null){
+    System.out.println("\nGame not Found\n");
+    return;
+}
+Id=-1;
+do{
+    System.out.println("\nGame Found\n 0-Ready\n 1-Left\n");
+    reader = new BufferedReader(
+            new InputStreamReader(System.in));
+    Id = Integer.parseInt(reader.readLine());
+    if (Id==1){
+        l.leve_the_game(h);
+        return;
+    }
+}while(Id!=0);
+l.ready_the_game(h.getUtil());
+while(true){
+    System.out.println("\nGame Ready\n1-Left\n");
+    reader = new BufferedReader(
+            new InputStreamReader(System.in));
+    Id = Integer.parseInt(reader.readLine());
+    if (Id==1){
+        l.leve_the_game(h);
+        return;
+    }
+
+
+}
+
     }
     public void Create_Game(GameSessionRI h) throws IOException {
         System.out.println("\n Creating Game\n");
-        int n;
+        int n=0;
         FroggerGameRI l=h.Create_Game();
         if (l==null){
             System.out.println("\nGame not Made \n your probably already in a game\n");
@@ -208,24 +237,29 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
         }
         do{
             System.out.println("\n Select Dificulty 1-Low 2-Medium 3-Hard\n");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            n = Integer.parseInt(reader.readLine());
-            System.out.println(l.Difficulty(n));
+            BufferedReader   reader = new BufferedReader(
+                    new InputStreamReader(System.in));
+           n = Integer.parseInt(reader.readLine());
+           System.out.println(l.Difficulty(n));
         }while (n<0 ||n>3);
-        int Id;
+        int Id=-1;
         do{
-            System.out.println("\nGame Created\n 0-Ready\n 1-Left\n");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            Id = Integer.parseInt(reader.readLine());
-            if (Id==1){
-                l.leve_the_game(h);
-                return;
-            }
-            l.ready_the_game(h.getUtil());
+        System.out.println("\nGame Created\n 0-Ready\n 1-Left\n");
+     BufferedReader   reader = new BufferedReader(
+                new InputStreamReader(System.in));
+        Id = Integer.parseInt(reader.readLine());
+        if (Id==1){
+            l.leve_the_game(h);
+            return;
         }
-        while(Id!=0);
-        do{
+       l.ready_the_game(h.getUtil());
+    }while(Id!=0);
 
-        }while(true);
+do{
+
+
+}while(true);
     }
+
+
 }

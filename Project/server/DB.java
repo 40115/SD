@@ -10,7 +10,6 @@ public class DB {
 HashMap<String,String>Database=new HashMap<>();
 
     public DB() {
-
     }
     public boolean Check_Util(String Username,String Password) throws RemoteException {
         return Objects.equals(this.Database.get(Username), Password);
@@ -25,5 +24,12 @@ HashMap<String,String>Database=new HashMap<>();
             Database.put(Username,Password);
             return true;
         }
+
+        }
+
+
+
+
     }
-}
+
+

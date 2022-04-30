@@ -19,16 +19,16 @@ public class Util  extends UnicastRemoteObject implements UtilRI{
         this.ProjectClientRI=projectClientRI;
     }
 
-    public String getEmail() {
+    public String getEmail() throws RemoteException {
         return Email;
     }
 
 
-    public String getPassword() {
+    public String getPassword() throws RemoteException  {
         return Password;
     }
 
-    public ProjectClientRI getProjectClientRI() {
+    public ProjectClientRI getProjectClientRI() throws RemoteException  {
         return ProjectClientRI;
     }
 

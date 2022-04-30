@@ -18,7 +18,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     }
     private final ProjectMainImpl PM;
 
-    public FroggerGameImpl(HashMap<UtilRI,GameStateRI> utils,  Integer n, ProjectMainImpl pm) throws RemoteException {
+    public FroggerGameImpl( HashMap<UtilRI,GameStateRI>  utils,  Integer n, ProjectMainImpl pm) throws RemoteException {
         super();
         this.Utils = utils;
         this.N=n;
@@ -110,12 +110,11 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
             }
 
         }
-        return true;
+return true;
     }
     public boolean is_Ended() throws RemoteException{
         return End;
     }
-
 
     public HashMap<UtilRI, GameStateRI> getUtils() throws RemoteException{
         return Utils;
