@@ -26,8 +26,10 @@
 package edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger;
 import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 
+import edu.ufp.inf.sd.rmi.Project.server.FroggerGameRI;
 import edu.ufp.inf.sd.rmi.Project.server.GameStateRI;
 import jig.engine.ImageResource;
 import jig.engine.PaintableCanvas;
@@ -55,45 +57,87 @@ public class Main extends StaticScreenGame {
 	static final int GAME_OVER         = 4;
 	static final int GAME_INTRO        = 0;
 	public GameStateRI vd;
-	static  String SPRITE_SHEET = RSC_PATH ;
+	ArrayList<Frogger>Frog=new ArrayList<>();
+	ArrayList<FroggerCollisionDetection> frogCol=new ArrayList<>();
+	private ArrayList<AudioEfx> audiofx=new ArrayList<>();
+	private FroggerUI ui;
+	static  ArrayList<String> SPRITE_SHEET =new ArrayList<>() ;
+	private ImageBackgroundLayer backgroundLayer;
+
+	private WindGust wind;
+	private HeatWave hwave;
+	private GoalManager goalmanager;
+	private int Refe;
+	private AbstractBodyLayer<MovingEntity> movingObjectsLayer;
+	private AbstractBodyLayer<MovingEntity> particleLayer;
+
+	private MovingEntityFactory roadLine1;
+	private MovingEntityFactory roadLine2;
+	private MovingEntityFactory roadLine3;
+	private MovingEntityFactory roadLine4;
+	private MovingEntityFactory roadLine5;
+
+	private MovingEntityFactory riverLine1;
+	private MovingEntityFactory riverLine2;
+	private MovingEntityFactory riverLine3;
+	private MovingEntityFactory riverLine4;
+	private MovingEntityFactory riverLine5;
+
+
+	private int dig;
+
+	protected int GameState = GAME_INTRO;
+	protected int GameLevel = STARTING_LEVEL;
+
+	public int GameLives    = FROGGER_LIVES;
+	public int GameScore    = 0;
+
+	public int levelTimer = DEFAULT_LEVEL_TIME;
+
+	private boolean space_has_been_released = false;
+	private boolean keyPressed = false;
+	private boolean listenInput = true;
+
+
 	/**
 	 * Initialize game objects
 	 */
 	public Main (String[] args,GameStateRI j) throws RemoteException {
 
 		super(WORLD_WIDTH, WORLD_HEIGHT, false);
-		vd=j;if (vd.getRefe()!=0) SPRITE_SHEET+="frogger_sprites"+vd.getRefe()+1+".png";
-
-
+		vd=j;
+Refe=vd.getRefe();
 		gameframe.setTitle("Frogger");
-
 		ResourceFactory.getFactory().loadResources(RSC_PATH, "resources.xml");
-
-		ImageResource bkg = ResourceFactory.getFactory().getFrames(
-				SPRITE_SHEET + "#background").get(0);
-		vd.setBackgroundLayer(new ImageBackgroundLayer(bkg, WORLD_WIDTH,
-				WORLD_HEIGHT, ImageBackgroundLayer.TILE_IMAGE));
+		for (int i = 1; i <=vd.getC().getUtils().size() ; i++) {
+			SPRITE_SHEET.add(RSC_PATH+"frogger_sprites"+(i)+".png");
+		}
+		ImageResource bkg = ResourceFactory.getFactory().getFrames(SPRITE_SHEET.get(0) + "#background").get(0);
+		backgroundLayer=(new ImageBackgroundLayer(bkg, WORLD_WIDTH, WORLD_HEIGHT, ImageBackgroundLayer.TILE_IMAGE));
 
 		// Used in CollisionObject, basically 2 different collision spheres
 		// 30x30 is a large sphere (sphere that fits inside a 30x30 pixel rectangle)
 		//  4x4 is a tiny sphere
 		PaintableCanvas.loadDefaultFrames("col", 30, 30, 2, JIGSHAPE.RECTANGLE, null);
 		PaintableCanvas.loadDefaultFrames("colSmall", 4, 4, 2, JIGSHAPE.RECTANGLE, null);
+      dig=vd.getDig();
+
 		try {
 			for (int i = 0; i < vd.getC().getUtils().size(); i++) {
-				vd.getFrog().add(new Frogger(this));
-				vd.getFrogCol().add(new FroggerCollisionDetection(vd.getFrog().get(i)));
-				vd.getAudiofx().add(new AudioEfx(vd.getFrogCol().get(i), vd.getFrog().get(i)));
+				Frog.add(new Frogger(this));
+				frogCol.add(i,new FroggerCollisionDetection(Frog.get(i)));
+				audiofx.add(new AudioEfx(frogCol.get(i),Frog.get(i)));
 			}
 		}catch (RemoteException e){
 			System.out.println(e);
 		}
-		vd.setUi(new FroggerUI(this));
-		vd.setWind(new WindGust());
-		vd.setHwave(new HeatWave());
-		vd.setGoalmanager(new GoalManager());
-		vd.setMovingObjectsLayer(new AbstractBodyLayer.IterativeUpdate<MovingEntity>());
-		vd.setParticleLayer(new AbstractBodyLayer.IterativeUpdate<MovingEntity>());
+
+		ui=new FroggerUI(this);
+		wind=new WindGust();
+		hwave=new HeatWave();
+		goalmanager=new GoalManager();
+		movingObjectsLayer= new AbstractBodyLayer.IterativeUpdate<>();
+		particleLayer= new AbstractBodyLayer.IterativeUpdate<>();
 
 		initializeLevel(1);
 	}
@@ -102,44 +146,43 @@ public class Main extends StaticScreenGame {
 	public void initializeLevel(int level) throws RemoteException {
 
 		/* dV is the velocity multiplier for all moving objects at the current game level */
-		double dV = level*0.05 + 1+vd.getDig();
-		vd.getMovingObjectsLayer().clear();
+		double dV = level*0.05 + 1+dig;
+		movingObjectsLayer.clear();
 
 		/* River Traffic */
-		vd.setRiverLine1(new MovingEntityFactory(new Vector2D(-(32*3),2*32),
-				new Vector2D(0.06*dV,0)));
+riverLine1= new MovingEntityFactory(new Vector2D(-(32*3),2*32),
+				new Vector2D(0.06*dV,0));
+riverLine2=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH,3*32),
+		new Vector2D(-0.04*dV,0));
 
-		vd.setRiverLine2(new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH,3*32),
-				new Vector2D(-0.04*dV,0)));
+		riverLine3=new MovingEntityFactory(new Vector2D(-(32*3),4*32),
+				new Vector2D(0.09*dV,0));
 
-		vd.setRiverLine3(new MovingEntityFactory(new Vector2D(-(32*3),4*32),
-				new Vector2D(0.09*dV,0)));
+		riverLine4=new MovingEntityFactory(new Vector2D(-(32*4),5*32),
+				new Vector2D(0.045*dV,0));
 
-		vd.setRiverLine4(new MovingEntityFactory(new Vector2D(-(32*4),5*32),
-				new Vector2D(0.045*dV,0))) ;
-
-		vd.setRiverLine5(new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH,6*32),
-				new Vector2D(-0.045*dV,0)));
+		riverLine5=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH,6*32),
+				new Vector2D(-0.045*dV,0));
 
 		/* Road Traffic */
-		vd.setRoadLine1(new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH, 8*32),
-				new Vector2D(-0.1*dV, 0)));
+		roadLine1=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH, 8*32),
+				new Vector2D(-0.1*dV, 0));
 
-		vd.setRoadLine2(new MovingEntityFactory(new Vector2D(-(32*4), 9*32),
-				new Vector2D(0.08*dV, 0)));
+		roadLine2=new MovingEntityFactory(new Vector2D(-(32*4), 9*32),
+				new Vector2D(0.08*dV, 0));
 
-		vd.setRiverLine3(new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH, 10*32),
-				new Vector2D(-0.12*dV, 0)));
+		roadLine3=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH, 10*32),
+				new Vector2D(-0.12*dV, 0));
 
-		vd.setRiverLine4(new MovingEntityFactory(new Vector2D(-(32*4), 11*32),
-				new Vector2D(0.075*dV, 0)));
+		roadLine4=new MovingEntityFactory(new Vector2D(-(32*4), 11*32),
+				new Vector2D(0.075*dV, 0));
 
-		vd.setRiverLine5(new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH, 12*32),
-				new Vector2D(-0.05*dV, 0))) ;
+		roadLine5=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH, 12*32),
+				new Vector2D(-0.05*dV, 0)) ;
 
-		vd.getGoalmanager().init(level);
-		for (Goal g : vd.getGoalmanager().get()) {
-			vd.getMovingObjectsLayer().add(g);
+		goalmanager.init(level);
+		for (Goal g : goalmanager.get()) {
+			movingObjectsLayer.add(g);
 		}
 
 		/* Build some traffic before game starts buy running MovingEntityFactories for fews cycles */
@@ -158,65 +201,60 @@ public class Main extends StaticScreenGame {
 		MovingEntity m;
 		/* Road traffic updates */
 
-		vd.getRoadLine1().update(deltaMs);
+		roadLine1.update(deltaMs);
 		if (this.vd.isMAster() ) {
-			if ((m = vd.getRoadLine1().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
+			if ((m = roadLine1.buildVehicle()) != null) movingObjectsLayer.add(m);
 		}
-		vd.getRoadLine2().update(deltaMs);
+		roadLine2.update(deltaMs);
 		if (this.vd.isMAster() ) {
-			if ((m = vd.getRoadLine2().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
+			if ((m = roadLine2.buildVehicle()) != null) movingObjectsLayer.add(m);
 		}
-		vd.getRoadLine3().update(deltaMs);
+		roadLine3.update(deltaMs);
 		if (this.vd.isMAster() ) {
-			if ((m = vd.getRoadLine3().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
+			if ((m = roadLine3.buildVehicle()) != null) movingObjectsLayer.add(m);
 		}
-		vd.getRoadLine4().update(deltaMs);
+		roadLine4.update(deltaMs);
 		if (this.vd.isMAster() ) {
-			if ((m = vd.getRoadLine4().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
+			if ((m = roadLine4.buildVehicle()) != null) movingObjectsLayer.add(m);
 		}
-		vd.getRoadLine5().update(deltaMs);
+		roadLine5.update(deltaMs);
 		if (this.vd.isMAster() ) {
-			if ((m = vd.getRoadLine5().buildVehicle()) != null) vd.getMovingObjectsLayer().add(m);
+			if ((m = roadLine5.buildVehicle()) != null) movingObjectsLayer.add(m);
 		}
 
 		/* River traffic updates */
-		vd.getRiverLine1().update(deltaMs);
+		riverLine1.update(deltaMs);
 		if (this.vd.isMAster() ){
-			if ((m = vd.getRiverLine1().buildShortLogWithTurtles(40)) != null) vd.getMovingObjectsLayer().add(m);
+			if ((m = riverLine1.buildShortLogWithTurtles(40)) != null) movingObjectsLayer.add(m);
 		}
-		vd.getRiverLine2().update(deltaMs);
+		riverLine2.update(deltaMs);
 		if (this.vd.isMAster()) {
-			if ((m = vd.getRiverLine2().buildLongLogWithCrocodile(30)) != null) vd.getMovingObjectsLayer().add(m);
+			if ((m = riverLine2.buildLongLogWithCrocodile(30)) != null)movingObjectsLayer.add(m);
 		}
-		vd.getRiverLine3().update(deltaMs);
+		riverLine3.update(deltaMs);
 		if (this.vd.isMAster() ) {
-			if ((m = vd.getRiverLine3().buildShortLogWithTurtles(50)) != null) vd.getMovingObjectsLayer().add(m);
+			if ((m = riverLine3.buildShortLogWithTurtles(50)) != null) movingObjectsLayer.add(m);
 		}
 
-		vd.getRiverLine4().update(deltaMs);
+		riverLine4.update(deltaMs);
 		if (this.vd.isMAster() ) {
-			if ((m = vd.getRiverLine4().buildLongLogWithCrocodile(20)) != null) vd.getMovingObjectsLayer().add(m);
+			if ((m = riverLine4.buildLongLogWithCrocodile(20)) != null) movingObjectsLayer.add(m);
 		}
-		vd.getRiverLine5().update(deltaMs);
+		riverLine5.update(deltaMs);
 		if (this.vd.isMAster() ) {
-			if ((m = vd.getRiverLine5().buildShortLogWithTurtles(10)) != null) vd.getMovingObjectsLayer().add(m);
+			if ((m =riverLine5.buildShortLogWithTurtles(10)) != null) movingObjectsLayer.add(m);
 		}
 		// Do Wind
-		if ((m = vd.getWind().genParticles(vd.getGameLevel())) != null) vd.getParticleLayer().add(m);
+		if ((m = wind.genParticles(GameLevel)) != null) particleLayer.add(m);
 
 		// HeatWave
-		for (int i = 0; i < vd.getFrog().size(); i++) {
-			if ((m = vd.getHwave().genParticles(vd.getFrog().get(i).getCenterPosition())) != null)
-				vd.getParticleLayer().add(m);
+		for (int i = 0; i < Frog.size(); i++) {
+			if ((m = hwave.genParticles(Frog.get(i).getCenterPosition())) != null)
+				particleLayer.add(m);
 		}
+		movingObjectsLayer.update(deltaMs);
+		particleLayer.update(deltaMs);
 
-		vd.getMovingObjectsLayer().update(deltaMs);
-		vd.getParticleLayer().update(deltaMs);
-		try {
-			vd.getC().update_the_game(this.vd);
-		}catch (RemoteException e){
-			System.out.println("Exception in the program");
-		}
 
 
 	}
@@ -236,16 +274,16 @@ public class Main extends StaticScreenGame {
 		// Enable/Disable cheating
 		if (keyboard.isPressed(KeyEvent.VK_C))
 
-			for (int i = 0; i <vd.getFrog().size() ; i++) {
-				vd.getFrog().get(i).cheating = true;
+			for (int i = 0; i <Frog.size() ; i++) {
+				Frog.get(i).cheating = true;
 			}
 		if (keyboard.isPressed(KeyEvent.VK_V))
-			for (int i = 0; i <vd.getFrog().size() ; i++) {
-				vd.getFrog().get(i).cheating = false;
+			for (int i = 0; i <Frog.size() ; i++) {
+				Frog.get(i).cheating = false;
 			}
 		if (keyboard.isPressed(KeyEvent.VK_0)) {
-			vd.setGameLevel(10);
-			initializeLevel(vd.getGameLevel());
+			GameLevel=10;
+			initializeLevel(GameLevel);
 		}
 
 
@@ -255,27 +293,27 @@ public class Main extends StaticScreenGame {
 		 * until the first key has been released
 		 */
 		if (downPressed || upPressed || leftPressed || rightPressed)
-			vd.setKeyPressed(true);
+			keyPressed=true;
 		else
 			keyReleased = true;
 
-		if (vd.isListenInput()) {
-			if (downPressed) vd.getFrog().get(vd.getRefe()).moveDown();
-			if (upPressed) vd.getFrog().get(vd.getRefe()).moveUp();
-			if (leftPressed) vd.getFrog().get(vd.getRefe()).moveLeft();
-			if (rightPressed) vd.getFrog().get(vd.getRefe()).moveRight();
+		if (listenInput) {
+			if (downPressed) Frog.get(vd.getRefe()).moveDown();
+			if (upPressed) Frog.get(vd.getRefe()).moveUp();
+			if (leftPressed) Frog.get(vd.getRefe()).moveLeft();
+			if (rightPressed) Frog.get(vd.getRefe()).moveRight();
 
-			if (vd.isKeyPressed())
-				vd.setListenInput(false);
+			if (keyPressed)
+				listenInput=false;
 		}
 
 		if (keyReleased) {
-			vd.setListenInput(true);
-			vd.setKeyPressed(false);
+			listenInput=true;
+			keyPressed=false;
 		}
 
 		if (keyboard.isPressed(KeyEvent.VK_ESCAPE))
-			vd.setGameState(GAME_INTRO);
+			GameState=GAME_INTRO;
 	}
 
 	/**
@@ -286,35 +324,35 @@ public class Main extends StaticScreenGame {
 
 		// Following 2 if statements allow capture space bar key strokes
 		if (!keyboard.isPressed(KeyEvent.VK_SPACE)) {
-			vd.setSpace_has_been_released(true);
+			space_has_been_released=true;
 		}
 
-		if (vd.isSpace_has_been_released())
+		if (space_has_been_released)
 			return;
 
 		if (keyboard.isPressed(KeyEvent.VK_SPACE)) {
-			switch (vd.getGameState()) {
+			switch (GameState) {
 				case GAME_INSTRUCTIONS:
 				case GAME_OVER:
-					vd.setGameState(GAME_INTRO);
-					vd.setSpace_has_been_released(false);
+					GameState=GAME_INTRO;
+					space_has_been_released=false;
 					break;
 				default:
-					vd.setGameLives(FROGGER_LIVES);
-					vd.setGameScore(0);
-					vd.setGameLevel(STARTING_LEVEL);
-					vd.setLevelTimer(DEFAULT_LEVEL_TIME);
-					for (int i = 0; i <vd.getFrog().size() ; i++) {
-						vd.getFrog().get(i).setPosition(FROGGER_START);
-						vd.getAudiofx().get(i).playGameMusic();
+				GameLives=FROGGER_LIVES;
+					GameScore=0;
+					GameLevel=STARTING_LEVEL;
+					levelTimer=DEFAULT_LEVEL_TIME;
+					for (int i = 0; i <Frog.size() ; i++) {
+						Frog.get(i).setPosition(FROGGER_START);
+						audiofx.get(i).playGameMusic();
 					}
 
-					vd.setGameState(GAME_PLAY);
-					initializeLevel(vd.getGameLevel());
+					GameState=GAME_PLAY;
+					initializeLevel(GameLevel);
 			}
 		}
 		if (keyboard.isPressed(KeyEvent.VK_H))
-			vd.setGameState(GAME_INSTRUCTIONS);
+			GameState=GAME_INSTRUCTIONS;
 	}
 
 	/**
@@ -323,10 +361,10 @@ public class Main extends StaticScreenGame {
 	public void finishLevelKeyboardHandler() throws RemoteException {
 		keyboard.poll();
 		if (keyboard.isPressed(KeyEvent.VK_SPACE)) {
-			vd.setGameState(GAME_PLAY);
+		GameState=GAME_PLAY;
 
-			vd.getAudiofx().get(vd.getRefe()).playGameMusic();
-			initializeLevel(vd.getGameLevel()+vd.getDig());
+			audiofx.get(vd.getRefe()).playGameMusic();
+			initializeLevel(GameLevel+vd.getDig());
 		}
 	}
 
@@ -335,248 +373,128 @@ public class Main extends StaticScreenGame {
 	 * w00t
 	 */
 	public void update(long deltaMs) {
-		try {
-			switch (vd.getGameState()) {
-				case GAME_PLAY:
-					try {
-						froggerKeyboardHandler();
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					try {
-						vd.getWind().update(deltaMs);
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					try {
-						vd.getHwave().update(deltaMs);
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					try {
-						vd.getFrog().get(vd.getRefe()).update(deltaMs);
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					try {
-						vd.getAudiofx().get(vd.getRefe()).update(deltaMs);
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					try {
-						vd.getUi().update(deltaMs);
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					try {
-						cycleTraffic(deltaMs);
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					try {
-						vd.getFrogCol().get(vd.getRefe()).testCollision(vd.getMovingObjectsLayer());
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-
-					// Wind gusts work only when Frogger is on the river
-					try {
-						if (vd.getFrogCol().get(vd.getRefe()).isInRiver())
-							vd.getWind().start(vd.getGameLevel());
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					try {
-						vd.getWind().perform(vd.getFrog().get(vd.getRefe()), vd.getGameLevel(), deltaMs);
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-
-					// Do the heat wave only when Frogger is on hot pavement
-					try {
-						if (vd.getFrogCol().get(vd.getRefe()).isOnRoad())
-							vd.getHwave().start(vd.getFrog().get(vd.getRefe()), vd.getGameLevel());
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					try {
-						vd.getHwave().perform(vd.getFrog().get(vd.getRefe()), deltaMs, vd.getGameLevel());
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-
-
-					try {
-						if (!vd.getFrog().get(vd.getRefe()).isAlive)
-							vd.getParticleLayer().clear();
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-
-					try {
-						vd.getGoalmanager().update(deltaMs);
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-
-					try {
-						if (vd.getGoalmanager().getUnreached().size() == 0) {
-							vd.setGameState(GAME_FINISH_LEVEL);
-							vd.getAudiofx().get(vd.getRefe()).playCompleteLevel();
-							vd.getParticleLayer().clear();
-						}
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-
-					try {
-						if (vd.getGameLives() < 1) {
-							try {
-								vd.setGameState(GAME_OVER);
-							} catch (RemoteException e) {
-								throw new RuntimeException(e);
-							}
-						}
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-
-					break;
-
-				case GAME_OVER:
-				case GAME_INSTRUCTIONS:
-				case GAME_INTRO:
-					try {
-						vd.getGoalmanager().update(deltaMs);
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					try {
-						menuKeyboardHandler();
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					try {
-						cycleTraffic(deltaMs);
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					break;
-
-				case GAME_FINISH_LEVEL:
-					try {
-						finishLevelKeyboardHandler();
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					break;
-			}
-		} catch (RemoteException e) {
-			throw new RuntimeException(e);
-		}
-
-	}
-	public void update_Others(long deltaMs,int n) throws RemoteException {
-		switch(vd.getGameState()) {
+		switch (GameState) {
 			case GAME_PLAY:
-				froggerKeyboardHandler();
+				try {
+					froggerKeyboardHandler();
+				} catch (RemoteException e) {
+					throw new RuntimeException(e);
+				}
+				wind.update(deltaMs);
+				hwave.update(deltaMs);
+				try {
+					Frog.get(vd.getRefe()).update(deltaMs);
+				} catch (RemoteException e) {
+					throw new RuntimeException(e);
+				}
+				try {
+					audiofx.get(vd.getRefe()).update(deltaMs);
+				} catch (RemoteException e) {
+					throw new RuntimeException(e);
+				}
 
-				vd.getFrog().get(n).update(deltaMs);
-				vd.getAudiofx().get(n).update(deltaMs);
-				vd.getFrogCol().get(n).testCollision(vd.getMovingObjectsLayer());
+					ui.update(deltaMs);
+
+
+				try {
+					cycleTraffic(deltaMs);
+				} catch (RemoteException e) {
+					throw new RuntimeException(e);
+				}
+				try {
+					frogCol.get(vd.getRefe()).testCollision(movingObjectsLayer);
+				} catch (RemoteException e) {
+					throw new RuntimeException(e);
+				}
 
 				// Wind gusts work only when Frogger is on the river
-				if (vd.getFrogCol().get(n).isInRiver())
-					vd.getWind().start(vd.getGameLevel());
-				vd.getWind().perform(vd.getFrog().get(n), vd.getGameLevel(), deltaMs);
+				for (int i = 0; i <Frog.size() ; i++) {
+					if (frogCol.get(i).isInRiver()) {
+						wind.start(GameLevel);
+					}
+					wind.perform(Frog.get(i),GameLevel, deltaMs);
+					if (frogCol.get(i).isOnRoad())
+						hwave.start(Frog.get(i), GameLevel);
+
+					hwave.perform(Frog.get(i), deltaMs, GameLevel);
+					if (!Frog.get(i).isAlive)
+						particleLayer.clear();
+					goalmanager.update(deltaMs);
+
+					if (goalmanager.getUnreached().size() == 0) {
+						GameState=GAME_FINISH_LEVEL;
+						audiofx.get(i).playCompleteLevel();
+					particleLayer.clear();
+					}
+					if (GameLives < 1) {
+						GameState=GAME_OVER;
+					}
+				}
+
+
 
 				// Do the heat wave only when Frogger is on hot pavement
-				if (vd.getFrogCol().get(n).isOnRoad())
-					vd.getHwave().start(vd.getFrog().get(n), vd.getGameLevel());
-				vd.getHwave().perform(vd.getFrog().get(n), deltaMs, vd.getGameLevel());
 
 
-				if (!vd.getFrog().get(n).isAlive)
-					vd.getParticleLayer().clear();
-
-				vd.getGoalmanager().update(deltaMs);
-
-				if (vd.getGoalmanager().getUnreached().size() == 0) {
-					vd.setGameState(GAME_FINISH_LEVEL);
-					vd.getAudiofx().get(n).playCompleteLevel();
-					vd.getParticleLayer().clear();
-				}
-
-				if (vd.getGameLives() < 1) {
-					vd.setGameState(GAME_OVER);
-				}
-
-				break;
-
+break;
 			case GAME_OVER:
 			case GAME_INSTRUCTIONS:
 			case GAME_INTRO:
-				vd.getGoalmanager().update(deltaMs);
-				menuKeyboardHandler();
-				cycleTraffic(deltaMs);
+				goalmanager.update(deltaMs);
+				try {
+					menuKeyboardHandler();
+				} catch (RemoteException e) {
+					throw new RuntimeException(e);
+				}
+				try {
+					cycleTraffic(deltaMs);
+				} catch (RemoteException e) {
+					throw new RuntimeException(e);
+				}
 				break;
 
 			case GAME_FINISH_LEVEL:
-				finishLevelKeyboardHandler();
+				try {
+					finishLevelKeyboardHandler();
+				} catch (RemoteException e) {
+					throw new RuntimeException(e);
+				}
 				break;
 		}
-	}
 
+	}
 	/**
 	 * Rendering game objects
 	 */
 	public void render(RenderingContext rc) {
-		try {
-			switch (vd.getGameState()) {
-				case GAME_FINISH_LEVEL:
-				case GAME_PLAY:
-					try {
-						vd.getBackgroundLayer().render(rc);
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					try {
-						for (int i = 0; i < vd.getFrog().size(); i++) {
-							try {
-								if (vd.getFrog().get(i).isAlive) {
-									vd.getMovingObjectsLayer().render(rc);
-									//frog.collisionObjects.get(0).render(rc);
-									vd.getFrog().get(i).render(rc);
-								} else {
-									vd.getFrog().get(i).render(rc);
-									vd.getMovingObjectsLayer().render(rc);
-								}
-							} catch (RemoteException e) {
-								throw new RuntimeException(e);
-							}
-						}
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
-					try {
-						vd.getParticleLayer().render(rc);
-					} catch (RemoteException e) {
-						throw new RuntimeException(e);
-					}
+		switch (GameState) {
+			case GAME_FINISH_LEVEL:
+			case GAME_PLAY:
 
-						vd.getUi().render(rc);
+backgroundLayer.render(rc);
+
+				for (int i = 0; i < Frog.size(); i++) {
+					if (Frog.get(i).isAlive) {
+					movingObjectsLayer.render(rc);
+						//frog.collisionObjects.get(0).render(rc);
+						Frog.get(i).render(rc);
+					} else {
+						Frog.get(i).render(rc);
+						movingObjectsLayer.render(rc);
+					}
+				}
+				particleLayer.render(rc);
+
+				ui.render(rc);
 
 
-				case GAME_OVER:
-				case GAME_INSTRUCTIONS:
-				case GAME_INTRO:
-						vd.getBackgroundLayer().render(rc);
-						vd.getMovingObjectsLayer().render(rc);
-						vd.getUi().render(rc);
-					break;
-			}
-		} catch (RemoteException e) {
-			throw new RuntimeException(e);
+			case GAME_OVER:
+			case GAME_INSTRUCTIONS:
+			case GAME_INTRO:
+					backgroundLayer.render(rc);
+				movingObjectsLayer.render(rc);
+					ui.render(rc);
+				break;
 		}
 	}
 

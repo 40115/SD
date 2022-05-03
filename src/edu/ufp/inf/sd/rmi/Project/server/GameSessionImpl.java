@@ -50,7 +50,7 @@ if (this.Check_Games()){
  return null;
 }else{
     HashMap<UtilRI,GameStateRI> j=new HashMap<>();
-    GameState m=new GameState();
+    GameStateRI m=new GameState();
     m.setMAster(true);
     m.setRefe(0);
     j.put(this.Util,m);
@@ -98,4 +98,5 @@ if (this.Check_Games()){
     public String getToken()throws RemoteException {
         return Token;
     }
+
 }

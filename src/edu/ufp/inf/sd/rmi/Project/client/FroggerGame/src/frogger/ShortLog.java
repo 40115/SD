@@ -31,7 +31,7 @@ public class ShortLog extends MovingEntity {
 	public static int LENGTH = 32*3;
 	
 	public ShortLog (Vector2D pos, Vector2D v) {
-		super(Main.SPRITE_SHEET + "#shortlog");
+		super(Main.SPRITE_SHEET.get(0) + "#shortlog");
 		position = pos;
 		Vector2D posSphere1 = position;
 		Vector2D posSphere2 = new Vector2D(position.getX()+32, position.getY());

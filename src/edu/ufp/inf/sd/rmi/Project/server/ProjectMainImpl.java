@@ -79,11 +79,11 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
 
         return false;
     }
-    protected void Remove_Game(FroggerGameRI h) throws RemoteException{
+    protected void Remove_Game() throws RemoteException{
         for (int i = 0; i <this.Game.size() ; i++) {
-            if (h==this.Game.get(i)){
+            if (this.Game.get(i).getUtils().size()==0){
                 this.Game.remove(i);
-                return;
+                i--;
             }
 
         }

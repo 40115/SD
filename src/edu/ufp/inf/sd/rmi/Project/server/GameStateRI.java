@@ -11,19 +11,17 @@ import java.util.ArrayList;
 public interface GameStateRI extends Remote {
     public boolean isReady() throws RemoteException;
     public void setReady(boolean ready)throws RemoteException;
-    public ArrayList<FroggerCollisionDetection> getFrogCol()throws RemoteException;
-    public void setFrogCol(ArrayList<FroggerCollisionDetection> frogCol)throws RemoteException;
     public boolean isHAsended()throws RemoteException;
     public void setHAsended(boolean HAsended)throws RemoteException;
-    public FroggerGameRI getC()throws RemoteException;
-    public void setC(FroggerGameRI c)throws RemoteException;
-    public ArrayList<Frogger> getFrog()throws RemoteException;
-    public void setFrog(ArrayList<Frogger> frog)throws RemoteException;
-    public ArrayList<AudioEfx> getAudiofx()throws RemoteException;
-    public void setAudiofx(ArrayList<AudioEfx> audiofx)throws RemoteException;
-    public FroggerUI getUi()throws RemoteException;
-    public void setUi(FroggerUI ui)throws RemoteException;
-    public WindGust getWind()throws RemoteException;
+
+    /*public FroggerGameRI getC()throws RemoteException;
+    public void setC(FroggerGameRI c)throws RemoteException;*/
+
+    /*public ArrayList<AudioEfx> getAudiofx()throws RemoteException;
+    public void setAudiofx(ArrayList<AudioEfx> audiofx)throws RemoteException;*/
+    /*public FroggerUI getUi()throws RemoteException;
+    public void setUi(FroggerUI ui)throws RemoteException;*/
+  /*  public WindGust getWind()throws RemoteException;
     public void setWind(WindGust wind)throws RemoteException;
     public HeatWave getHwave()throws RemoteException;
     public void setHwave(HeatWave hwave)throws RemoteException;
@@ -55,8 +53,8 @@ public interface GameStateRI extends Remote {
     public void setRiverLine4(MovingEntityFactory riverLine4)throws RemoteException;
     public MovingEntityFactory getRiverLine5()throws RemoteException;
     public void setRiverLine5(MovingEntityFactory riverLine5)throws RemoteException;
-    public ImageBackgroundLayer getBackgroundLayer()throws RemoteException;
-    public void setBackgroundLayer(ImageBackgroundLayer backgroundLayer)throws RemoteException;
+    public FroggerGameRI getC()throws RemoteException;
+    public void setC(FroggerGameRI c)throws RemoteException;
     public int getDig()throws RemoteException;
     public void setDig(int dig)throws RemoteException;
     public int getGameState()throws RemoteException;
@@ -74,8 +72,17 @@ public interface GameStateRI extends Remote {
     public boolean isKeyPressed()throws RemoteException;
     public void setKeyPressed(boolean keyPressed)throws RemoteException;
     public boolean isListenInput()throws RemoteException;
-    public void setListenInput(boolean listenInput)throws RemoteException;
+    public void setListenInput(boolean listenInput)throws RemoteException;*/
+    FroggerGameRI getC()throws RemoteException;
+    void setC(FroggerGameRI c) throws RemoteException;
+
     public boolean isMAster()throws RemoteException;
-    public void setMAster(boolean MAster)throws RemoteException;
+    public void setMAster(boolean MAster) throws RemoteException;
+    public int getRefe() throws RemoteException;
+    public int getDig()throws RemoteException;
+    public void setDig(int dig) throws RemoteException;
+
+    public void setRefe(int refe)throws RemoteException;
+
 
 }

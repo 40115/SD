@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 
 public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectClientRI {
     private SetupContextRMI contextRMI;
+    private boolean distrated=false;
+    private GameStateRI currentgamestate;
     /**
      * Remote interface that will hold the Servant proxy
      */
@@ -174,13 +176,11 @@ Create_Game(Si);
 
 
     @Override
-    public void start_Game(GameStateRI j)throws RemoteException {
-if (j!=null ){
-    String[] f =new String[2];
-    System.out.println("Start ");
-Main.main(f,j);
-}
-
+    public boolean start_Game(GameStateRI j)throws RemoteException {
+currentgamestate=j;
+distrated=true;
+        System.out.println("\nHERE\n");
+return true;
 
     }
 
@@ -188,6 +188,8 @@ Main.main(f,j);
     public void test()throws RemoteException {
         System.out.println("Start ");
     }
+
+
 
     public void Join_Game(GameSessionRI h) throws IOException {
         System.out.println("\n What game would you like to play with\n");
@@ -201,8 +203,7 @@ if (l==null){
     System.out.println("\nGame not Found\n");
     return;
 }
-Id=-1;
-do{
+        do{
     System.out.println("\nGame Found\n 0-Ready\n 1-Left\n");
     reader = new BufferedReader(
             new InputStreamReader(System.in));
@@ -213,7 +214,7 @@ do{
     }
 }while(Id!=0);
 l.ready_the_game(h.getUtil());
-while(true){
+        while(!distrated){
     System.out.println("\nGame Ready\n1-Left\n");
     reader = new BufferedReader(
             new InputStreamReader(System.in));
@@ -222,9 +223,12 @@ while(true){
         l.leve_the_game(h);
         return;
     }
-
+System.out.println("\nNot valied");
 
 }
+        String[] f =new String[2];
+        System.out.println("Start ");
+        Main.main(f,currentgamestate);
 
     }
     public void Create_Game(GameSessionRI h) throws IOException {
@@ -242,7 +246,7 @@ while(true){
            n = Integer.parseInt(reader.readLine());
            System.out.println(l.Difficulty(n));
         }while (n<0 ||n>3);
-        int Id=-1;
+        int Id;
         do{
         System.out.println("\nGame Created\n 0-Ready\n 1-Left\n");
      BufferedReader   reader = new BufferedReader(
@@ -256,9 +260,21 @@ while(true){
     }while(Id!=0);
 
 do{
+    System.out.println("\nGame Ready\n1-Left\n");
+    BufferedReader   reader = new BufferedReader(
+            new InputStreamReader(System.in));
+    Id = Integer.parseInt(reader.readLine());
+    if (Id==1){
+        l.leve_the_game(h);
+        return;
+    }
 
 
-}while(true);
+
+}while(!distrated);
+        String[] f =new String[2];
+        System.out.println("Start ");
+        Main.main(f,currentgamestate);
     }
 
 

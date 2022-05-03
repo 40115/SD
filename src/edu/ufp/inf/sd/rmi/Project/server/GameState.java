@@ -9,19 +9,77 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 public class GameState extends UnicastRemoteObject implements GameStateRI{
+    private int Refe;
+    private boolean isMAster=false;
 
-
-    private ArrayList<FroggerCollisionDetection> frogCol=new ArrayList<>();
-
-
+    private boolean HAsended=false;
+    private boolean Ready=false;
     public FroggerGameRI c;
+    private int dig;
+    protected GameState() throws RemoteException {
+        super();
+    }
+
+    public int getDig() throws RemoteException{
+        return dig;
+    }
+
+    public void setDig(int dig) throws RemoteException{
+        this.dig = dig;
+    }
+
+    public int getRefe() throws RemoteException {
+        return Refe;
+    }
+
+    public void setRefe(int refe)throws RemoteException {
+        Refe = refe;
+    }
+
+    @Override
+    public boolean isMAster()throws RemoteException {
+        return isMAster;
+    }
+
+    @Override
+    public void setMAster(boolean MAster) throws RemoteException{
+        isMAster = MAster;
+    }
+
+    @Override
+    public boolean isHAsended() throws RemoteException{
+        return HAsended;
+    }
+
+    @Override
+    public void setHAsended(boolean HAsended)throws RemoteException {
+        this.HAsended = HAsended;
+    }
+
+    @Override
+    public boolean isReady()throws RemoteException {
+        return Ready;
+    }
+
+    @Override
+    public void setReady(boolean ready) throws RemoteException{
+        Ready = ready;
+    }
+
+    public FroggerGameRI getC()throws RemoteException {
+        return c;
+    }
+
+    public void setC(FroggerGameRI c) throws RemoteException{
+        this.c = c;
+    }
+    /*   private ArrayList<FroggerCollisionDetection> frogCol=new ArrayList<>();
+
     private ArrayList<Frogger> frog=new ArrayList<>();
-    private ArrayList<AudioEfx> audiofx=new ArrayList<>();
-    private FroggerUI ui;
     private WindGust wind;
     private HeatWave hwave;
     private GoalManager goalmanager;
-    private Integer Refe;
+
     private AbstractBodyLayer<MovingEntity> movingObjectsLayer;
     private AbstractBodyLayer<MovingEntity> particleLayer;
 
@@ -37,7 +95,7 @@ public class GameState extends UnicastRemoteObject implements GameStateRI{
     private MovingEntityFactory riverLine4;
     private MovingEntityFactory riverLine5;
 
-    private ImageBackgroundLayer backgroundLayer;
+
     private int dig;
     static final int FROGGER_LIVES      = 5;
     static final int STARTING_LEVEL     = 1;
@@ -59,15 +117,11 @@ public class GameState extends UnicastRemoteObject implements GameStateRI{
     private boolean space_has_been_released = false;
     private boolean keyPressed = false;
     private boolean listenInput = true;
-      private boolean isMAster=false;
-    private boolean HAsended=false;
-    private boolean Ready=false;
 
-    protected GameState() throws RemoteException {
-        super();
-    }
 
-    public boolean isReady() throws RemoteException{
+
+
+  /*  public boolean isReady() throws RemoteException{
         return Ready;
     }
 
@@ -105,22 +159,6 @@ public class GameState extends UnicastRemoteObject implements GameStateRI{
 
     public void setFrog(ArrayList<Frogger> frog)throws RemoteException {
         this.frog = frog;
-    }
-
-    public ArrayList<AudioEfx> getAudiofx()throws RemoteException {
-        return audiofx;
-    }
-
-    public void setAudiofx(ArrayList<AudioEfx> audiofx) throws RemoteException{
-        this.audiofx = audiofx;
-    }
-
-    public FroggerUI getUi()throws RemoteException {
-        return ui;
-    }
-
-    public void setUi(FroggerUI ui)throws RemoteException {
-        this.ui = ui;
     }
 
     public WindGust getWind()throws RemoteException {
@@ -251,14 +289,6 @@ public class GameState extends UnicastRemoteObject implements GameStateRI{
         this.riverLine5 = riverLine5;
     }
 
-    public ImageBackgroundLayer getBackgroundLayer()throws RemoteException {
-        return backgroundLayer;
-    }
-
-    public void setBackgroundLayer(ImageBackgroundLayer backgroundLayer)throws RemoteException {
-        this.backgroundLayer = backgroundLayer;
-    }
-
     public int getDig()throws RemoteException {
         return dig;
     }
@@ -337,5 +367,28 @@ public class GameState extends UnicastRemoteObject implements GameStateRI{
 
     public void setMAster(boolean MAster)throws RemoteException {
         isMAster = MAster;
-    }
+    }*/
+    /*
+	public ArrayList<AudioEfx> getAudiofx()throws RemoteException {
+		return audiofx;
+	}
+
+	public void setAudiofx(ArrayList<AudioEfx> audiofx) throws RemoteException{
+		this.audiofx = audiofx;
+	}
+	public FroggerUI getUi()throws RemoteException {
+		return ui;
+	}
+
+	public void setUi(FroggerUI ui)throws RemoteException {
+		this.ui = ui;
+	}
+	public ImageBackgroundLayer getBackgroundLayer()throws RemoteException {
+		return backgroundLayer;
+	}
+
+	public void setBackgroundLayer(ImageBackgroundLayer backgroundLayer)throws RemoteException {
+		this.backgroundLayer = backgroundLayer;
+	}*/
+
 }

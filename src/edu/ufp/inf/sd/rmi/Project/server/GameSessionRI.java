@@ -14,4 +14,5 @@ void LogOut() throws RemoteException;
     String getToken()throws RemoteException;
     public FroggerGameRI join_Game(Integer I) throws RemoteException;
 
+
 }

@@ -49,7 +49,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     public void update_the_game(GameStateRI j) throws RemoteException {
         for (GameStateRI l : this.Utils.values()) {
             if (j.isMAster()) {
-                l.setRoadLine1(j.getRoadLine1());
+        /*        l.setRoadLine1(j.getRoadLine1());
                 l.setRoadLine2(j.getRoadLine2());
                 l.setRoadLine3(j.getRoadLine3());
                 l.setRoadLine4(j.getRoadLine4());
@@ -58,10 +58,10 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
                 l.setRiverLine2(j.getRiverLine2());
                 l.setRiverLine3(j.getRiverLine3());
                 l.setRiverLine4(j.getRiverLine4());
-                l.setRiverLine5(j.getRiverLine5());
+                l.setRiverLine5(j.getRiverLine5());*/
             }
-
-                l.getFrog().set(j.getRefe(),j.getFrog().get(j.getRefe()));
+/*
+                l.getFrog().set(j.getRefe(),j.getFrog().get(j.getRefe()));*/
         }
 
     }
@@ -70,7 +70,11 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
             if (l==j.getUtil()){
                 this.Utils.remove(l);
                 if(this.Utils.size()==0){
-                    j.getPM().Remove_Game(this);
+                    j.getPM().Remove_Game();
+                    return;
+                }
+                if ( this.check_Ready()){
+                    this.start_Game();
                 }
                 return;
             }
@@ -80,7 +84,6 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     public void ready_the_game(UtilRI h) throws RemoteException{
         for (UtilRI f:this.Utils.keySet()) {
             if (f.hashCode()==h.hashCode()){
-                System.out.println("G");
                 this.Utils.get(f).setReady(true);
               if ( this.check_Ready()){
                   this.start_Game();
@@ -94,8 +97,8 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     private void start_Game() throws RemoteException{
 
         for (UtilRI f:this.Utils.keySet()) {
+            System.out.println("Here");
        f.getProjectClientRI().start_Game(this.Utils.get(f));
-
         }
     }
 

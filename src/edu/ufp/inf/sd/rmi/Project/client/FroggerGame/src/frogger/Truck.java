@@ -32,7 +32,7 @@ public class Truck extends MovingEntity {
 	public static int LENGTH = 32*2;
 
 	public Truck (Vector2D pos, Vector2D v) {
-		super(Main.SPRITE_SHEET + "#truck");
+		super(Main.SPRITE_SHEET.get(0) + "#truck");
 		position = pos;
 		Vector2D posSphere1 = position;
 		Vector2D posSphere2 = new Vector2D(position.getX()+32, position.getY());
