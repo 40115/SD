@@ -73,8 +73,8 @@ public class Frogger extends MovingEntity {
     /**
      * Build frogger!
      */
-	public Frogger (Main g) throws RemoteException {
-		super(Main.SPRITE_SHEET.get(g.vd.getRefe()) + "#frog");
+	public Frogger (Main g,int i) throws RemoteException {
+		super(Main.SPRITE_SHEET.get(i) + "#frog");
 		game = g;
 		vd= game.vd;
 		resetFrog();

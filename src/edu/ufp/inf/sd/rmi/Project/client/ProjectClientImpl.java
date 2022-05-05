@@ -163,8 +163,8 @@ Create_Game(Si);
 
                 case 4:
       Si.LogOut();
-
-
+                    System.out.println("Log outed");
+return;
                 default:
                     System.out.println("Not Valied Input");
             }
@@ -260,7 +260,7 @@ System.out.println("\nNot valied");
     }while(Id!=0);
 
 do{
-    System.out.println("\nGame Ready\n1-Left\n");
+    System.out.println("\nGame Ready\n1-Left\n0-check\n");
     BufferedReader   reader = new BufferedReader(
             new InputStreamReader(System.in));
     Id = Integer.parseInt(reader.readLine());

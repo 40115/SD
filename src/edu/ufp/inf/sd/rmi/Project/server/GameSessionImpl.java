@@ -52,6 +52,8 @@ if (this.Check_Games()){
     HashMap<UtilRI,GameStateRI> j=new HashMap<>();
     GameStateRI m=new GameState();
     m.setMAster(true);
+    System.out.println(this.Util);
+    m.setUtil(this.Util);
     m.setRefe(0);
     j.put(this.Util,m);
     FroggerGameRI l=new FroggerGameImpl(j,j.size(),getPM());
@@ -62,16 +64,23 @@ if (this.Check_Games()){
     }
 
     public FroggerGameRI join_Game(Integer I) throws RemoteException {
-        if (this.Check_Games()||this.PM.Game.get(I)==null){
+        if (this.PM.Game.size()<I ||I<0){
           return null;
 
         }else {
-            GameStateRI m=new GameState();
-            m.setRefe( this.PM.Game.get(I).getUtils().size());
-            m.setC(this.PM.Game.get(I));
+            FroggerGameRI  x=this.Check_Games2();
+            if (x==null) {
+                GameStateRI m = new GameState();
+                m.setRefe(this.PM.Game.get(I).getUtils().size());
+                m.setC(this.PM.Game.get(I));
+                System.out.println(this.Util);
+                m.setUtil(this.Util);
+                this.PM.Game.get(I).getUtils().put(this.Util, m);
+                return this.PM.Game.get(I);
+            }else {
+                return x;
 
-            this.PM.Game.get(I).getUtils().put(this.Util,m);
-            return this.PM.Game.get(I);
+            }
         }
 
     }
@@ -86,7 +95,15 @@ if (this.Check_Games()){
      return false;
     }
 
-
+    public FroggerGameRI Check_Games2()throws RemoteException{
+        for (int i = 0; i <this.PM.Game.size() ; i++) {
+            FroggerGameRI k=this.PM.Game.get(i);
+            if (k.getUtils().containsKey(this.Util)){
+                return this.PM.Game.get(i);
+            }
+        }
+        return null;
+    }
     public UtilRI getUtil()throws RemoteException {
         return Util;
     }

@@ -46,28 +46,41 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     }
 
 
-    public void update_the_game(GameStateRI j) throws RemoteException {
-        for (GameStateRI l : this.Utils.values()) {
-            if (j.isMAster()) {
-        /*        l.setRoadLine1(j.getRoadLine1());
-                l.setRoadLine2(j.getRoadLine2());
-                l.setRoadLine3(j.getRoadLine3());
-                l.setRoadLine4(j.getRoadLine4());
-                l.setRoadLine5(j.getRoadLine5());
-                l.setRiverLine1(j.getRiverLine1());
-                l.setRiverLine2(j.getRiverLine2());
-                l.setRiverLine3(j.getRiverLine3());
-                l.setRiverLine4(j.getRiverLine4());
-                l.setRiverLine5(j.getRiverLine5());*/
+    public void update_the_game(GameStateRI j,int type) throws RemoteException {
+        if (j.isMAster()) {
+            for (GameStateRI l : this.Utils.values()) {
+                if (!l.isMAster()) {
+                    l.getRoads().get(0).types.add(type);
+                    l.getRoads().get(1).types.add(type);
+                    l.getRoads().get(2).types.add(type);
+                    l.getRoads().get(3).types.add(type);
+
+                }
+
             }
-/*
-                l.getFrog().set(j.getRefe(),j.getFrog().get(j.getRefe()));*/
+        }
+
+    }
+    public void update_the_game2(UtilRI g,int i) throws RemoteException {
+        for (UtilRI s : this.Utils.keySet()) {
+            if (s.hashCode() == g.hashCode()) {
+                GameStateRI l = this.Utils.get(s);
+
+                if (!l.isMAster()) {
+                    if (l.getRoads().get(i).getTypes().size() > 2) {
+                        l.getRoads().get(i).getTypes().remove(0);
+
+                    }
+
+                }
+
+            }
         }
 
     }
     public void leve_the_game(GameSessionRI j) throws RemoteException{
         for (UtilRI l : this.Utils.keySet()) {
-            if (l==j.getUtil()){
+            if (l.hashCode()==j.getUtil().hashCode()){
                 this.Utils.remove(l);
                 if(this.Utils.size()==0){
                     j.getPM().Remove_Game();

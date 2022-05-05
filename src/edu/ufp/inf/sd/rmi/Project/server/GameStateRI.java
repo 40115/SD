@@ -1,9 +1,5 @@
 package edu.ufp.inf.sd.rmi.Project.server;
 
-import edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.*;
-import jig.engine.hli.ImageBackgroundLayer;
-import jig.engine.physics.AbstractBodyLayer;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -81,8 +77,14 @@ public interface GameStateRI extends Remote {
     public int getRefe() throws RemoteException;
     public int getDig()throws RemoteException;
     public void setDig(int dig) throws RemoteException;
-
+    public void sync_Frogger(Vect vect,int Refe)throws RemoteException;
+    public void sync_Road_Line(int type, int nriverline)throws RemoteException;
+    public void setUtil(UtilRI util) throws RemoteException;
+    public UtilRI getUtil() throws RemoteException;
     public void setRefe(int refe)throws RemoteException;
-
+    ArrayList<Vect> getFrogposition()throws RemoteException;
+    public void setFrogposition(ArrayList<Vect> frogposition)throws RemoteException;
+    public ArrayList<Road_Line> getRoads() throws RemoteException;
+    public void setRoads(ArrayList<Road_Line> roads) throws RemoteException;
 
 }

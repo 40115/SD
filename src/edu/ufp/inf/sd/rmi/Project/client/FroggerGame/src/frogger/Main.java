@@ -31,6 +31,7 @@ import java.util.ArrayList;
 
 import edu.ufp.inf.sd.rmi.Project.server.FroggerGameRI;
 import edu.ufp.inf.sd.rmi.Project.server.GameStateRI;
+import edu.ufp.inf.sd.rmi.Project.server.Vect;
 import jig.engine.ImageResource;
 import jig.engine.PaintableCanvas;
 import jig.engine.RenderingContext;
@@ -106,6 +107,7 @@ public class Main extends StaticScreenGame {
 
 		super(WORLD_WIDTH, WORLD_HEIGHT, false);
 		vd=j;
+
 Refe=vd.getRefe();
 		gameframe.setTitle("Frogger");
 		ResourceFactory.getFactory().loadResources(RSC_PATH, "resources.xml");
@@ -124,7 +126,7 @@ Refe=vd.getRefe();
 
 		try {
 			for (int i = 0; i < vd.getC().getUtils().size(); i++) {
-				Frog.add(new Frogger(this));
+				Frog.add(new Frogger(this,i));
 				frogCol.add(i,new FroggerCollisionDetection(Frog.get(i)));
 				audiofx.add(new AudioEfx(frogCol.get(i),Frog.get(i)));
 			}
@@ -194,7 +196,6 @@ riverLine2=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH,3*32),
 	/**
 	 * Populate movingObjectLayer with a cycle of cars/trucks, moving tree logs, etc
 	 *
-	 * @param deltaMs
 	 */
 	public void cycleTraffic(long deltaMs) throws RemoteException {
 
@@ -203,23 +204,193 @@ riverLine2=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH,3*32),
 
 		roadLine1.update(deltaMs);
 		if (this.vd.isMAster() ) {
-			if ((m = roadLine1.buildVehicle()) != null) movingObjectsLayer.add(m);
+			if ((m = roadLine1.buildVehicle()) != null){
+				movingObjectsLayer.add(m);
+System.out.println(m.getClass().getName());
+				switch (m.getClass().getName()) {
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Car":
+						vd.sync_Road_Line(0, 0);
+						vd.getC().update_the_game(vd,0);
+						break;
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Truck":
+
+						vd.sync_Road_Line(1, 0);
+						vd.getC().update_the_game(vd,1);
+						break;
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.CopCar":
+
+						vd.sync_Road_Line(2, 0);
+						vd.getC().update_the_game(vd,2);
+						break;
+					default:
+						vd.sync_Road_Line(-1, 0);
+						vd.getC().update_the_game(vd,-1);
+						break;
+				}
+
+			}
+		}else {
+
+
+	m = roadLine1.GetVehicle(vd.getRoads().get(0));
+
+vd.getC().update_the_game2(vd.getUtil(),1);
+	if (m != null) {
+		movingObjectsLayer.add(m);
+
+}
 		}
+
 		roadLine2.update(deltaMs);
 		if (this.vd.isMAster() ) {
-			if ((m = roadLine2.buildVehicle()) != null) movingObjectsLayer.add(m);
+			if ((m = roadLine2.buildVehicle()) != null){
+				movingObjectsLayer.add(m);
+				switch (m.getClass().getName()) {
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Car":
+						vd.sync_Road_Line(0, 1);
+						vd.getC().update_the_game(vd, 0);
+						break;
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Truck":
+
+						vd.sync_Road_Line(1, 1);
+
+						vd.getC().update_the_game(vd, 1);
+						break;
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.CopCar":
+						vd.sync_Road_Line(2, 1);
+						vd.getC().update_the_game(vd, 2);
+
+						break;
+					default:
+						vd.sync_Road_Line(-1, 1);
+						vd.getC().update_the_game(vd,-1);
+						break;
+
+				}
+			}
+		}else {
+
+				m = roadLine2.GetVehicle(vd.getRoads().get(1));
+				vd.getC().update_the_game2(vd.getUtil(),1);
+				if (m != null) {
+
+					movingObjectsLayer.add(m);
+				}
+
 		}
+
+
+
 		roadLine3.update(deltaMs);
 		if (this.vd.isMAster() ) {
-			if ((m = roadLine3.buildVehicle()) != null) movingObjectsLayer.add(m);
+			if ((m = roadLine3.buildVehicle()) != null){
+				movingObjectsLayer.add(m);
+				switch (m.getClass().getName()) {
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Car":
+						vd.sync_Road_Line(0, 2);
+						vd.getC().update_the_game(vd, 0);
+						break;
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Truck":
+
+						vd.sync_Road_Line(1, 2);
+
+						vd.getC().update_the_game(vd, 1);
+						break;
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.CopCar":
+						vd.sync_Road_Line(2, 2);
+						vd.getC().update_the_game(vd, 2);
+
+						break;
+					default:
+						vd.sync_Road_Line(-1, 2);
+						vd.getC().update_the_game(vd,-1);
+						break;
+
+				}
+			}
+		}else {
+
+				m = roadLine3.GetVehicle(vd.getRoads().get(2));
+				vd.getC().update_the_game2(vd.getUtil(),2);
+				if (m != null) {
+
+					movingObjectsLayer.add(m);
+				}
+
 		}
 		roadLine4.update(deltaMs);
 		if (this.vd.isMAster() ) {
-			if ((m = roadLine4.buildVehicle()) != null) movingObjectsLayer.add(m);
+			if ((m = roadLine4.buildVehicle()) != null){
+				movingObjectsLayer.add(m);
+				switch (m.getClass().getName()) {
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Car":
+						vd.sync_Road_Line(0, 3);
+						vd.getC().update_the_game(vd, 0);
+						break;
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Truck":
+
+						vd.sync_Road_Line(1, 3);
+
+						vd.getC().update_the_game(vd, 1);
+						break;
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.CopCar":
+						vd.sync_Road_Line(2, 3);
+						vd.getC().update_the_game(vd, 2);
+
+						break;
+					default:
+						vd.sync_Road_Line(-1, 3);
+						vd.getC().update_the_game(vd,-1);
+						break;
+
+				}
+			}
+		}else {
+
+			m = roadLine4.GetVehicle(vd.getRoads().get(3));
+			vd.getC().update_the_game2(vd.getUtil(),3);
+			if (m != null) {
+
+				movingObjectsLayer.add(m);
+			}
+
 		}
 		roadLine5.update(deltaMs);
 		if (this.vd.isMAster() ) {
-			if ((m = roadLine5.buildVehicle()) != null) movingObjectsLayer.add(m);
+			if ((m = roadLine5.buildVehicle()) != null){
+				movingObjectsLayer.add(m);
+				switch (m.getClass().getName()) {
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Car":
+						vd.sync_Road_Line(0, 4);
+						vd.getC().update_the_game(vd, 0);
+						break;
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Truck":
+
+						vd.sync_Road_Line(1, 4);
+
+						vd.getC().update_the_game(vd, 1);
+						break;
+					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.CopCar":
+						vd.sync_Road_Line(2, 4);
+						vd.getC().update_the_game(vd, 2);
+
+						break;
+					default:
+						vd.sync_Road_Line(-1, 4);
+						vd.getC().update_the_game(vd,-1);
+						break;
+
+				}
+			}
+		}else {
+
+			m = roadLine5.GetVehicle(vd.getRoads().get(4));
+			vd.getC().update_the_game2(vd.getUtil(),4);
+			if (m != null) {
+
+				movingObjectsLayer.add(m);
+			}
+
 		}
 
 		/* River traffic updates */
@@ -264,7 +435,6 @@ riverLine2=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH,3*32),
 	 */
 	public void froggerKeyboardHandler() throws RemoteException {
 		keyboard.poll();
-
 		boolean keyReleased = false;
 		boolean downPressed = keyboard.isPressed(KeyEvent.VK_DOWN);
 		boolean upPressed = keyboard.isPressed(KeyEvent.VK_UP);
@@ -324,35 +494,37 @@ riverLine2=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH,3*32),
 
 		// Following 2 if statements allow capture space bar key strokes
 		if (!keyboard.isPressed(KeyEvent.VK_SPACE)) {
-			space_has_been_released=true;
+			space_has_been_released = true;
+
 		}
 
-		if (space_has_been_released)
+		if (!space_has_been_released)
 			return;
 
 		if (keyboard.isPressed(KeyEvent.VK_SPACE)) {
 			switch (GameState) {
 				case GAME_INSTRUCTIONS:
 				case GAME_OVER:
-					GameState=GAME_INTRO;
-					space_has_been_released=false;
+					GameState = GAME_INTRO;
+					space_has_been_released = false;
 					break;
 				default:
-				GameLives=FROGGER_LIVES;
-					GameScore=0;
-					GameLevel=STARTING_LEVEL;
-					levelTimer=DEFAULT_LEVEL_TIME;
+					GameLives = FROGGER_LIVES;
+					GameScore = 0;
+					GameLevel = STARTING_LEVEL;
+					levelTimer = DEFAULT_LEVEL_TIME;
 					for (int i = 0; i <Frog.size() ; i++) {
 						Frog.get(i).setPosition(FROGGER_START);
 						audiofx.get(i).playGameMusic();
 					}
 
-					GameState=GAME_PLAY;
+					GameState = GAME_PLAY;
+
 					initializeLevel(GameLevel);
 			}
 		}
 		if (keyboard.isPressed(KeyEvent.VK_H))
-			GameState=GAME_INSTRUCTIONS;
+			GameState = GAME_INSTRUCTIONS;
 	}
 
 	/**
@@ -373,6 +545,7 @@ riverLine2=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH,3*32),
 	 * w00t
 	 */
 	public void update(long deltaMs) {
+
 		switch (GameState) {
 			case GAME_PLAY:
 				try {
@@ -486,13 +659,13 @@ backgroundLayer.render(rc);
 				particleLayer.render(rc);
 
 				ui.render(rc);
-
+break;
 
 			case GAME_OVER:
 			case GAME_INSTRUCTIONS:
 			case GAME_INTRO:
 					backgroundLayer.render(rc);
-				movingObjectsLayer.render(rc);
+			    	movingObjectsLayer.render(rc);
 					ui.render(rc);
 				break;
 		}

@@ -1,9 +1,5 @@
 package edu.ufp.inf.sd.rmi.Project.server;
 
-import edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.*;
-import jig.engine.hli.ImageBackgroundLayer;
-import jig.engine.physics.AbstractBodyLayer;
-
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -16,8 +12,28 @@ public class GameState extends UnicastRemoteObject implements GameStateRI{
     private boolean Ready=false;
     public FroggerGameRI c;
     private int dig;
+private  UtilRI util;
+    public  int refer=0;
+    ArrayList<Vect> Frogposition=new ArrayList<>();
+      ArrayList<Road_Line> roads=new ArrayList<>();
     protected GameState() throws RemoteException {
         super();
+roads.add(new Road_Line(new ArrayList<>(),0));
+        roads.add(new Road_Line(new ArrayList<>(),1));
+        roads.add(new Road_Line(new ArrayList<>(),2));
+        roads.add(new Road_Line(new ArrayList<>(),3));
+        roads.add(new Road_Line(new ArrayList<>(),4));
+
+    }
+
+    public void sync_Frogger(Vect vect,int Refe)throws RemoteException{
+
+
+
+    }
+    public void sync_Road_Line(int type, int nriverline)throws RemoteException{
+    roads.get(nriverline).types.add(type);
+    c.update_the_game(this,type);
     }
 
     public int getDig() throws RemoteException{
@@ -26,6 +42,14 @@ public class GameState extends UnicastRemoteObject implements GameStateRI{
 
     public void setDig(int dig) throws RemoteException{
         this.dig = dig;
+    }
+
+    public int getRefer() {
+        return refer;
+    }
+
+    public void setRefer(int refer) {
+        this.refer = refer;
     }
 
     public int getRefe() throws RemoteException {
@@ -72,6 +96,30 @@ public class GameState extends UnicastRemoteObject implements GameStateRI{
 
     public void setC(FroggerGameRI c) throws RemoteException{
         this.c = c;
+    }
+
+    public ArrayList<Vect> getFrogposition()throws RemoteException {
+        return Frogposition;
+    }
+
+    public void setFrogposition(ArrayList<Vect> frogposition)throws RemoteException {
+        Frogposition = frogposition;
+    }
+
+    public ArrayList<Road_Line> getRoads() throws RemoteException{
+        return roads;
+    }
+
+    public void setRoads(ArrayList<Road_Line> roads) throws RemoteException{
+        this.roads = roads;
+    }
+
+    public UtilRI getUtil() throws RemoteException{
+        return util;
+    }
+
+    public void setUtil(UtilRI util) throws RemoteException{
+        this.util = util;
     }
     /*   private ArrayList<FroggerCollisionDetection> frogCol=new ArrayList<>();
 
