@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import edu.ufp.inf.sd.rmi.Project.client.ProjectClientRI;
 
@@ -61,16 +60,18 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
     }
     protected Boolean Valid(String Token,UtilRI j) throws RemoteException{
         for (GameSessionRI k:this.users.values()) {
-            if (Objects.equals(j.getPassword(), k.getUtil().getPassword())&& Objects.equals(j.getEmail(), k.getUtil().getEmail()))
+            if (Objects.equals(j.getPassword(), k.getUtil().getPassword())&& Objects.equals(j.getEmail(), k.getUtil().getEmail())){
             try {
-                Algorithm algorithm = Algorithm.HMAC256(j.getEmail()+j.getPassword());
-                JWTVerifier verifier = JWT.require(algorithm)
-                        .withIssuer("auth0")
-                        .build(); //Reusable verifier instance
-                DecodedJWT jwt = verifier.verify(Token);
-                return true;
-            } catch (JWTVerificationException exception){
-            return false;
+
+                    Algorithm algorithm = Algorithm.HMAC256(j.getEmail() + j.getPassword());
+                    JWTVerifier verifier = JWT.require(algorithm)
+                            .withIssuer("auth0")
+                            .build(); //Reusable verifier instance
+                     verifier.verify(Token);
+                    return true;
+                } catch(JWTVerificationException exception){
+                    return false;
+                }
             }
 
 

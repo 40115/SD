@@ -2,7 +2,6 @@ package edu.ufp.inf.sd.rmi.Project.server;
 
 import edu.ufp.inf.sd.rmi.Project.client.ProjectClientRI;
 
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 

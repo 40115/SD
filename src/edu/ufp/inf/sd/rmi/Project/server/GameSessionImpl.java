@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class GameSessionImpl extends UnicastRemoteObject implements GameSessionRI{
    private final UtilRI Util;
    private final ProjectMainImpl PM;
-   private String Token;
+   private final String Token;
     public GameSessionImpl (ProjectMainImpl pm,UtilRI util,String token) throws RemoteException {
         super();
         this.PM=pm;

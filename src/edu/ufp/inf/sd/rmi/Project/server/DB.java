@@ -1,8 +1,6 @@
 package edu.ufp.inf.sd.rmi.Project.server;
-import edu.ufp.inf.sd.rmi.Project.client.ProjectClientRI;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 

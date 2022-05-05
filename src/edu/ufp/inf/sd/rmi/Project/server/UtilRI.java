@@ -6,7 +6,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface UtilRI extends Remote {
-    public String getEmail() throws RemoteException;
-    public String getPassword() throws RemoteException;
-    public ProjectClientRI getProjectClientRI() throws RemoteException;
+     String getEmail() throws RemoteException;
+     String getPassword() throws RemoteException;
+    ProjectClientRI getProjectClientRI() throws RemoteException;
 }

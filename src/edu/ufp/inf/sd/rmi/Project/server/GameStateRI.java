@@ -72,19 +72,19 @@ public interface GameStateRI extends Remote {
     FroggerGameRI getC()throws RemoteException;
     void setC(FroggerGameRI c) throws RemoteException;
 
-    public boolean isMAster()throws RemoteException;
-    public void setMAster(boolean MAster) throws RemoteException;
-    public int getRefe() throws RemoteException;
-    public int getDig()throws RemoteException;
-    public void setDig(int dig) throws RemoteException;
-    public void sync_Frogger(Vect vect,int Refe)throws RemoteException;
-    public void sync_Road_Line(int type, int nriverline)throws RemoteException;
-    public void setUtil(UtilRI util) throws RemoteException;
-    public UtilRI getUtil() throws RemoteException;
-    public void setRefe(int refe)throws RemoteException;
+    boolean isMAster()throws RemoteException;
+    void setMAster(boolean MAster) throws RemoteException;
+    int getRefe() throws RemoteException;
+    int getDig()throws RemoteException;
+    void setDig(int dig) throws RemoteException;
+    void sync_Frogger(Vect vect,int Refe)throws RemoteException;
+    void sync_Road_Line(int type, int nriverline)throws RemoteException;
+    void setUtil(UtilRI util) throws RemoteException;
+    UtilRI getUtil() throws RemoteException;
+    void setRefe(int refe)throws RemoteException;
     ArrayList<Vect> getFrogposition()throws RemoteException;
-    public void setFrogposition(ArrayList<Vect> frogposition)throws RemoteException;
-    public ArrayList<Road_Line> getRoads() throws RemoteException;
-    public void setRoads(ArrayList<Road_Line> roads) throws RemoteException;
+    void setFrogposition(ArrayList<Vect> frogposition)throws RemoteException;
+    ArrayList<Road_Line> getRoads() throws RemoteException;
+    void setRoads(ArrayList<Road_Line> roads) throws RemoteException;
 
 }
