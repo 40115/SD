@@ -1,29 +1,21 @@
 package edu.ufp.inf.sd.rmi.Project.server;
 
-import edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.*;
-import jig.engine.hli.ImageBackgroundLayer;
-import jig.engine.physics.AbstractBodyLayer;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public interface GameStateRI extends Remote {
-    public boolean isReady() throws RemoteException;
-    public void setReady(boolean ready)throws RemoteException;
-    public ArrayList<FroggerCollisionDetection> getFrogCol()throws RemoteException;
-    public void setFrogCol(ArrayList<FroggerCollisionDetection> frogCol)throws RemoteException;
-    public boolean isHAsended()throws RemoteException;
-    public void setHAsended(boolean HAsended)throws RemoteException;
-    public FroggerGameRI getC()throws RemoteException;
-    public void setC(FroggerGameRI c)throws RemoteException;
-    public ArrayList<Frogger> getFrog()throws RemoteException;
-    public void setFrog(ArrayList<Frogger> frog)throws RemoteException;
-    public ArrayList<AudioEfx> getAudiofx()throws RemoteException;
-    public void setAudiofx(ArrayList<AudioEfx> audiofx)throws RemoteException;
-    public FroggerUI getUi()throws RemoteException;
-    public void setUi(FroggerUI ui)throws RemoteException;
-    public WindGust getWind()throws RemoteException;
+    boolean isReady() throws RemoteException;
+    void setReady(boolean ready)throws RemoteException;
+
+    /*public FroggerGameRI getC()throws RemoteException;
+    public void setC(FroggerGameRI c)throws RemoteException;*/
+
+    /*public ArrayList<AudioEfx> getAudiofx()throws RemoteException;
+    public void setAudiofx(ArrayList<AudioEfx> audiofx)throws RemoteException;*/
+    /*public FroggerUI getUi()throws RemoteException;
+    public void setUi(FroggerUI ui)throws RemoteException;*/
+  /*  public WindGust getWind()throws RemoteException;
     public void setWind(WindGust wind)throws RemoteException;
     public HeatWave getHwave()throws RemoteException;
     public void setHwave(HeatWave hwave)throws RemoteException;
@@ -55,8 +47,8 @@ public interface GameStateRI extends Remote {
     public void setRiverLine4(MovingEntityFactory riverLine4)throws RemoteException;
     public MovingEntityFactory getRiverLine5()throws RemoteException;
     public void setRiverLine5(MovingEntityFactory riverLine5)throws RemoteException;
-    public ImageBackgroundLayer getBackgroundLayer()throws RemoteException;
-    public void setBackgroundLayer(ImageBackgroundLayer backgroundLayer)throws RemoteException;
+    public FroggerGameRI getC()throws RemoteException;
+    public void setC(FroggerGameRI c)throws RemoteException;
     public int getDig()throws RemoteException;
     public void setDig(int dig)throws RemoteException;
     public int getGameState()throws RemoteException;
@@ -74,8 +66,21 @@ public interface GameStateRI extends Remote {
     public boolean isKeyPressed()throws RemoteException;
     public void setKeyPressed(boolean keyPressed)throws RemoteException;
     public boolean isListenInput()throws RemoteException;
-    public void setListenInput(boolean listenInput)throws RemoteException;
-    public boolean isMAster()throws RemoteException;
-    public void setMAster(boolean MAster)throws RemoteException;
+    public void setListenInput(boolean listenInput)throws RemoteException;*/
+    FroggerGameRI getC()throws RemoteException;
+    void setC(FroggerGameRI c) throws RemoteException;
 
+    boolean isMAster()throws RemoteException;
+    void setMAster(boolean MAster) throws RemoteException;
+    int getRefe() throws RemoteException;
+    int getDig()throws RemoteException;
+    void sync_Frogger(Vect vect,int Refe)throws RemoteException;
+    void sync_Road_Line(int type, int nriverline)throws RemoteException;
+    void setUtil(UtilRI util) throws RemoteException;
+    UtilRI getUtil() throws RemoteException;
+    void setRefe(int refe)throws RemoteException;
+    ArrayList<Vect> getFrogposition()throws RemoteException;
+    ArrayList<Road_Line> getRoads() throws RemoteException;
+    ArrayList<Road_Line> getRiver()throws RemoteException;
+    void sync_River_Line(int type, int nriverline)throws RemoteException;
 }

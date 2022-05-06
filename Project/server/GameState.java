@@ -1,27 +1,115 @@
 package edu.ufp.inf.sd.rmi.Project.server;
 
-import edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.*;
-import jig.engine.hli.ImageBackgroundLayer;
-import jig.engine.physics.AbstractBodyLayer;
-
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 public class GameState extends UnicastRemoteObject implements GameStateRI{
+    private int Refe;
+    private boolean isMAster=false;
 
-
-    private ArrayList<FroggerCollisionDetection> frogCol=new ArrayList<>();
-
-
+    private boolean Ready=false;
     public FroggerGameRI c;
+    private int dig;
+    private  UtilRI util;
+    ArrayList<Vect> Frogposition=new ArrayList<>();
+    ArrayList<Road_Line> roads=new ArrayList<>();
+    ArrayList<Road_Line> river=new ArrayList<>();
+    protected GameState() throws RemoteException {
+        super();
+        roads.add(new Road_Line(new ArrayList<>(),0));
+        roads.add(new Road_Line(new ArrayList<>(),1));
+        roads.add(new Road_Line(new ArrayList<>(),2));
+        roads.add(new Road_Line(new ArrayList<>(),3));
+        roads.add(new Road_Line(new ArrayList<>(),4));
+        river.add(new Road_Line(new ArrayList<>(),0));
+        river.add(new Road_Line(new ArrayList<>(),1));
+        river.add(new Road_Line(new ArrayList<>(),2));
+        river.add(new Road_Line(new ArrayList<>(),3));
+        river.add(new Road_Line(new ArrayList<>(),4));
+
+    }
+    public void sync_Frogger(Vect vect,int Refe)throws RemoteException{
+        c.update_the_Frogger(vect,Refe,util);
+        Frogposition.set(Refe,vect);
+    }
+    public void sync_Road_Line(int type, int nriverline)throws RemoteException{
+    roads.get(nriverline).types.add(type);
+    c.update_the_game(this,type,nriverline);
+    }
+    public void sync_River_Line(int type, int nriverline)throws RemoteException{
+        river.get(nriverline).types.add(type);
+        c.update_the_gameloggs(this,type,nriverline);
+    }
+
+    public int getDig() throws RemoteException{
+        return dig;
+    }
+
+
+    public int getRefe() throws RemoteException {
+        return Refe;
+    }
+
+    public void setRefe(int refe)throws RemoteException {
+        Refe = refe;
+    }
+
+    @Override
+    public boolean isMAster()throws RemoteException {
+        return isMAster;
+    }
+
+    @Override
+    public void setMAster(boolean MAster) throws RemoteException{
+        isMAster = MAster;
+    }
+
+
+    @Override
+    public boolean isReady()throws RemoteException {
+        return Ready;
+    }
+
+    @Override
+    public void setReady(boolean ready) throws RemoteException{
+        Ready = ready;
+    }
+
+    public FroggerGameRI getC()throws RemoteException {
+        return c;
+    }
+
+    public void setC(FroggerGameRI c) throws RemoteException{
+        this.c = c;
+    }
+
+    public ArrayList<Vect> getFrogposition()throws RemoteException {
+        return Frogposition;
+    }
+
+    public ArrayList<Road_Line> getRoads() throws RemoteException{
+        return roads;
+    }
+
+    public UtilRI getUtil() throws RemoteException{
+        return util;
+    }
+
+    public void setUtil(UtilRI util) throws RemoteException{
+        this.util = util;
+    }
+
+    public ArrayList<Road_Line> getRiver()throws RemoteException {
+        return river;
+    }
+    /*   private ArrayList<FroggerCollisionDetection> frogCol=new ArrayList<>();
+
     private ArrayList<Frogger> frog=new ArrayList<>();
-    private ArrayList<AudioEfx> audiofx=new ArrayList<>();
-    private FroggerUI ui;
     private WindGust wind;
     private HeatWave hwave;
     private GoalManager goalmanager;
-    private Integer Refe;
+
     private AbstractBodyLayer<MovingEntity> movingObjectsLayer;
     private AbstractBodyLayer<MovingEntity> particleLayer;
 
@@ -37,7 +125,7 @@ public class GameState extends UnicastRemoteObject implements GameStateRI{
     private MovingEntityFactory riverLine4;
     private MovingEntityFactory riverLine5;
 
-    private ImageBackgroundLayer backgroundLayer;
+
     private int dig;
     static final int FROGGER_LIVES      = 5;
     static final int STARTING_LEVEL     = 1;
@@ -59,15 +147,11 @@ public class GameState extends UnicastRemoteObject implements GameStateRI{
     private boolean space_has_been_released = false;
     private boolean keyPressed = false;
     private boolean listenInput = true;
-      private boolean isMAster=false;
-    private boolean HAsended=false;
-    private boolean Ready=false;
 
-    protected GameState() throws RemoteException {
-        super();
-    }
 
-    public boolean isReady() throws RemoteException{
+
+
+  /*  public boolean isReady() throws RemoteException{
         return Ready;
     }
 
@@ -105,22 +189,6 @@ public class GameState extends UnicastRemoteObject implements GameStateRI{
 
     public void setFrog(ArrayList<Frogger> frog)throws RemoteException {
         this.frog = frog;
-    }
-
-    public ArrayList<AudioEfx> getAudiofx()throws RemoteException {
-        return audiofx;
-    }
-
-    public void setAudiofx(ArrayList<AudioEfx> audiofx) throws RemoteException{
-        this.audiofx = audiofx;
-    }
-
-    public FroggerUI getUi()throws RemoteException {
-        return ui;
-    }
-
-    public void setUi(FroggerUI ui)throws RemoteException {
-        this.ui = ui;
     }
 
     public WindGust getWind()throws RemoteException {
@@ -251,14 +319,6 @@ public class GameState extends UnicastRemoteObject implements GameStateRI{
         this.riverLine5 = riverLine5;
     }
 
-    public ImageBackgroundLayer getBackgroundLayer()throws RemoteException {
-        return backgroundLayer;
-    }
-
-    public void setBackgroundLayer(ImageBackgroundLayer backgroundLayer)throws RemoteException {
-        this.backgroundLayer = backgroundLayer;
-    }
-
     public int getDig()throws RemoteException {
         return dig;
     }
@@ -337,5 +397,28 @@ public class GameState extends UnicastRemoteObject implements GameStateRI{
 
     public void setMAster(boolean MAster)throws RemoteException {
         isMAster = MAster;
-    }
+    }*/
+    /*
+	public ArrayList<AudioEfx> getAudiofx()throws RemoteException {
+		return audiofx;
+	}
+
+	public void setAudiofx(ArrayList<AudioEfx> audiofx) throws RemoteException{
+		this.audiofx = audiofx;
+	}
+	public FroggerUI getUi()throws RemoteException {
+		return ui;
+	}
+
+	public void setUi(FroggerUI ui)throws RemoteException {
+		this.ui = ui;
+	}
+	public ImageBackgroundLayer getBackgroundLayer()throws RemoteException {
+		return backgroundLayer;
+	}
+
+	public void setBackgroundLayer(ImageBackgroundLayer backgroundLayer)throws RemoteException {
+		this.backgroundLayer = backgroundLayer;
+	}*/
+
 }

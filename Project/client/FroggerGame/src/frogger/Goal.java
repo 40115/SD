@@ -40,7 +40,7 @@ public class Goal extends MovingEntity {
 	}
 
 	public Goal(Vector2D pos) {
-		super(Main.SPRITE_SHEET + "#goal");
+		super(Main.SPRITE_SHEET.get(0) + "#goal");
 		position = pos;
 		collisionObjects.add(new CollisionObject("colSmall", position));
 		sync(position);

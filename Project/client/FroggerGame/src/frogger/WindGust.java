@@ -111,7 +111,7 @@ public class WindGust {
 		
 		// Build somewhat random velocity vector for each wind particle, looks cool
 		Vector2D v = new Vector2D(0.2+r.nextDouble(),(r.nextDouble()-0.5)*0.1); 
-		return new Particle(Main.SPRITE_SHEET + "#white_dot", pos,v);
+		return new Particle(Main.SPRITE_SHEET.get(0) + "#white_dot", pos,v);
 	}
 	
 	public void update(final long deltaMs) {

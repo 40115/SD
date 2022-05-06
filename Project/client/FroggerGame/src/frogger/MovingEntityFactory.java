@@ -24,8 +24,10 @@
  */
 
 package edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger;
+import edu.ufp.inf.sd.rmi.Project.server.Road_Line;
 import jig.engine.util.Vector2D;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class MovingEntityFactory {
@@ -109,7 +111,25 @@ public class MovingEntityFactory {
 			return new Turtles(position, velocity, r.nextInt(2));
 		return m;
 	}
-	
+	public MovingEntity GETWithTurtles(Road_Line h) {
+		if (h.getTypes().size()==0){
+			return null;
+		}
+	switch (h.getTypes().get(0)){
+		case 0:
+			return new ShortLog(position, velocity);
+		case 1:
+			return new LongLog(position, velocity);
+		case 2:
+			return new Turtles(position, velocity, r.nextInt(2));
+		case 3:
+			return new Crocodile(position, velocity);
+		default:
+			return null;
+
+	}
+
+	}
 	/**
 	 * Long Tree Logs with a some chance of Crocodile!
 	 * @return
@@ -144,6 +164,42 @@ public class MovingEntityFactory {
 		}
 		return m;
 	}
+	public MovingEntity GetVehicle(Road_Line h) {
+
+
+	if (h.getTypes().size()!=0) {
+	/*	StringBuilder j= new StringBuilder("");
+		for (int i = 0; i <h.getTypes().size() ; i++) {
+		j.append(h.getTypes().get(i));
+		}
+
+		System.out.println(j);*/
+		switch (h.getTypes().get(0)) {
+			case 0:
+
+				return buildBasicObject(CAR, 100);
+			case 1:
+
+				return buildBasicObject(TRUCK, 100);
+			case 2:
+
+				if (Math.abs(velocity.getX() * copCarDelay) > Main.WORLD_WIDTH) {
+					MovingEntity m = new CopCar(position, velocity.scale(5));
+					copCarDelay = 0;
+					return m;
+				}
+				break;
+			default:
+
+				return null;
+		}
+
+}
+return null;
+
+
+	}
+
 	
 	public void update(final long deltaMs) {
 		updateMs += deltaMs;

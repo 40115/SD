@@ -87,8 +87,6 @@ public class AudioEfx {
 	/**
 	 * In order to know when to play-back certain effects, we track the state of 
 	 * collision detector and Frogger
-	 * @param f
-	 * @param frg
 	 */
 	public AudioEfx(FroggerCollisionDetection f, Frogger frg) {
 		fc = f;

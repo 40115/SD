@@ -8,5 +8,6 @@ import java.rmi.RemoteException;
 public interface ProjectMainRI extends Remote {
 String Connect() throws RemoteException;
 boolean Register(String Email, String Password, ProjectClientRI projectClientRI) throws RemoteException;
-    GameSessionRI Login(String Email, String Password,ProjectClientRI projectClientRI) throws RemoteException;
+GameSessionRI Login(String Email, String Password,ProjectClientRI projectClientRI) throws RemoteException;
+
 }
