@@ -52,7 +52,6 @@ if (this.Check_Games()){
     HashMap<UtilRI,GameStateRI> j=new HashMap<>();
     GameStateRI m=new GameState();
     m.setMAster(true);
-    System.out.println(this.Util);
     m.setUtil(this.Util);
     m.setRefe(0);
     j.put(this.Util,m);
@@ -73,7 +72,7 @@ if (this.Check_Games()){
                 GameStateRI m = new GameState();
                 m.setRefe(this.PM.Game.get(I).getUtils().size());
                 m.setC(this.PM.Game.get(I));
-                System.out.println(this.Util);
+
                 m.setUtil(this.Util);
                 this.PM.Game.get(I).getUtils().put(this.Util, m);
                 return this.PM.Game.get(I);

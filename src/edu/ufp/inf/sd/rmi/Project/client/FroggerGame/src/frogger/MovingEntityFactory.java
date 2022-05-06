@@ -111,7 +111,25 @@ public class MovingEntityFactory {
 			return new Turtles(position, velocity, r.nextInt(2));
 		return m;
 	}
-	
+	public MovingEntity GETWithTurtles(Road_Line h) {
+		if (h.getTypes().size()==0){
+			return null;
+		}
+	switch (h.getTypes().get(0)){
+		case 0:
+			return new ShortLog(position, velocity);
+		case 1:
+			return new LongLog(position, velocity);
+		case 2:
+			return new Turtles(position, velocity, r.nextInt(2));
+		case 3:
+			return new Crocodile(position, velocity);
+		default:
+			return null;
+
+	}
+
+	}
 	/**
 	 * Long Tree Logs with a some chance of Crocodile!
 	 * @return
@@ -150,11 +168,12 @@ public class MovingEntityFactory {
 
 
 	if (h.getTypes().size()!=0) {
-		StringBuilder j= new StringBuilder("");
+	/*	StringBuilder j= new StringBuilder("");
 		for (int i = 0; i <h.getTypes().size() ; i++) {
 		j.append(h.getTypes().get(i));
 		}
-		System.out.println(j);
+
+		System.out.println(j);*/
 		switch (h.getTypes().get(0)) {
 			case 0:
 

@@ -16,24 +16,34 @@ private  UtilRI util;
     public  int refer=0;
     ArrayList<Vect> Frogposition=new ArrayList<>();
       ArrayList<Road_Line> roads=new ArrayList<>();
+    ArrayList<Road_Line> river=new ArrayList<>();
     protected GameState() throws RemoteException {
         super();
-roads.add(new Road_Line(new ArrayList<>(),0));
+        roads.add(new Road_Line(new ArrayList<>(),0));
         roads.add(new Road_Line(new ArrayList<>(),1));
         roads.add(new Road_Line(new ArrayList<>(),2));
         roads.add(new Road_Line(new ArrayList<>(),3));
         roads.add(new Road_Line(new ArrayList<>(),4));
+        river.add(new Road_Line(new ArrayList<>(),0));
+        river.add(new Road_Line(new ArrayList<>(),1));
+        river.add(new Road_Line(new ArrayList<>(),2));
+        river.add(new Road_Line(new ArrayList<>(),3));
+        river.add(new Road_Line(new ArrayList<>(),4));
 
     }
 
     public void sync_Frogger(Vect vect,int Refe)throws RemoteException{
 
-
-
+c.update_the_Frogger(vect,Refe,util);
+Frogposition.set(Refe,vect);
     }
     public void sync_Road_Line(int type, int nriverline)throws RemoteException{
     roads.get(nriverline).types.add(type);
-    c.update_the_game(this,type);
+    c.update_the_game(this,type,nriverline);
+    }
+    public void sync_River_Line(int type, int nriverline)throws RemoteException{
+        river.get(nriverline).types.add(type);
+        c.update_the_gameloggs(this,type,nriverline);
     }
 
     public int getDig() throws RemoteException{
@@ -120,6 +130,14 @@ roads.add(new Road_Line(new ArrayList<>(),0));
 
     public void setUtil(UtilRI util) throws RemoteException{
         this.util = util;
+    }
+
+    public ArrayList<Road_Line> getRiver()throws RemoteException {
+        return river;
+    }
+
+    public void setRiver(ArrayList<Road_Line> river)throws RemoteException{
+        this.river = river;
     }
     /*   private ArrayList<FroggerCollisionDetection> frogCol=new ArrayList<>();
 

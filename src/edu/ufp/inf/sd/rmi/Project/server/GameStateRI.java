@@ -86,5 +86,8 @@ public interface GameStateRI extends Remote {
     void setFrogposition(ArrayList<Vect> frogposition)throws RemoteException;
     ArrayList<Road_Line> getRoads() throws RemoteException;
     void setRoads(ArrayList<Road_Line> roads) throws RemoteException;
+    void setRiver(ArrayList<Road_Line> river)throws RemoteException;
+    ArrayList<Road_Line> getRiver()throws RemoteException;
+    void sync_River_Line(int type, int nriverline)throws RemoteException;
 
 }

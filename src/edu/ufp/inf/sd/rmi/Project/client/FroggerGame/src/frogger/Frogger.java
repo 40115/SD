@@ -26,6 +26,7 @@
 package edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger;
 
 import edu.ufp.inf.sd.rmi.Project.server.GameStateRI;
+import edu.ufp.inf.sd.rmi.Project.server.Vect;
 import jig.engine.util.Vector2D;
 
 import java.rmi.RemoteException;
@@ -101,15 +102,41 @@ public class Frogger extends MovingEntity {
 			currentFrame = 3;
 		    move(new Vector2D(-1,0));
 		    AudioEfx.frogJump.play(0.2);
+			try {
+				vd.sync_Frogger(new Vect(0.0,1),vd.getRefe());
+			} catch (RemoteException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
-	
+	public void moveLeftother(){
+		if (getCenterPosition().getX()-16 > 0 && isAlive && !isAnimating) {
+			currentFrame = 3;
+			move(new Vector2D(-1,0));
+			AudioEfx.frogJump.play(0.2);
+
+		}
+	}
 	public void moveRight() {
 		
 		if (getCenterPosition().getX()+32 < Main.WORLD_WIDTH && isAlive && !isAnimating) {
 			currentFrame = 2;
 		    move(new Vector2D(1,0));
 		    AudioEfx.frogJump.play(0.2);
+			try {
+				vd.sync_Frogger(new Vect(1,0),vd.getRefe());
+			} catch (RemoteException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	public void moveRightother() {
+
+		if (getCenterPosition().getX()+32 < Main.WORLD_WIDTH && isAlive && !isAnimating) {
+			currentFrame = 2;
+			move(new Vector2D(1,0));
+			AudioEfx.frogJump.play(0.2);
+
 		}
 	}
 	
@@ -118,6 +145,19 @@ public class Frogger extends MovingEntity {
 			currentFrame = 0;
 		    move(new Vector2D(0,-1));
 		    AudioEfx.frogJump.play(0.2);
+			try {
+				vd.sync_Frogger(new Vect(0.0,-1),vd.getRefe());
+			} catch (RemoteException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	public void moveUpOther() {
+		if (position.getY() > 32  && isAlive && !isAnimating) {
+			currentFrame = 0;
+			move(new Vector2D(0,-1));
+			AudioEfx.frogJump.play(0.2);
+
 		}
 	}
 	
@@ -126,6 +166,19 @@ public class Frogger extends MovingEntity {
 			currentFrame = 1;
 		    move(new Vector2D(0,1));
 		    AudioEfx.frogJump.play(0.2);
+			try {
+				vd.sync_Frogger(new Vect(0.0,1),vd.getRefe());
+			} catch (RemoteException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	public void moveDownOther() {
+		if (position.getY() < Main.WORLD_HEIGHT - MOVE_STEP && isAlive && !isAnimating) {
+			currentFrame = 1;
+			move(new Vector2D(0,1));
+			AudioEfx.frogJump.play(0.2);
+
 		}
 	}
 	

@@ -3,6 +3,7 @@ package edu.ufp.inf.sd.rmi.Project.server;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameRI{
     HashMap<UtilRI,GameStateRI> Utils;
@@ -46,14 +47,23 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     }
 
 
-    public void update_the_game(GameStateRI j,int type) throws RemoteException {
+    public void update_the_game(GameStateRI j,int type,int nroad) throws RemoteException {
         if (j.isMAster()) {
             for (GameStateRI l : this.Utils.values()) {
                 if (!l.isMAster()) {
-                    l.getRoads().get(0).types.add(type);
-                    l.getRoads().get(1).types.add(type);
-                    l.getRoads().get(2).types.add(type);
-                    l.getRoads().get(3).types.add(type);
+               l.getRoads().get(nroad).getTypes().add(type);
+
+                }
+
+            }
+        }
+
+    }
+    public void update_the_gameloggs(GameStateRI j,int type,int nriver) throws RemoteException {
+        if (j.isMAster()) {
+            for (GameStateRI l : this.Utils.values()) {
+                if (!l.isMAster()) {
+                    l.getRiver().get(nriver).getTypes().add(type);
 
                 }
 
@@ -67,12 +77,51 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
                 GameStateRI l = this.Utils.get(s);
 
                 if (!l.isMAster()) {
-                    if (l.getRoads().get(i).getTypes().size() > 2) {
+                    if (l.getRoads().get(i).getTypes().size() > 0) {
                         l.getRoads().get(i).getTypes().remove(0);
 
                     }
 
                 }
+
+            }
+        }
+
+    }
+    public void update_the_game2River(UtilRI g,int i) throws RemoteException {
+        for (UtilRI s : this.Utils.keySet()) {
+            if (s.hashCode() == g.hashCode()) {
+                GameStateRI l = this.Utils.get(s);
+
+                if (!l.isMAster()) {
+                    if (l.getRiver().get(i).getTypes().size() > 0) {
+                        l.getRiver().get(i).getTypes().remove(0);
+
+                    }
+
+                }
+
+            }
+        }
+
+    }
+    public void update_the_Frogger(Vect d, int h, UtilRI g) throws RemoteException {
+        for (UtilRI s : this.Utils.keySet()) {
+                GameStateRI l = this.Utils.get(s);
+                if (!Objects.equals(s.getEmail(), g.getEmail())) {
+                    l.getFrogposition().get(h).setX(d.x);
+                    l.getFrogposition().get(h).setY(d.y);
+
+                }
+        }
+
+    }
+    public void update_the_Frogger2(UtilRI g,int h) throws RemoteException {
+        for (UtilRI s : this.Utils.keySet()) {
+            if (s.hashCode() == g.hashCode()) {
+                GameStateRI l = this.Utils.get(s);
+                    l.getFrogposition().set(h,new Vect(0,0));
+
 
             }
         }
@@ -110,9 +159,17 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     private void start_Game() throws RemoteException{
 
         for (UtilRI f:this.Utils.keySet()) {
-            System.out.println("Here");
-       f.getProjectClientRI().start_Game(this.Utils.get(f));
+            for (int i = 0; i <this.Utils.size() ; i++) {
+                this.Utils.get(f).getFrogposition().add(new Vect(0.0,0.0));
+            }
+
+
         }
+        for (UtilRI f:this.Utils.keySet()) {
+            f.getProjectClientRI().start_Game(this.Utils.get(f));
+
+        }
+
     }
 
     private boolean check_Ready()throws RemoteException {
