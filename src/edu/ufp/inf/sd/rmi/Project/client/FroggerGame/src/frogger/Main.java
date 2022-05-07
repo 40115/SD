@@ -619,7 +619,7 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 		}
 		for (int i = 0; i <vd.getFrogposition().size() ; i++) {
 			if ((vd.getFrogposition().get(i).getX()!=0 ||vd.getFrogposition().get(i).getY()!=0)&&i!=Refe ){
-
+System.out.println(vd.getFrogposition().get(i).getX()+""+vd.getFrogposition().get(i).getY());
 				if (vd.getFrogposition().get(i).getX()==0.0 && vd.getFrogposition().get(i).getY()==-1.0){
 					Frog.get(i).moveUpOther();
 					vd.getC().update_the_Frogger2(vd.getUtil(),i);
@@ -721,12 +721,14 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 					Frog.get(i).update(deltaMs);
 				}
 
-				try {
+				/*try {
 					audiofx.get(vd.getRefe()).update(deltaMs);
 				} catch (RemoteException e) {
 					throw new RuntimeException(e);
+				}*/
+				for (int i = 0; i <Frog.size() ; i++) {
+					audiofx.get(i).update(deltaMs);
 				}
-
 					ui.update(deltaMs);
 
 
@@ -735,12 +737,14 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 				} catch (RemoteException e) {
 					throw new RuntimeException(e);
 				}
-				try {
-					frogCol.get(vd.getRefe()).testCollision(movingObjectsLayer);
-				} catch (RemoteException e) {
-					throw new RuntimeException(e);
+				//	frogCol.get(vd.getRefe()).testCollision(movingObjectsLayer);
+				for (int i = 0; i <Frog.size() ; i++) {
+					try {
+						frogCol.get(i).testCollision(movingObjectsLayer);
+					} catch (RemoteException e) {
+						throw new RuntimeException(e);
+					}
 				}
-
 				// Wind gusts work only when Frogger is on the river
 				for (int i = 0; i <Frog.size() ; i++) {
 					if (frogCol.get(i).isInRiver()) {

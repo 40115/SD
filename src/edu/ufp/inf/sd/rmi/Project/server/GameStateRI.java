@@ -10,6 +10,7 @@ public interface GameStateRI extends Remote {
     public boolean isHAsended()throws RemoteException;
     public void setHAsended(boolean HAsended)throws RemoteException;
 
+
     /*public FroggerGameRI getC()throws RemoteException;
     public void setC(FroggerGameRI c)throws RemoteException;*/
 
