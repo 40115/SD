@@ -2,6 +2,8 @@ package edu.ufp.inf.sd.rmi.Project.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -9,7 +11,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     HashMap<UtilRI,GameStateRI> Utils;
     private String Dific=String.valueOf(Difficulty.MEDIUM);
     int N;
-
+    LocalDate myObj = LocalDate.now();
     protected boolean End=false;
     protected boolean Run=false;
     private enum Difficulty{
@@ -24,6 +26,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         this.Utils = utils;
         this.N=n;
         this.PM = pm;
+
     }
 
     public String Difficulty(int difficulty) throws RemoteException {
@@ -50,10 +53,10 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     public void update_the_game(GameStateRI j,int type,int nroad) throws RemoteException {
         if (j.isMAster()) {
             for (GameStateRI l : this.Utils.values()) {
-                if (!l.isMAster()) {
+
                l.getRoads().get(nroad).getTypes().add(type);
 
-                }
+
 
             }
         }
@@ -62,11 +65,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     public void update_the_gameloggs(GameStateRI j,int type,int nriver) throws RemoteException {
         if (j.isMAster()) {
             for (GameStateRI l : this.Utils.values()) {
-                if (!l.isMAster()) {
                     l.getRiver().get(nriver).getTypes().add(type);
-
-                }
-
             }
         }
 
@@ -76,11 +75,11 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
             if (s.hashCode() == g.hashCode()) {
                 GameStateRI l = this.Utils.get(s);
 
-                if (!l.isMAster()) {
+
                     if (l.getRoads().get(i).getTypes().size() > 0) {
                         l.getRoads().get(i).getTypes().remove(0);
 
-                    }
+
 
                 }
 
@@ -93,11 +92,10 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
             if (s.hashCode() == g.hashCode()) {
                 GameStateRI l = this.Utils.get(s);
 
-                if (!l.isMAster()) {
                     if (l.getRiver().get(i).getTypes().size() > 0) {
                         l.getRiver().get(i).getTypes().remove(0);
 
-                    }
+
 
                 }
 
@@ -108,11 +106,8 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     public void update_the_Frogger(Vect d, int h, UtilRI g) throws RemoteException {
         for (UtilRI s : this.Utils.keySet()) {
                 GameStateRI l = this.Utils.get(s);
-                if (!Objects.equals(s.getEmail(), g.getEmail())) {
                     l.getFrogposition().get(h).setX(d.x);
                     l.getFrogposition().get(h).setY(d.y);
-
-                }
         }
 
     }
@@ -127,14 +122,20 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         }
 
     }
+    public void Sync_Timer(int j, UtilRI g)throws RemoteException{
+        for (UtilRI s : this.Utils.keySet()) {
+                GameStateRI l = this.Utils.get(s);
+                l.setLevelTimer(j);
+        }
+    }
     public void leve_the_game(GameSessionRI j) throws RemoteException{
         for (UtilRI l : this.Utils.keySet()) {
             if (l.hashCode()==j.getUtil().hashCode()){
                 this.Utils.remove(l);
                 if(this.Utils.size()==0){
-                    j.getPM().Remove_Game();
                     return;
                 }
+
                 if ( this.check_Ready()){
                     this.start_Game();
                 }
@@ -161,6 +162,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         for (UtilRI f:this.Utils.keySet()) {
             for (int i = 0; i <this.Utils.size() ; i++) {
                 this.Utils.get(f).getFrogposition().add(new Vect(0.0,0.0));
+                this.Utils.get(f).setReady(false);
             }
 
 
@@ -184,6 +186,16 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
 
         }
 return true;
+    }
+
+    public boolean check_Ready2()throws RemoteException {
+        for (GameStateRI f:this.Utils.values()) {
+            if (!f.isReady()){
+                return false;
+            }
+
+        }
+        return true;
     }
     public boolean is_Ended() throws RemoteException{
         return End;

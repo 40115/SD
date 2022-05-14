@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class GameState extends UnicastRemoteObject implements GameStateRI{
     private int Refe;
     private boolean isMAster=false;
-
+    public int levelTimer=0;
     private boolean HAsended=false;
     private boolean Ready=false;
     public FroggerGameRI c;
@@ -32,7 +32,15 @@ private  UtilRI util;
 
     }
 
-    public void sync_Frogger(Vect vect,int Refe)throws RemoteException{
+    public int getLevelTimer() throws RemoteException{
+        return levelTimer;
+    }
+
+    public void setLevelTimer(int levelTimer)throws RemoteException {
+        this.levelTimer = levelTimer;
+    }
+
+    public void sync_Frogger(Vect vect, int Refe)throws RemoteException{
 
 c.update_the_Frogger(vect,Refe,util);
 Frogposition.set(Refe,vect);
@@ -45,7 +53,9 @@ Frogposition.set(Refe,vect);
         river.get(nriverline).types.add(type);
         c.update_the_gameloggs(this,type,nriverline);
     }
-
+    public void sync_Timer(int type)throws RemoteException{
+     c.Sync_Timer(type,util);
+    }
     public int getDig() throws RemoteException{
         return dig;
     }
@@ -138,6 +148,10 @@ Frogposition.set(Refe,vect);
 
     public void setRiver(ArrayList<Road_Line> river)throws RemoteException{
         this.river = river;
+    }
+    public boolean Ready_up() throws  RemoteException{
+       return c.check_Ready2();
+
     }
     /*   private ArrayList<FroggerCollisionDetection> frogCol=new ArrayList<>();
 

@@ -8,9 +8,11 @@ public interface GameStateRI extends Remote {
     public boolean isReady() throws RemoteException;
     public void setReady(boolean ready)throws RemoteException;
     public boolean isHAsended()throws RemoteException;
-    public void setHAsended(boolean HAsended)throws RemoteException;
-
-
+    void setHAsended(boolean HAsended)throws RemoteException;
+    boolean Ready_up() throws  RemoteException;
+    public int getLevelTimer() throws RemoteException;
+    public void setLevelTimer(int levelTimer)throws RemoteException;
+    void sync_Timer(int type)throws RemoteException;
     /*public FroggerGameRI getC()throws RemoteException;
     public void setC(FroggerGameRI c)throws RemoteException;*/
 

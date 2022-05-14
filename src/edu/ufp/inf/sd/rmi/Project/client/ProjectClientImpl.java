@@ -137,7 +137,9 @@ Gamesession(h);
         return this.projectServerMainRI.Login(name,password,this);
     }
     public void Gamesession(GameSessionRI Si) throws IOException ,RemoteException{
-
+if(Si==null){
+    return;
+}
         int op=-1;
         do{
             System.out.println(  Si.Connect());
@@ -169,7 +171,7 @@ return;
                     System.out.println("Not Valied Input");
             }
 
-        }while(op != 3);
+        }while(op != 5);
 
 
     }

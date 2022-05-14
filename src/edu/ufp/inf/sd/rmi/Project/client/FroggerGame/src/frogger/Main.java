@@ -202,7 +202,7 @@ riverLine2=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH,3*32),
 		roadLine1.update(deltaMs);
 		if (this.vd.isMAster() ) {
 			if ((m = roadLine1.buildVehicle()) != null){
-				movingObjectsLayer.add(m);
+
 
 				switch (m.getClass().getName()) {
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Car":
@@ -226,17 +226,17 @@ riverLine2=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH,3*32),
 				}
 
 			}
-		}else {
+		}
 
-			Road_Line h=vd.getRoads().get(0);
-	m = roadLine1.GetVehicle(h);
+			Road_Line h1=vd.getRoads().get(0);
+	m = roadLine1.GetVehicle(h1);
 
 vd.getC().update_the_game2(vd.getUtil(),0);
 	if (m != null) {
 		movingObjectsLayer.add(m);
 
 }
-		}
+
 
 		roadLine2.update(deltaMs);
 		if (this.vd.isMAster() ) {
@@ -265,16 +265,16 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 				}
 			}
-		}else {
-			Road_Line h=vd.getRoads().get(1);
-				m = roadLine2.GetVehicle(h);
+		}
+			Road_Line h2=vd.getRoads().get(1);
+				m = roadLine2.GetVehicle(h2);
 				vd.getC().update_the_game2(vd.getUtil(),1);
 				if (m != null) {
 
 					movingObjectsLayer.add(m);
 				}
 
-		}
+
 
 
 
@@ -305,16 +305,16 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 				}
 			}
-		}else {
-			Road_Line h=vd.getRoads().get(2);
-				m = roadLine3.GetVehicle(h);
+		}
+			Road_Line h3=vd.getRoads().get(2);
+				m = roadLine3.GetVehicle(h3);
 				vd.getC().update_the_game2(vd.getUtil(),2);
 				if (m != null) {
 
 					movingObjectsLayer.add(m);
 				}
 
-		}
+
 		roadLine4.update(deltaMs);
 		if (this.vd.isMAster() ) {
 			if ((m = roadLine4.buildVehicle()) != null){
@@ -342,16 +342,16 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 				}
 			}
-		}else {
-        Road_Line h=vd.getRoads().get(3);
-			m = roadLine4.GetVehicle(h);
+		}
+        Road_Line h4=vd.getRoads().get(3);
+			m = roadLine4.GetVehicle(h4);
 			vd.getC().update_the_game2(vd.getUtil(),3);
 			if (m != null) {
 
 				movingObjectsLayer.add(m);
 			}
 
-		}
+
 		roadLine5.update(deltaMs);
 		if (this.vd.isMAster() ) {
 			if ((m = roadLine5.buildVehicle()) != null){
@@ -378,16 +378,16 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 				}
 			}
-		}else {
-			Road_Line h=vd.getRoads().get(4);
-			m = roadLine5.GetVehicle(h);
+		}
+			Road_Line h5=vd.getRoads().get(4);
+			m = roadLine5.GetVehicle(h5);
 			vd.getC().update_the_game2(vd.getUtil(),4);
 			if (m != null) {
 
 				movingObjectsLayer.add(m);
 			}
 
-		}
+
 
 		/* River traffic updates */
 		riverLine1.update(deltaMs);
@@ -412,14 +412,14 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 				}
 			}
-		}else {
-			Road_Line h=vd.getRiver().get(0);
-			m = riverLine1.GETWithTurtles(h);
+		}
+			Road_Line h6=vd.getRiver().get(0);
+			m = riverLine1.GETWithTurtles(h6);
 			vd.getC().update_the_game2River(vd.getUtil(),0);
 			if (m != null) {
 				movingObjectsLayer.add(m);
 			}
-		}
+
 		//	if ((m = riverLine2.buildLongLogWithCrocodile(30)) != null)movingObjectsLayer.add(m);
 		riverLine2.update(deltaMs);
 		if (this.vd.isMAster() ){
@@ -446,14 +446,14 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 				}
 			}
-		}else {
-			Road_Line h=vd.getRiver().get(1);
-			m = riverLine2.GETWithTurtles(h);
+		}
+			Road_Line h7=vd.getRiver().get(1);
+			m = riverLine2.GETWithTurtles(h7);
 			vd.getC().update_the_game2River(vd.getUtil(),1);
 			if (m != null) {
 				movingObjectsLayer.add(m);
 			}
-		}
+
 		riverLine3.update(deltaMs);
 		if (this.vd.isMAster() ) {
 			if ((m = riverLine3.buildShortLogWithTurtles(50)) != null) {
@@ -479,14 +479,14 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 				}
 			}
-		}else {
-			Road_Line h = vd.getRiver().get(2);
-			m = riverLine3.GETWithTurtles(h);
+		}
+			Road_Line h8 = vd.getRiver().get(2);
+			m = riverLine3.GETWithTurtles(h8);
 			vd.getC().update_the_game2River(vd.getUtil(), 2);
 			if (m != null) {
 				movingObjectsLayer.add(m);
 			}
-		}
+
 
 //	if ((m = riverLine4.buildLongLogWithCrocodile(20)) != null) movingObjectsLayer.add(m);
 		riverLine4.update(deltaMs);
@@ -514,14 +514,14 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 				}
 			}
-		}else {
-			Road_Line h = vd.getRiver().get(3);
-			m = riverLine4.GETWithTurtles(h);
+		}
+			Road_Line h9 = vd.getRiver().get(3);
+			m = riverLine4.GETWithTurtles(h9);
 			vd.getC().update_the_game2River(vd.getUtil(), 3);
 			if (m != null) {
 				movingObjectsLayer.add(m);
 			}
-		}
+
 		//		if ((m =riverLine5.buildShortLogWithTurtles(10)) != null) movingObjectsLayer.add(m);
 		riverLine5.update(deltaMs);
 		if (this.vd.isMAster() ) {
@@ -548,14 +548,14 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 				}
 			}
-		}else {
-			Road_Line h = vd.getRiver().get(4);
-			m = riverLine5.GETWithTurtles(h);
+		}
+			Road_Line h10 = vd.getRiver().get(4);
+			m = riverLine5.GETWithTurtles(h10);
 			vd.getC().update_the_game2River(vd.getUtil(), 4);
 			if (m != null) {
 				movingObjectsLayer.add(m);
 			}
-		}
+
 		// Do Wind
 		if ((m = wind.genParticles(GameLevel)) != null) particleLayer.add(m);
 
@@ -618,8 +618,7 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 				listenInput=false;
 		}
 		for (int i = 0; i <vd.getFrogposition().size() ; i++) {
-			if ((vd.getFrogposition().get(i).getX()!=0 ||vd.getFrogposition().get(i).getY()!=0)&&i!=Refe ){
-System.out.println(vd.getFrogposition().get(i).getX()+""+vd.getFrogposition().get(i).getY());
+			if ((vd.getFrogposition().get(i).getX()!=0 ||vd.getFrogposition().get(i).getY()!=0) ){
 				if (vd.getFrogposition().get(i).getX()==0.0 && vd.getFrogposition().get(i).getY()==-1.0){
 					Frog.get(i).moveUpOther();
 					vd.getC().update_the_Frogger2(vd.getUtil(),i);
@@ -627,10 +626,10 @@ System.out.println(vd.getFrogposition().get(i).getX()+""+vd.getFrogposition().ge
 				} else if (vd.getFrogposition().get(i).getX()==0.0 &&vd.getFrogposition().get(i).getY()==1.0) {
 					Frog.get(i).moveDownOther();
 					vd.getC().update_the_Frogger2(vd.getUtil(),i);
-				}else if (vd.getFrogposition().get(i).getX()==1.0 &&vd.getFrogposition().get(i).getY()==0.0) {
+				}else if (vd.getFrogposition().get(i).getX()==-1.0 &&vd.getFrogposition().get(i).getY()==0.0) {
 					Frog.get(i).moveRightother();
 					vd.getC().update_the_Frogger2(vd.getUtil(),i);
-				}else if (vd.getFrogposition().get(i).getX()==-1.0 &&vd.getFrogposition().get(i).getY()==0.0) {
+				}else if (vd.getFrogposition().get(i).getX()==1.0 &&vd.getFrogposition().get(i).getY()==0.0) {
 					Frog.get(i).moveLeftother();
 					vd.getC().update_the_Frogger2(vd.getUtil(),i);
 				}
@@ -671,6 +670,10 @@ System.out.println(vd.getFrogposition().get(i).getX()+""+vd.getFrogposition().ge
 					space_has_been_released = false;
 					break;
 				default:
+					vd.setReady(true);
+					while(!vd.Ready_up()){
+
+					}
 					GameLives = FROGGER_LIVES;
 					GameScore = 0;
 					GameLevel = STARTING_LEVEL;

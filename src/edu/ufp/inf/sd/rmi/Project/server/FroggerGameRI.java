@@ -15,6 +15,9 @@ public interface FroggerGameRI extends Remote {
     HashMap<UtilRI, GameStateRI> getUtils() throws RemoteException;
     String getDific() throws RemoteException;
     void ready_the_game(UtilRI h) throws RemoteException;
+     boolean check_Ready2()throws RemoteException;
+    void Sync_Timer(int j, UtilRI g)throws RemoteException;
+
     int getN() throws RemoteException;
     boolean isRun() throws RemoteException;
     String Difficulty(int difficulty) throws RemoteException;
