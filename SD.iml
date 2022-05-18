@@ -12,5 +12,6 @@
     <orderEntry type="library" name="slf4j.simple" level="project" />
     <orderEntry type="library" name="auth0.java.jwt" level="project" />
     <orderEntry type="library" name="javax.activation-1.2.0" level="project" />
+    <orderEntry type="library" name="json-20210307" level="project" />
   </component>
 </module>

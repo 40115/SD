@@ -5,7 +5,9 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public interface GameStateRI extends Remote {
-    public boolean isReady() throws RemoteException;
+    boolean isReady() throws RemoteException;
+    boolean isTerminated() throws RemoteException;
+    public void setTerminated(boolean terminated)throws RemoteException;
     public void setReady(boolean ready)throws RemoteException;
     public boolean isHAsended()throws RemoteException;
     void setHAsended(boolean HAsended)throws RemoteException;
@@ -13,6 +15,8 @@ public interface GameStateRI extends Remote {
     public int getLevelTimer() throws RemoteException;
     public void setLevelTimer(int levelTimer)throws RemoteException;
     void sync_Timer(int type)throws RemoteException;
+    public int getGameLives() throws RemoteException;
+    public void setGameLives(int gameLives)throws RemoteException ;
     /*public FroggerGameRI getC()throws RemoteException;
     public void setC(FroggerGameRI c)throws RemoteException;*/
 
@@ -82,6 +86,8 @@ public interface GameStateRI extends Remote {
     void setDig(int dig) throws RemoteException;
     void sync_Frogger(Vect vect,int Refe)throws RemoteException;
     void sync_Road_Line(int type, int nriverline)throws RemoteException;
+    public void setIsDead(ArrayList<Integer> isDead) throws RemoteException;
+    public ArrayList<Integer> getIsDead()throws RemoteException;
     void setUtil(UtilRI util) throws RemoteException;
     UtilRI getUtil() throws RemoteException;
     void setRefe(int refe)throws RemoteException;
@@ -93,4 +99,5 @@ public interface GameStateRI extends Remote {
     ArrayList<Road_Line> getRiver()throws RemoteException;
     void sync_River_Line(int type, int nriverline)throws RemoteException;
 
+    public void FroggerSDie(int Ref,int Re) throws RemoteException;
 }

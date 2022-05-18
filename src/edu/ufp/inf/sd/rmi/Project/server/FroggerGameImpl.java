@@ -3,9 +3,7 @@ package edu.ufp.inf.sd.rmi.Project.server;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameRI{
     HashMap<UtilRI,GameStateRI> Utils;
@@ -53,11 +51,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
     public void update_the_game(GameStateRI j,int type,int nroad) throws RemoteException {
         if (j.isMAster()) {
             for (GameStateRI l : this.Utils.values()) {
-
                l.getRoads().get(nroad).getTypes().add(type);
-
-
-
             }
         }
 
@@ -74,15 +68,27 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         for (UtilRI s : this.Utils.keySet()) {
             if (s.hashCode() == g.hashCode()) {
                 GameStateRI l = this.Utils.get(s);
-
-
                     if (l.getRoads().get(i).getTypes().size() > 0) {
                         l.getRoads().get(i).getTypes().remove(0);
-
-
-
                 }
 
+            }
+        }
+
+    }
+    public void Froogdie(UtilRI g,int i,int status) throws RemoteException {
+        if (status==1) {
+            for (UtilRI s : this.Utils.keySet()) {
+                    GameStateRI l = this.Utils.get(s);
+                    l.getIsDead().set(i, status);
+            }
+        }else {
+            for (UtilRI s : this.Utils.keySet()) {
+                if (s.hashCode() == g.hashCode()) {
+                    GameStateRI l = this.Utils.get(s);
+                    l.getIsDead().set(i, status);
+
+                }
             }
         }
 
@@ -109,15 +115,13 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
                     l.getFrogposition().get(h).setX(d.x);
                     l.getFrogposition().get(h).setY(d.y);
         }
-
+        Test_coonect();
     }
     public void update_the_Frogger2(UtilRI g,int h) throws RemoteException {
         for (UtilRI s : this.Utils.keySet()) {
             if (s.hashCode() == g.hashCode()) {
                 GameStateRI l = this.Utils.get(s);
-                    l.getFrogposition().set(h,new Vect(0,0));
-
-
+                l.getFrogposition().set(h,new Vect(0,0));
             }
         }
 
@@ -161,6 +165,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
 
         for (UtilRI f:this.Utils.keySet()) {
             for (int i = 0; i <this.Utils.size() ; i++) {
+                this.Utils.get(f).getIsDead().add(0);
                 this.Utils.get(f).getFrogposition().add(new Vect(0.0,0.0));
                 this.Utils.get(f).setReady(false);
             }
@@ -200,7 +205,40 @@ return true;
     public boolean is_Ended() throws RemoteException{
         return End;
     }
+    public boolean Test_coonect() throws RemoteException{
+        for (UtilRI h:Utils.keySet()) {
+            if (!Utils.get(h).isTerminated()) {
+                try {
+                    h.getProjectClientRI().test();
+                } catch (RemoteException e) {
+                    if (Utils.get(h).isMAster()) {
+                        for (UtilRI h1 : Utils.keySet()) {
+                            if (h1.hashCode() != h.hashCode()) {
+                                Utils.get(h1).setMAster(true);
+                                Utils.get(h).setMAster(false);
+                                Utils.get(h).setTerminated(true);
+                                return false;
+                            }
+                        }
 
+                    }else {
+                        Utils.get(h).setTerminated(true);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    public void Return_coonect(UtilRI h) throws RemoteException{
+        for (UtilRI h1 : Utils.keySet()) {
+            if (h1.hashCode()==h.hashCode()){
+                Utils.get(h1).setTerminated(false);
+                return;
+            }
+
+        }
+
+    }
     public HashMap<UtilRI, GameStateRI> getUtils() throws RemoteException{
         return Utils;
     }
@@ -221,6 +259,15 @@ return true;
     public boolean isRun() throws RemoteException{
         return Run;
     }
+    public GameStateRI Get_The_Game_State(UtilRI h) throws RemoteException{
+        for (UtilRI s: this.Utils.keySet()) {
+            if (s.hashCode()==h.hashCode()){
+                return  this.Utils.get(s);
+            }
+        }
+        return null;
+    }
+
 
 
 }

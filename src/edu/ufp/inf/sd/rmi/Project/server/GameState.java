@@ -4,13 +4,19 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
+
+
 public class GameState extends UnicastRemoteObject implements GameStateRI{
+    private static final int FROGGER_LIVES =5 ;
     private int Refe;
+    private boolean Terminated=false;
+    private ArrayList<Integer> isDead=new ArrayList<>();
     private boolean isMAster=false;
     public int levelTimer=0;
     private boolean HAsended=false;
     private boolean Ready=false;
     public FroggerGameRI c;
+    public int GameLives    = FROGGER_LIVES;
     private int dig;
 private  UtilRI util;
     public  int refer=0;
@@ -36,6 +42,22 @@ private  UtilRI util;
         return levelTimer;
     }
 
+    public boolean isTerminated() throws RemoteException{
+        return Terminated;
+    }
+
+    public void setTerminated(boolean terminated)throws RemoteException {
+        Terminated = terminated;
+    }
+
+    public ArrayList<Integer> getIsDead()throws RemoteException {
+        return isDead;
+    }
+
+    public void setIsDead(ArrayList<Integer> isDead) throws RemoteException{
+        this.isDead = isDead;
+    }
+
     public void setLevelTimer(int levelTimer)throws RemoteException {
         this.levelTimer = levelTimer;
     }
@@ -46,13 +68,17 @@ c.update_the_Frogger(vect,Refe,util);
 Frogposition.set(Refe,vect);
     }
     public void sync_Road_Line(int type, int nriverline)throws RemoteException{
-    roads.get(nriverline).types.add(type);
     c.update_the_game(this,type,nriverline);
     }
     public void sync_River_Line(int type, int nriverline)throws RemoteException{
-        river.get(nriverline).types.add(type);
         c.update_the_gameloggs(this,type,nriverline);
     }
+
+    @Override
+    public void FroggerSDie(int Ref,int Re) throws RemoteException {
+       c.Froogdie(this.util,Ref,Re);
+    }
+
     public void sync_Timer(int type)throws RemoteException{
      c.Sync_Timer(type,util);
     }
@@ -62,6 +88,14 @@ Frogposition.set(Refe,vect);
 
     public void setDig(int dig) throws RemoteException{
         this.dig = dig;
+    }
+
+    public int getGameLives() throws RemoteException{
+        return GameLives;
+    }
+
+    public void setGameLives(int gameLives)throws RemoteException {
+        GameLives = gameLives;
     }
 
     public int getRefer() {
@@ -153,6 +187,7 @@ Frogposition.set(Refe,vect);
        return c.check_Ready2();
 
     }
+
     /*   private ArrayList<FroggerCollisionDetection> frogCol=new ArrayList<>();
 
     private ArrayList<Frogger> frog=new ArrayList<>();

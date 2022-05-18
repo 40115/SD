@@ -309,20 +309,20 @@ public class Frogger extends MovingEntity {
      * Frogger dies
      */
 	public void die() throws RemoteException {
-		if (isAnimating)
+
+
+		if (isAnimating || !vd.isMAster())
 			return;
-		
-		if (!cheating) {
-		    AudioEfx.frogDie.play(0.2);
+		game.vd.FroggerSDie(vd.getRefe(),1);
+		    /*AudioEfx.frogDie.play(0.2);
 		    followObject = null;
 		    isAlive = false;
-		    currentFrame = 4;	// dead sprite   
-		    game.GameLives--;
+		    currentFrame = 4;	// dead sprite
+			int au=vd.getGameLives()-1;
+			game.vd.setGameLives(au);
 		    hw_hasMoved = true;
-		}
-		
 		timeOfDeath = getTime();
-		game.levelTimer=Main.DEFAULT_LEVEL_TIME;
+		game.levelTimer=Main.DEFAULT_LEVEL_TIME;*/
 	}
 	
 	/**
@@ -335,7 +335,8 @@ public class Frogger extends MovingEntity {
 			game.GameScore+= game.levelTimer;
 			if (g.isBonus) {
 				AudioEfx.bonus.play(0.2);
-				game.GameLives++;
+				int au=vd.getGameLives()+1;
+				game.vd.setGameLives(au);
 			}
 			g.reached();
 			resetFrog();
@@ -346,8 +347,12 @@ public class Frogger extends MovingEntity {
 	}
 	
 	public void update(final long deltaMs) {
-		if (game.GameLives <= 0)
-			return;
+		try {
+			if (game.vd.getGameLives() <= 0)
+				return;
+		} catch (RemoteException e) {
+			throw new RuntimeException(e);
+		}
 
 		// if dead, stay dead for 2 seconds.
 		if (!isAlive && timeOfDeath + 2000 < System.currentTimeMillis()) {
@@ -368,7 +373,8 @@ public class Frogger extends MovingEntity {
 			deltaTime = 0;
 			try {
 				if (vd.isMAster()) {
-					int g=game.levelTimer--;
+					int g=game.levelTimer-1;
+
 					vd.sync_Timer(g);
 				}
 				game.levelTimer=vd.getLevelTimer();
@@ -379,9 +385,28 @@ public class Frogger extends MovingEntity {
 
 		try {
 			if (	game.levelTimer <= 0)
+
 				die();
 		} catch (RemoteException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public void die2(int i) throws RemoteException {
+
+		if (!cheating ) {
+		    AudioEfx.frogDie.play(0.2);
+		    followObject = null;
+		    isAlive = false;
+		    currentFrame = 4;	// dead sprite
+			if (vd.getRefe()==i) {
+				int au = vd.getGameLives() - 1;
+				game.vd.setGameLives(au);
+			}
+		    hw_hasMoved = true;
+
+		}
+		timeOfDeath = getTime();
+		game.levelTimer=Main.DEFAULT_LEVEL_TIME;
 	}
 }

@@ -168,7 +168,7 @@ public class MovingEntityFactory {
 
 
 	if (h.getTypes().size()!=0) {
-	/*	StringBuilder j= new StringBuilder("");
+/*		StringBuilder j= new StringBuilder("");
 		for (int i = 0; i <h.getTypes().size() ; i++) {
 		j.append(h.getTypes().get(i));
 		}
@@ -176,19 +176,15 @@ public class MovingEntityFactory {
 		System.out.println(j);*/
 		switch (h.getTypes().get(0)) {
 			case 0:
-
-				return buildBasicObject(CAR, 100);
+				rateMs = creationRate[CAR];
+				return new Car(position, velocity, r.nextInt(Car.TYPES));
 			case 1:
 
-				return buildBasicObject(TRUCK, 100);
+				rateMs = creationRate[TRUCK];
+				return new Truck(position, velocity);
 			case 2:
+					return  new CopCar(position, velocity.scale(5));
 
-				if (Math.abs(velocity.getX() * copCarDelay) > Main.WORLD_WIDTH) {
-					MovingEntity m = new CopCar(position, velocity.scale(5));
-					copCarDelay = 0;
-					return m;
-				}
-				break;
 			default:
 
 				return null;

@@ -146,11 +146,8 @@ if(Si==null){
 
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(System.in));
-
-            // Reading data using readLine
             String name = reader.readLine();
             op=Integer.parseInt(name);
-
             switch (op){
                 case 1:
                      System.out.println(Si.List_Games());
@@ -179,6 +176,7 @@ return;
 
     @Override
     public boolean start_Game(GameStateRI j)throws RemoteException {
+        if (j==null)return false;
 currentgamestate=j;
 distrated=true;
         System.out.println("\nHERE\n");
@@ -215,7 +213,11 @@ if (l==null){
         return;
     }
 }while(Id!=0);
-l.ready_the_game(h.getUtil());
+        if (l.isRun()){
+            start_Game(l.Get_The_Game_State(h.getUtil()));
+        }else {
+            l.ready_the_game(h.getUtil());
+        }
         while(!distrated){
     System.out.println("\nGame Ready\n1-Left\n");
     reader = new BufferedReader(

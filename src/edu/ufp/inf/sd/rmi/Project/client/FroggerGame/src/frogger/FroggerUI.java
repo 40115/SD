@@ -74,21 +74,25 @@ public class FroggerUI implements ViewableLayer {
 		font.render("Score: " + game.GameScore, rc,
 				AffineTransform.getTranslateInstance(310, 7));
 
-		if (game.GameLives > 0) {
-			int dx = 0;
+		try {
+			if (game.vd.getGameLives() > 0) {
+				int dx = 0;
 
-			// if player has more than 10 lives, draw only 10 hearts
-			int maxHearts =game.GameLives;
-			if (maxHearts > 10)
-				maxHearts = 10;
-			else
-				maxHearts = game.GameLives;
+				// if player has more than 10 lives, draw only 10 hearts
+				int maxHearts =game.vd.getGameLives();
+				if (maxHearts > 10)
+					maxHearts = 10;
+				else
+					maxHearts = game.vd.getGameLives();
 
-			for (int i = 0; i < maxHearts; i++ ) {
-				heart.get(0).render(rc,
-						AffineTransform.getTranslateInstance(dx+8, 8));
-				dx = 16 * (i + 1);
+				for (int i = 0; i < maxHearts; i++ ) {
+					heart.get(0).render(rc,
+							AffineTransform.getTranslateInstance(dx+8, 8));
+					dx = 16 * (i + 1);
+				}
 			}
+		} catch (RemoteException e) {
+			throw new RuntimeException(e);
 		}
 
 		font.render("L" + game.GameLevel, rc,

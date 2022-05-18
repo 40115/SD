@@ -54,7 +54,7 @@ public class FroggerCollisionDetection  {
 		Vector2D frogPos = frogSphere.getCenterPosition();
 		double dist2;
 		
-		if (isOutOfBounds()) {
+		if (isOutOfBounds() ) {
 			frog.die();
 			return;
 		}
