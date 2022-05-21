@@ -10,10 +10,14 @@ public class GameState2 {
     public int levelTimer=0;
     private boolean HAsended=false;
     private boolean Ready=false;
-    public FroggerGameRI c;
     public int GameLives    = FROGGER_LIVES;
     private int dig;
     public  int refer=0;
 public String Name;
 
+    public GameState2(int refe, boolean isMAster, String name) {
+        Refe = refe;
+        this.isMAster = isMAster;
+        Name = name;
+    }
 }
