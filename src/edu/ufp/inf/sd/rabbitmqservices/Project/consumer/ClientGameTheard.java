@@ -51,12 +51,34 @@ h1.run(fq,g);
             System.out.println(" [x] Received '" +consumerTag+ "Message"+ message + "'");
             String[] decompiler=message.split("\\|");
             switch (decompiler[0]) {
-                case "B":
+                //String msg=decompiler[0]+"|"+mesg[0]+","+mesg[1]+","+ Arrays.toString(name);
+                case "ROADS":
+String [] mes=decompiler[1].split(",");
+GameState2 ga;
+                    for (int i = 0; i <g.gameState2s.size() ; i++) {
+                        if (Objects.equals(g.gameState2s.get(i).Name, Name)) {
+                            ga=g.gameState2s.get(i);
+                            if (ga.roads.get(Integer.parseInt(mes[1])).getTypes().size()==0){
+                                ga.roads.get(Integer.parseInt(mes[1])).getTypes().add(Integer.valueOf(mes[1]));
+break;
+                            }
+                        }
+                    }
 
                       break;
 
-                case "ST":
-
+                case "RIVER":
+                   mes=decompiler[1].split(",");
+                    for (int i = 0; i <g.gameState2s.size() ; i++) {
+                        if (Objects.equals(g.gameState2s.get(i).Name, Name)) {
+                            ga=g.gameState2s.get(i);
+                            if (ga.river.get(Integer.parseInt(mes[1])).getTypes().size()==0){
+                                ga.river.get(Integer.parseInt(mes[1])).getTypes().add(Integer.valueOf(mes[1]));
+                                break;
+                            }
+                        }
+                    }
+break;
 
 
             }

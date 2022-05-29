@@ -19,6 +19,7 @@ public class ProjectMainServer {
      * Remote interface that will hold reference MAIL_TO_ADDR the Servant impl
      */
     private ProjectMainRI projectServerMainRI;
+    // Conecta ao Registo do RMI
 
     public static void main(String[] args) {
         if (args != null && args.length < 3) {
@@ -39,6 +40,7 @@ public class ProjectMainServer {
         */
     }
 
+    // Cria o contexto do setup do RMI
 
     public ProjectMainServer(String[] args) {
         try {
@@ -53,6 +55,7 @@ public class ProjectMainServer {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
         }
     }
+    // Faz o bind de um serviço ao registo do RMI
 
     private void rebindService() {
         try {
@@ -80,6 +83,7 @@ public class ProjectMainServer {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
+    // Carrega as propiadades do server
 
     private static void loadProperties() throws IOException {
 

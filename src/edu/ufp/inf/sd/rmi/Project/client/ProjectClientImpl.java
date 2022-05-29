@@ -23,6 +23,8 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
      * Remote interface that will hold the Servant proxy
      */
     private ProjectMainRI projectServerMainRI;
+    // Faz a ligação ao ContextRMI
+
     public ProjectClientImpl(String[] args) throws RemoteException {
 
         super();
@@ -38,6 +40,7 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
             Logger.getLogger(ProjectClientClient.class.getName()).log(Level.SEVERE, null, e);
         }
     }
+    // Verifica se o registo está correto e aguarda pela confirmação
 
     Remote lookupService() {
         try {
@@ -60,6 +63,7 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
         }
         return projectServerMainRI;
     }
+    // Recebe e coordena a interface inicial no registo do jogo
 
     void playService() throws IOException, RemoteException{
         //============ Call HelloWorld remote service ============
@@ -103,6 +107,8 @@ Gamesession(h);
         }while(op!=3);
     }
 
+    // Regista o jogador no servidor, se este não existir
+
     public void Register() throws IOException,RemoteException {
         System.out.println("\nEnter Name:\n");
         BufferedReader reader = new BufferedReader(
@@ -123,6 +129,8 @@ Gamesession(h);
 
 
     }
+    // Faz o login do jogador e devolve null caso nao se pode auth
+
     public GameSessionRI Login() throws IOException ,RemoteException{
         System.out.println("\nEnter Name:\n");
         BufferedReader reader = new BufferedReader(
@@ -136,6 +144,7 @@ Gamesession(h);
         String password= reader.readLine();
         return this.projectServerMainRI.Login(name,password,this);
     }
+    // Permite listar os jogos, juntar a um jogo, criar um jogo e fazer log out
     public void Gamesession(GameSessionRI Si) throws IOException ,RemoteException{
 if(Si==null){
     return;
@@ -173,6 +182,7 @@ return;
 
     }
 
+    // Inicia o jogo recebendo a referenci a interface do estado do jogo
 
     @Override
     public boolean start_Game(GameStateRI j)throws RemoteException {
@@ -183,6 +193,7 @@ distrated=true;
 return true;
 
     }
+    // Verifica se o client ainda eat disponovel apartir do server
 
     @Override
     public void test()throws RemoteException {
@@ -190,6 +201,7 @@ return true;
     }
 
 
+    // Faz com que o jogador se junte ao jogo (attach)
 
     public void Join_Game(GameSessionRI h) throws IOException {
         System.out.println("\n What game would you like to play with\n");
@@ -235,6 +247,8 @@ System.out.println("\nNot valied");
         Main.main(f,currentgamestate);
 
     }
+    // Permite ao jogador criar um jogo como o servidor
+
     public void Create_Game(GameSessionRI h) throws IOException {
         System.out.println("\n Creating Game\n");
         int n=0;

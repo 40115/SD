@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -122,16 +123,35 @@ public class Backend {
                     d1.gameState2s.add(h2);
                     break;
                 case "R1":
-                    //R1|1,Ruben|queuename
                     mesg=decompiler[1].split(",");
-                    FroggerGame2 d2=database.Games.get(Integer.parseInt(mesg[0]));
-                    for (int i = 0; i <d2.gameState2s.size() ; i++) {
-                        if (Objects.equals(d2.gameState2s.get(i).Name, mesg[1])){
-d2.gameState2s.get(i).setReady(true);
-break;
+                    FroggerGame2 f=null;
+                    for (int i = 0; i <database.Games.size() ; i++) {
+                        if (database.Games.get(i).Id==Integer.parseInt(mesg[0])){
+                            f=database.Games.get(i);
                         }
                     }
+                     if (f==null){
+                         f=new FroggerGame2(Integer.parseInt(mesg[0]),decompiler[2],channel );
+                     }
+                    for (int i = 1; i <mesg.length ; i++) {
+                        boolean fa=false;
+                        for (int j = 0; j <f.gameState2s.size() ; j++) {
+                            if (Objects.equals(f.gameState2s.get(j).Name, mesg[i])) {
+                                fa = true;
+                                break;
+                            }
+                        }
+                        if (!fa){
+                            if (i == 1) {
+                                f.gameState2s.add(new GameState2(0, true, mesg[i]));
+                            } else {
+                                f.gameState2s.add(new GameState2(i, false, mesg[i]));
 
+                            }
+                        }
+                    }
+                    BackendTHread tHread=new BackendTHread();
+                    tHread.run(channel,f.exhange_name, name[0],f);
                     break;
 
             }
@@ -143,6 +163,30 @@ break;
             System.out.println(" [x] Received '" + message + "'");
             String[] decompiler=message.split("\\|");
             switch (decompiler[0]){
+
+                case "RIVER":
+                case "ROADS":
+                    //0 section 1 type
+                    //						 msg="ROADS|0,1,"+vd.Name+","+game2.getId();
+                 String[] mesg=decompiler[1].split(",");
+                    FroggerGame2 d=null;
+                    for (int i = 0; i <database.Games.size() ; i++) {
+                        if (database.Games.get(i).getId()==Integer.parseInt(mesg[3])){
+                            d=database.Games.get(i);
+                        }
+                    }
+                    if (d==null)break;
+                    for (int i = 0; i <d.gameState2s.size() ; i++) {
+                        if (Objects.equals(d.gameState2s.get(i).Name, decompiler[2])){
+                            if (d.gameState2s.get(i).isMAster()){
+                                String msg=decompiler[0]+"|"+mesg[0]+","+mesg[1]+","+ Arrays.toString(name);
+                                channel.basicPublish(d.exhange_name, "",null,msg.getBytes(StandardCharsets.UTF_8));
+                                break;
+                            }
+
+                        }
+                    }
+                    break;
 
             }
 

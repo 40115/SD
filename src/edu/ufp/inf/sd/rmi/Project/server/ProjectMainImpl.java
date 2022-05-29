@@ -21,14 +21,18 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
         super();
     }
 
+    // Return a string para o utilizador ver as suas opçoes
 
     @Override
     public String Connect()  throws RemoteException {
         return "\nHello, Welcome to City 17 you have chosen or been Chosen to...\n" +"Select An option:\n" + "1-Register\n" + "2-Login In\n" + "3-Leave\n";
     }
+    // Regista o jogador na Database(DB)
+
     public boolean Register(String Username, String Password,ProjectClientRI projectClientRI) throws RemoteException{
             return Database.Insert_Util(Username, Password);
     }
+    // Verifica se o usuario existe na Database
 
     @Override
     public GameSessionRI Login(String Email, String Password,ProjectClientRI projectClientRI) throws RemoteException {
@@ -58,6 +62,8 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
         return null;
 
     }
+    // Verifica se o token do utilizador esta valido ao nao
+
     protected Boolean Valid(String Token,UtilRI j) throws RemoteException{
         for (GameSessionRI k:this.users.values()) {
             if (Objects.equals(j.getPassword(), k.getUtil().getPassword())&& Objects.equals(j.getEmail(), k.getUtil().getEmail())){
@@ -80,6 +86,8 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
 
         return false;
     }
+    // Faz a remoção de um jogo
+
     protected void Remove_Game() throws RemoteException{
         for (int i = 0; i <this.Game.size() ; i++) {
             if (this.Game.get(i).getUtils().size()==0){

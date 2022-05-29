@@ -26,6 +26,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         this.PM = pm;
 
     }
+    // Seleção da dificuldade do jogo
 
     public String Difficulty(int difficulty) throws RemoteException {
         switch (difficulty){
@@ -47,6 +48,7 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         }
     }
 
+    // Atualização do jogo entre todos os jogadores, fazendo a adição das ruas na ArrayList
 
     public void update_the_game(GameStateRI j,int type,int nroad) throws RemoteException {
         if (j.isMAster()) {
@@ -56,6 +58,8 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         }
 
     }
+    // Atualização do jogo entre todos os jogadores, fazendo a adição dos rios  na ArrayList
+
     public void update_the_gameloggs(GameStateRI j,int type,int nriver) throws RemoteException {
         if (j.isMAster()) {
             for (GameStateRI l : this.Utils.values()) {
@@ -64,6 +68,8 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         }
 
     }
+    // Atualiza o jogo, fazendo a remoção das ruas do ArrayList
+
     public void update_the_game2(UtilRI g,int i) throws RemoteException {
         for (UtilRI s : this.Utils.keySet()) {
             if (s.hashCode() == g.hashCode()) {
@@ -76,6 +82,8 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         }
 
     }
+    // Confirma se algum dos clientes morreu e tem de ser retirado da sync
+
     public void I_HAVE_ENDED(UtilRI g) throws RemoteException {
         for (UtilRI s : this.Utils.keySet()) {
             if (s.hashCode() == g.hashCode()) {
@@ -86,6 +94,8 @@ l.setTerminated(true);
         }
 
     }
+    // Confirma se algum sapo dos jogadores morreu
+
     public void Froogdie(UtilRI g,int i,int status) throws RemoteException {
         if (status==1) {
             for (UtilRI s : this.Utils.keySet()) {
@@ -107,6 +117,7 @@ l.setTerminated(true);
     }
 
 
+    // Atualiza o jogo, removendo da ArrayList os rios não necessarios
 
     public void update_the_game2River(UtilRI g,int i) throws RemoteException {
         for (UtilRI s : this.Utils.keySet()) {
@@ -121,6 +132,8 @@ l.setTerminated(true);
         }
 
     }
+    // Atualiza a posição do sapo no jogo e verifica a conecção do jogador ao jogo
+
     public void update_the_Frogger(Vect d, int h, UtilRI g) throws RemoteException {
         for (UtilRI s : this.Utils.keySet()) {
                 GameStateRI l = this.Utils.get(s);
@@ -129,6 +142,8 @@ l.setTerminated(true);
         }
         Test_coonect();
     }
+    // Atualiza a posição do sapo, neste caso, é usada para registar o movimento do sapo ao longo do jogo
+
     public void update_the_Frogger2(UtilRI g,int h) throws RemoteException {
         for (UtilRI s : this.Utils.keySet()) {
             if (s.hashCode() == g.hashCode()) {
@@ -138,12 +153,16 @@ l.setTerminated(true);
         }
 
     }
+    // Sincroniza o tempo do jogo entre os jogadores
+
     public void Sync_Timer(int j, UtilRI g)throws RemoteException{
         for (UtilRI s : this.Utils.keySet()) {
                 GameStateRI l = this.Utils.get(s);
                 l.setLevelTimer(j);
         }
     }
+    // Permite a saida do jogador do jogo
+
     public void leve_the_game(GameSessionRI j) throws RemoteException{
         for (UtilRI l : this.Utils.keySet()) {
             if (l.hashCode()==j.getUtil().hashCode()){
@@ -160,6 +179,8 @@ l.setTerminated(true);
         }
 
     }
+    // Verifica se todos os jogadores estão prontos para o jogo
+
     public void ready_the_game(UtilRI h) throws RemoteException{
         for (UtilRI f:this.Utils.keySet()) {
             if (f.hashCode()==h.hashCode()){
@@ -172,6 +193,7 @@ l.setTerminated(true);
 
         }
     }
+    // Após a verificação ter ocorrido, é inidicando aos client para começar o jogo
 
     private void start_Game() throws RemoteException{
 
@@ -190,6 +212,7 @@ l.setTerminated(true);
         }
 
     }
+    // Verifica se existe 2 ou mais jogadores e se estão prontos para o jogo
 
     private boolean check_Ready()throws RemoteException {
 
@@ -204,6 +227,7 @@ l.setTerminated(true);
         }
 return true;
     }
+    // Verifica se os jogadores estão prontos para outro jogo
 
     public boolean check_Ready2()throws RemoteException {
         for (GameStateRI f:this.Utils.values()) {
@@ -214,9 +238,13 @@ return true;
         }
         return true;
     }
+    // Verifica se o jogo terminou
+
     public boolean is_Ended() throws RemoteException{
         return End;
     }
+    // Testa a conecção dos jogadores ao jogo
+
     public boolean Test_coonect() throws RemoteException{
         for (UtilRI h:Utils.keySet()) {
             if (!Utils.get(h).isTerminated()) {
@@ -241,6 +269,8 @@ return true;
         }
         return true;
     }
+    // Se o jogador estiver conectado é retornado o connect
+
     public void Return_coonect(UtilRI h) throws RemoteException{
         for (UtilRI h1 : Utils.keySet()) {
             if (h1.hashCode()==h.hashCode()){
@@ -251,11 +281,14 @@ return true;
         }
 
     }
+    // Após estarem todos os jogadores prontos, retorna a variavel a confirmar que pode começar o jogo
+
     public HashMap<UtilRI, GameStateRI> getUtils() throws RemoteException{
         return Utils;
     }
 
 
+    // Obtêm o estado atual do jogo
 
     public String getDific()throws RemoteException {
         return Dific;

@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ProjectClientClient {
+    // Inicia o programa do lado do cliente e liga-se ao ProjectClientImpl
 
     public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, RemoteException {
         if (args != null && args.length < 2) {

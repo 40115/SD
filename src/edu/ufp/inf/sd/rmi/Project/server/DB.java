@@ -14,12 +14,18 @@ ArrayList<Integer> points=new ArrayList<>();
         points.add(0);
         points.add(0);
     }
+    // Verifica se o usuario e a password existe na database
+
     public boolean Check_Util(String Username,String Password) throws RemoteException {
         return Objects.equals(this.Database.get(Username), Password);
     }
+    // Confirma se o nome do usuario existe na database
+
     public boolean Check_Util(String Username) throws RemoteException {
         return this.Database.get(Username) != null;
     }
+    // Adiciona os dados do jogador na database e atribui-lhe zero pontos
+
     public boolean Insert_Util(String Username, String Password) throws RemoteException {
         if (Check_Util(Username)){
             return false;
@@ -30,6 +36,7 @@ ArrayList<Integer> points=new ArrayList<>();
         }
 
         }
+    // Faz a adição de pontos ao jogador correspondente
 
     public void Add_Points(String Username,Integer point) throws RemoteException{
   int i=0;

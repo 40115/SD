@@ -196,6 +196,28 @@ break;
                           channel.basicPublish(Back,"",null,message.getBytes(StandardCharsets.UTF_8));
                         }
                         break;
+                    case "RIVER":
+                    case "ROADS":
+                        //0 section 1 type
+                        //						 msg="ROADS|0,1,"+vd.Name+","+game2.getId();
+                         mesg=decompiler[1].split(",");
+                         FroggerGame2 d=null;
+                        for (int i = 0; i <database.Games.size() ; i++) {
+                            if (database.Games.get(i).getId()==Integer.parseInt(mesg[3])){
+                                d=database.Games.get(i);
+                            }
+                        }
+                        if (d==null)break;
+                        for (int i = 0; i <d.gameState2s.size() ; i++) {
+                            if (Objects.equals(d.gameState2s.get(i).Name, mesg[2])){
+                                if (d.gameState2s.get(i).isMAster()){
+                                    channel.basicPublish("",Workqueue,null,message.getBytes(StandardCharsets.UTF_8));
+break;
+                                }
+
+                            }
+                        }
+                        break;
 
                         }
                 while (!run){

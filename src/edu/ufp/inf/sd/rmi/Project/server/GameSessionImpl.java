@@ -16,6 +16,7 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         this.Util=util;
         this.Token=token;
     }
+    // Remove o jogador da base de dados
 
     @Override
     public void LogOut() throws RemoteException {
@@ -23,6 +24,7 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
     }
 
 
+    // Permite conectar a um jogo, listar os jogos, criar um jogo e fazer o log out do jogo
 
     @Override
     public String Connect() throws RemoteException {
@@ -32,6 +34,8 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
         }
         return  "\nInvalid";
     }
+    // Lista os jogos presentes na ArrayList
+
     public String List_Games()throws RemoteException{
         StringBuilder j= new StringBuilder("List of Games:\n");
         for (int i = 0; i <this.PM.Game.size() ; i++) {
@@ -45,6 +49,8 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
 return j.toString();
 
     }
+    // Cria um jogo e adiciona a ArrayList
+
     public FroggerGameRI Create_Game() throws RemoteException{
 if (this.Check_Games()){
  return null;
@@ -61,6 +67,7 @@ if (this.Check_Games()){
     return l;
 }
     }
+    // Junta o jogador ao jogo escolhido
 
     public FroggerGameRI join_Game(Integer I) throws RemoteException {
         if (this.PM.Game.size()<I ||I<0){
@@ -83,6 +90,7 @@ if (this.Check_Games()){
         }
 
     }
+    // Verifica se existe jogos começados no servidor
 
     public boolean Check_Games()throws RemoteException{
         for (int i = 0; i <this.PM.Game.size() ; i++) {
@@ -93,6 +101,7 @@ if (this.Check_Games()){
         }
      return false;
     }
+    // Verifica se existe jogos no servidor
 
     public FroggerGameRI Check_Games2()throws RemoteException{
         for (int i = 0; i <this.PM.Game.size() ; i++) {
