@@ -278,7 +278,9 @@ do{
 }while(!distrated);
         String[] f =new String[2];
         System.out.println("Start ");
-        Main.main(f,currentgamestate);
+        Main f1=new Main(f,currentgamestate);
+        f1.run();
+        l.I_HAVE_ENDED(h.getUtil());
     }
 
 

@@ -23,5 +23,6 @@ public interface FroggerGameRI extends Remote {
     String Difficulty(int difficulty) throws RemoteException;
     void leve_the_game(GameSessionRI j) throws RemoteException;
     GameStateRI Get_The_Game_State(UtilRI h) throws RemoteException;
-    public void Froogdie(UtilRI g,int i,int status) throws RemoteException;
+    void Froogdie(UtilRI g,int i,int status) throws RemoteException;
+    void I_HAVE_ENDED(UtilRI g) throws RemoteException;
 }

@@ -71,7 +71,7 @@
 
   @REM Set CLASSPATH=%JAVAPROJ_CLASSES_FOLDER%;JAVA_RABBITMQ_TOOLS%
   @REM Set CLASSPATH=%JAVAPROJ_JAR_FILE%
-  @Set CLASSPATH=.;%JAVAPROJ_JAR_FILE%;%JAVA_RABBITMQ_TOOLS%
+@set CLASSPATH=.;%JAVAPROJ_JAR_FILE%;%JAVA_RABBITMQ_TOOLS%;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\mysql-connector-java-8.0.27.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\java-jwt-3.19.1.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\jackson-core-2.13.2.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\jackson-databind-2.13.2.2.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\lib\\jackson-annotations-2.13.2.jar;C:\\Users\\ruben\\IdeaProjects\\SD\\src\\edu\\ufp\\inf\\sd\\rmi\\Project\\client\\FroggerGame\\lib\\jig-1.7.5.jar
 
   @Set ABSPATH2CLASSES=%JAVAPROJ_CLASSES_FOLDER%
   @Set ABSPATH2SRC=%JAVAPROJ%/%JAVAPROJ_SRC%

@@ -73,6 +73,7 @@ return false;
     public void setGames(ArrayList<FroggerGame2> games) {
         Games = games;
     }
+
 }
 
 

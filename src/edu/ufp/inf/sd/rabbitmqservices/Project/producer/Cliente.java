@@ -49,7 +49,7 @@ public class Cliente {
 
 
         // Publish a message to the queue (content is byte array encoded with UTF-8)
-            channel.basicPublish("", queueName, null, messageI.get().getBytes("UTF-8"));
+            channel.basicPublish("", queueName, null, messageI.get().getBytes(StandardCharsets.UTF_8));
             System.out.println(" [x] Sent '" + messageI + "'");
         Clientthread h=new Clientthread();
         h.run(channel,queueName,pass,name.toString());
@@ -113,7 +113,6 @@ public class Cliente {
 
         while (true){
             Thread.sleep(4000);
-            System.out.println("Hello");
 
         }
 

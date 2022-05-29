@@ -5,9 +5,8 @@ import com.rabbitmq.client.CancelCallback;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DeliverCallback;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,8 +16,10 @@ public class ClientGameTheard extends Thread{
     }
 
 
-    public void run(String exchange, Channel channel,String Name,GameState2 j) throws IOException {
-        channel.exchangeDeclare(exchange, BuiltinExchangeType.FANOUT);
+    public void run(FroggerGame2 g, Channel channel,String Name) throws IOException {
+        channel.exchangeDeclare(g.exhange_name, BuiltinExchangeType.FANOUT);
+
+
         // Publisher pushes messages asynchronously, hence use DefaultConsumer callback
         //   that buffers messages until consumer is ready to handle them.
             /*Consumer client = new DefaultConsumer(channel) {
@@ -33,24 +34,25 @@ public class ClientGameTheard extends Thread{
 
         String queuename=channel.queueDeclare().getQueue();
         String routingkey="";
-        channel.queueBind(queuename,exchange,routingkey);
+        channel.queueBind(queuename,g.exhange_name,routingkey);
         Logger.getAnonymousLogger().log(Level.INFO,Thread.currentThread().getName()+":will create callback");
         System.out.println("waiting msg");
         //DeliverCallback is an handler callback (lambda method) to consume messages pushed by the sender.
         //Create an handler callback to receive messages from queue
+ClientGame h1=new ClientGame();
+GameState2 fq = null;
+        for (int i = 0; i <g.gameState2s.size() ; i++) {
+            if (Objects.equals(g.gameState2s.get(i).Name, Name)) {fq=g.gameState2s.get(i);break;}
+
+        }
+h1.run(fq,g);
         DeliverCallback deliverCallback=(consumerTag, delivery) -> {
             String message=new String(delivery.getBody(), "UTF-8");
             System.out.println(" [x] Received '" +consumerTag+ "Message"+ message + "'");
             String[] decompiler=message.split("\\|");
             switch (decompiler[0]) {
                 case "B":
-                    int id;
-                    do{
-                        BufferedReader reader=new BufferedReader(  new InputStreamReader(System.in));
-                        id= reader.read();
 
-
-                    }while(id!=1);
                       break;
 
                 case "ST":

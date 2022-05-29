@@ -76,11 +76,23 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         }
 
     }
+    public void I_HAVE_ENDED(UtilRI g) throws RemoteException {
+        for (UtilRI s : this.Utils.keySet()) {
+            if (s.hashCode() == g.hashCode()) {
+                GameStateRI l = this.Utils.get(s);
+l.setTerminated(true);
+
+            }
+        }
+
+    }
     public void Froogdie(UtilRI g,int i,int status) throws RemoteException {
         if (status==1) {
             for (UtilRI s : this.Utils.keySet()) {
+
                     GameStateRI l = this.Utils.get(s);
                     l.getIsDead().set(i, status);
+
             }
         }else {
             for (UtilRI s : this.Utils.keySet()) {
@@ -93,6 +105,9 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
         }
 
     }
+
+
+
     public void update_the_game2River(UtilRI g,int i) throws RemoteException {
         for (UtilRI s : this.Utils.keySet()) {
             if (s.hashCode() == g.hashCode()) {
@@ -100,9 +115,6 @@ public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameR
 
                     if (l.getRiver().get(i).getTypes().size() > 0) {
                         l.getRiver().get(i).getTypes().remove(0);
-
-
-
                 }
 
             }

@@ -79,6 +79,8 @@ Frogposition.set(Refe,vect);
        c.Froogdie(this.util,Ref,Re);
     }
 
+
+
     public void sync_Timer(int type)throws RemoteException{
      c.Sync_Timer(type,util);
     }

@@ -142,13 +142,14 @@ public class FroggerCollisionDetection  {
 		}
 		
 		if (m instanceof Turtles) {
-			if(((Turtles) m).isUnderwater == true)
+			if(((Turtles) m).isUnderwater)
 				frog.die();
 			frog.follow(m);
 		}
 		
 		/* Reach a goal */
 		if (m instanceof Goal) {
+
 			frog.reach((Goal)(m));
 		}
 	}

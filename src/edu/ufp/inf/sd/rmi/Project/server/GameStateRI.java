@@ -100,4 +100,6 @@ public interface GameStateRI extends Remote {
     void sync_River_Line(int type, int nriverline)throws RemoteException;
 
     public void FroggerSDie(int Ref,int Re) throws RemoteException;
+
+
 }

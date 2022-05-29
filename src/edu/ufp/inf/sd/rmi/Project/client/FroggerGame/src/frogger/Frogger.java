@@ -70,12 +70,14 @@ public class Frogger extends MovingEntity {
 	public GameStateRI vd;
 
     private Main game;
-    
-    /**
+	private int ref;
+
+	/**
      * Build frogger!
      */
 	public Frogger (Main g,int i) throws RemoteException {
 		super(Main.SPRITE_SHEET.get(i) + "#frog");
+		ref=i;
 		game = g;
 		vd= game.vd;
 		resetFrog();
@@ -313,7 +315,7 @@ public class Frogger extends MovingEntity {
 
 		if (isAnimating || !vd.isMAster())
 			return;
-		game.vd.FroggerSDie(vd.getRefe(),1);
+		game.vd.FroggerSDie(ref,1);
 		    /*AudioEfx.frogDie.play(0.2);
 		    followObject = null;
 		    isAlive = false;
@@ -329,7 +331,7 @@ public class Frogger extends MovingEntity {
 	 * Frogger reaches a goal
 	 */
 	public void reach(final Goal g) throws RemoteException {
-		if (!g.isReached) {
+		if (!g.isReached && game.vd.isMAster()) {
 			AudioEfx.frogGoal.play(0.4);
 			game.GameScore+=180;
 			game.GameScore+= game.levelTimer;
@@ -374,7 +376,6 @@ public class Frogger extends MovingEntity {
 			try {
 				if (vd.isMAster()) {
 					int g=game.levelTimer-1;
-
 					vd.sync_Timer(g);
 				}
 				game.levelTimer=vd.getLevelTimer();
@@ -394,14 +395,15 @@ public class Frogger extends MovingEntity {
 
 	public void die2(int i) throws RemoteException {
 
-		if (!cheating ) {
+		if (!cheating && isAlive) {
 		    AudioEfx.frogDie.play(0.2);
 		    followObject = null;
 		    isAlive = false;
 		    currentFrame = 4;	// dead sprite
 			if (vd.getRefe()==i) {
-				int au = vd.getGameLives() - 1;
-				game.vd.setGameLives(au);
+				int au = vd.getGameLives() ;
+
+				game.vd.setGameLives(au-1);
 			}
 		    hw_hasMoved = true;
 

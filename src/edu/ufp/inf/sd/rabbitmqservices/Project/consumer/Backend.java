@@ -6,13 +6,12 @@ import edu.ufp.inf.sd.rabbitmqservices.util.RabbitUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static edu.ufp.inf.sd.rabbitmqservices.Project.producer.Cliente.generate_Random_String;
 
 /**
  * RabbitMQ speaks multiple protocols, e.g., AMQP, which is an open and
@@ -50,59 +49,111 @@ public class Backend {
      */
     public static void main(String[] args) throws IOException, TimeoutException {
         RabbitUtils.printArgs(args);
-
+        DB2 database=new DB2();
         //Read args passed via shell command
         String host = args[0];
         int port = Integer.parseInt(args[1]);
-        String queueName = args[2];
-        AtomicReference<String> pass= new AtomicReference<>(generate_Random_String(12));
-
-        queueName="Front";
-        boolean run = true;
+        String Front = "Front";
+        String Back="Back";
+        String Workqueue="Workqueue";
         /* try-with-resources will close resources automatically in reverse order... avoids finally */
         Connection connection = RabbitUtils.newConnection2Server(host, port, "guest", "guest");
         Channel channel = RabbitUtils.createChannel2Server(connection) ;
-        // Declare a queue where to send msg (idempotent, i.e., it will only be created if it doesn't exist);
-        channel.queueDeclare(queueName, true, false, false, null);
-        //channel.queueDeclare(QUEUE_NAME, true, false, false, null);
-        channel.queueDeclare(pass.get(), true, false, false, null);
+        /*
+        declarations of queues and exchanges
+         */
+        channel.exchangeDeclare(Back,BuiltinExchangeType.FANOUT);
+        String pass=channel.queueDeclare().getQueue();
+        String routingkey="";
+        channel.queueBind(pass,Back,routingkey);
+        channel.queueDeclare(Front, true, false, false, null);
+        channel.queueDeclare(Workqueue, true, false, false, null);
+        int prefetchCount = 1;
+        channel.basicQos(prefetchCount);
+
         System.out.println("Insert Name:\n");
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(System.in));
+        final BufferedReader[] reader = {new BufferedReader(
+                new InputStreamReader(System.in))};
 
         // Reading data using readLine
-        final String name = reader.readLine();
-        // Publish a message to the queue (content is byte array encoded with UTF-8)
-        AtomicReference<String> messageI = new AtomicReference<>("IS|"+name+"|" + pass);
-        channel.basicPublish("", queueName, null, messageI.get().getBytes("UTF-8"));
-        System.out.println(" [x] Sent '" + messageI + "'");
+        final String[] name = {reader[0].readLine()};
 
+        AtomicReference<String> messageI = new AtomicReference<>("IS|" + name[0] + "|" + pass);
+        channel.basicPublish("", Front, null, messageI.get().getBytes(StandardCharsets.UTF_8));
+        System.out.println(" [x] Sent '" + messageI + "'");
         DeliverCallback deliverCallback=(consumerTag, delivery) -> {
-            String message=new String(delivery.getBody(), "UTF-8");
+            String message=new String(delivery.getBody(), StandardCharsets.UTF_8);
             Logger.getAnonymousLogger().log(Level.INFO, Thread.currentThread().getName()+": Message received " +message);
             System.out.println(" [x] Received '" + message + "'");
             String[] decompiler=message.split("\\|");
             switch (decompiler[0]){
+                case "I":
+                    //I|RUBEN|que
+                    database.Insert_Util(decompiler[1],decompiler[2]);
+                    break;
                 case "IS":
-                    if (Objects.equals(decompiler[1], "ACK")){
-                        channel.queueDeclare(pass.get(), true, false, false, null);
-                    }else {
-                        System.out.println("ERRO NAME already pro exist :\n");
-pass.set(decompiler[2]);
 
+                    if (Objects.equals(decompiler[1], "ACK"+","+name[0]) ){
+                        System.out.println("System acknonalege\n");
                     }
                     break;
+                case "C":
+                    //mess2 ="C|"+decompiler[1]+","+(database.id_Tot-1)+","+exchangename + "|" + decompiler[2];
+                    String[] mesg=decompiler[1].split(",");
+                    FroggerGame2 d = new FroggerGame2(Integer.parseInt(mesg[1]), mesg[2],channel);
+                    GameState2 h=new GameState2(Integer.parseInt(mesg[1]),true,mesg[0]);
+                    d.gameState2s.add(h);
+                    database.Games.add(d);
+                    System.out.println(message);
+                    break;
 
+                case "J":
+                    //J|1,Ruben,exchange,1|queuename
+                     mesg=decompiler[1].split(",");
+                     int h1=Integer.parseInt(mesg[0]);
+                     FroggerGame2 d1=null;
+                    for (int i = 0; i <database.Games.size() ; i++) {
+                        if (database.Games.get(i).Id==h1) {d1=database.Games.get(i);
+                        break;
+                        }
+                    }
+                    if (d1==null) break;
+                    GameState2 h2=new GameState2(h1,false,mesg[0]);
+                    d1.gameState2s.add(h2);
+                    break;
+                case "R1":
+                    //R1|1,Ruben|queuename
+                    mesg=decompiler[1].split(",");
+                    FroggerGame2 d2=database.Games.get(Integer.parseInt(mesg[0]));
+                    for (int i = 0; i <d2.gameState2s.size() ; i++) {
+                        if (Objects.equals(d2.gameState2s.get(i).Name, mesg[1])){
+d2.gameState2s.get(i).setReady(true);
+break;
+                        }
+                    }
+
+                    break;
+
+            }
+
+        };
+        DeliverCallback deliverCallback2=(consumerTag, delivery) -> {
+            String message=new String(delivery.getBody(), StandardCharsets.UTF_8);
+            Logger.getAnonymousLogger().log(Level.INFO, Thread.currentThread().getName()+": Message received " +message);
+            System.out.println(" [x] Received '" + message + "'");
+            String[] decompiler=message.split("\\|");
+            switch (decompiler[0]){
 
             }
 
         };
         Logger.getAnonymousLogger().log(Level.INFO, Thread.currentThread().getName()+": Register Deliver Callback...");
         //Associate callback with channel queue
-        channel.basicConsume(pass.get(), true, deliverCallback, consumerTag -> {
+        channel.basicConsume(pass, true, deliverCallback, consumerTag -> {
         });
 
-
+        channel.basicConsume(Workqueue, false, deliverCallback2, consumerTag -> {
+        });
 
     }
 }

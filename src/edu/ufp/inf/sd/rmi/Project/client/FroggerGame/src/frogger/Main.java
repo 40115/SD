@@ -580,16 +580,16 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 		// Enable/Disable cheating
 		if (keyboard.isPressed(KeyEvent.VK_C))
 
-			for (int i = 0; i <Frog.size() ; i++) {
-				Frog.get(i).cheating = true;
+			for (Frogger frogger : Frog) {
+				frogger.cheating = true;
 			}
 		if (keyboard.isPressed(KeyEvent.VK_V))
-			for (int i = 0; i <Frog.size() ; i++) {
-				Frog.get(i).cheating = false;
+			for (Frogger frogger : Frog) {
+				frogger.cheating = false;
 			}
 		if (keyboard.isPressed(KeyEvent.VK_0)) {
 			GameLevel=10;
-			initializeLevel(GameLevel);
+			initializeLevel(GameLevel*dig);
 		}
 
 
@@ -663,6 +663,7 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 				case GAME_OVER:
 					GameState = GAME_INTRO;
 					space_has_been_released = false;
+
 					break;
 				default:
 					vd.setReady(true);
@@ -679,7 +680,7 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 					GameState = GAME_PLAY;
 
-					initializeLevel(GameLevel);
+					initializeLevel(GameLevel*dig);
 			}
 		}
 		if (keyboard.isPressed(KeyEvent.VK_H))
@@ -714,8 +715,8 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 				}
 				wind.update(deltaMs);
 				hwave.update(deltaMs);
-				for (int i = 0; i <Frog.size() ; i++) {
-					Frog.get(i).update(deltaMs);
+				for (Frogger frogger : Frog) {
+					frogger.update(deltaMs);
 				}
 
 				/*try {
@@ -822,13 +823,13 @@ break;
 
 backgroundLayer.render(rc);
 
-				for (int i = 0; i < Frog.size(); i++) {
-					if (Frog.get(i).isAlive) {
-					movingObjectsLayer.render(rc);
+				for (Frogger frogger : Frog) {
+					if (frogger.isAlive) {
+						movingObjectsLayer.render(rc);
 						//frog.collisionObjects.get(0).render(rc);
-						Frog.get(i).render(rc);
+						frogger.render(rc);
 					} else {
-						Frog.get(i).render(rc);
+						frogger.render(rc);
 						movingObjectsLayer.render(rc);
 					}
 				}
@@ -840,6 +841,7 @@ break;
 			case GAME_OVER:
 			case GAME_INSTRUCTIONS:
 			case GAME_INTRO:
+
 					backgroundLayer.render(rc);
 			    	movingObjectsLayer.render(rc);
 					ui.render(rc);
