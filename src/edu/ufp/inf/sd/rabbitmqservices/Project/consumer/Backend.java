@@ -67,18 +67,16 @@ public class Backend {
         String pass=channel.queueDeclare().getQueue();
         String routingkey="";
         channel.queueBind(pass,Back,routingkey);
-        channel.queueDeclare(Front, true, false, false, null);
-        channel.queueDeclare(Workqueue, true, false, false, null);
-        int prefetchCount = 1;
-        channel.basicQos(prefetchCount);
-
+        channel.queueDeclare(Front, false, false, false, null);
+        channel.queueDeclare(Workqueue, false, false, false, null);
         System.out.println("Insert Name:\n");
         final BufferedReader[] reader = {new BufferedReader(
                 new InputStreamReader(System.in))};
 
         // Reading data using readLine
         final String[] name = {reader[0].readLine()};
-
+        BackThreadGame backThreadGame=new BackThreadGame(Workqueue,database,channel,name[0]);
+        backThreadGame.start();
         AtomicReference<String> messageI = new AtomicReference<>("IS|" + name[0] + "|" + pass);
         channel.basicPublish("", Front, null, messageI.get().getBytes(StandardCharsets.UTF_8));
         System.out.println(" [x] Sent '" + messageI + "'");
@@ -150,54 +148,21 @@ public class Backend {
                             }
                         }
                     }
-                    BackendTHread tHread=new BackendTHread();
-                    tHread.run(channel,f.exhange_name, name[0],f);
+
+                    BackendTHread tHread=new BackendTHread(channel,f.exhange_name, name[0],f);
+                    tHread.start();
                     break;
 
             }
 
         };
-        DeliverCallback deliverCallback2=(consumerTag, delivery) -> {
-            String message=new String(delivery.getBody(), StandardCharsets.UTF_8);
-            Logger.getAnonymousLogger().log(Level.INFO, Thread.currentThread().getName()+": Message received " +message);
-            System.out.println(" [x] Received '" + message + "'");
-            String[] decompiler=message.split("\\|");
-            switch (decompiler[0]){
 
-                case "RIVER":
-                case "ROADS":
-                    //0 section 1 type
-                    //						 msg="ROADS|0,1,"+vd.Name+","+game2.getId();
-                 String[] mesg=decompiler[1].split(",");
-                    FroggerGame2 d=null;
-                    for (int i = 0; i <database.Games.size() ; i++) {
-                        if (database.Games.get(i).getId()==Integer.parseInt(mesg[3])){
-                            d=database.Games.get(i);
-                        }
-                    }
-                    if (d==null)break;
-                    for (int i = 0; i <d.gameState2s.size() ; i++) {
-                        if (Objects.equals(d.gameState2s.get(i).Name, decompiler[2])){
-                            if (d.gameState2s.get(i).isMAster()){
-                                String msg=decompiler[0]+"|"+mesg[0]+","+mesg[1]+","+ Arrays.toString(name);
-                                channel.basicPublish(d.exhange_name, "",null,msg.getBytes(StandardCharsets.UTF_8));
-                                break;
-                            }
-
-                        }
-                    }
-                    break;
-
-            }
-
-        };
         Logger.getAnonymousLogger().log(Level.INFO, Thread.currentThread().getName()+": Register Deliver Callback...");
         //Associate callback with channel queue
         channel.basicConsume(pass, true, deliverCallback, consumerTag -> {
         });
 
-        channel.basicConsume(Workqueue, false, deliverCallback2, consumerTag -> {
-        });
+
 
     }
 }

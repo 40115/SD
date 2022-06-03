@@ -151,6 +151,8 @@ public class FroggerCollisionDetection  {
 		if (m instanceof Goal) {
 
 			frog.reach((Goal)(m));
+
+
 		}
 	}
 }

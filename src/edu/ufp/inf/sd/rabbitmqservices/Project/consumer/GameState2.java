@@ -5,9 +5,10 @@ import edu.ufp.inf.sd.rmi.Project.server.Road_Line;
 import edu.ufp.inf.sd.rmi.Project.server.UtilRI;
 import edu.ufp.inf.sd.rmi.Project.server.Vect;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GameState2 {
+public class GameState2 implements Serializable {
     private static final int FROGGER_LIVES =5 ;
     ArrayList<Vect> Frogposition=new ArrayList<>();
     ArrayList<Road_Line> roads=new ArrayList<>();

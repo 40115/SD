@@ -25,6 +25,7 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
 
     @Override
     public String Connect()  throws RemoteException {
+
         return "\nHello, Welcome to City 17 you have chosen or been Chosen to...\n" +"Select An option:\n" + "1-Register\n" + "2-Login In\n" + "3-Leave\n";
     }
     // Regista o jogador na Database(DB)
@@ -70,7 +71,8 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
             try {
 
                     Algorithm algorithm = Algorithm.HMAC256(j.getEmail() + j.getPassword());
-                    JWTVerifier verifier = JWT.require(algorithm)
+                    JWTVerifier verifier = JWT.require(algorithm)   .acceptLeeway(1)   //1 sec for nbf and iat
+                            .acceptExpiresAt(500)
                             .withIssuer("auth0")
                             .build(); //Reusable verifier instance
                      verifier.verify(Token);
@@ -88,14 +90,6 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
     }
     // Faz a remoção de um jogo
 
-    protected void Remove_Game() throws RemoteException{
-        for (int i = 0; i <this.Game.size() ; i++) {
-            if (this.Game.get(i).getUtils().size()==0){
-                this.Game.remove(i);
-                i--;
-            }
 
-        }
-    }
 
 }

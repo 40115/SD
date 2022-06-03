@@ -25,7 +25,8 @@
 
 package edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger;
 
-import edu.ufp.inf.sd.rmi.Project.server.GameStateRI;
+
+import edu.ufp.inf.sd.rmi.Project.client.ObserverRI;
 import edu.ufp.inf.sd.rmi.Project.server.Vect;
 import jig.engine.util.Vector2D;
 
@@ -67,10 +68,10 @@ public class Frogger extends MovingEntity {
     public boolean cheating = false;
     
     public boolean hw_hasMoved = false;
-	public GameStateRI vd;
+	public ObserverRI vd;
 
     private Main game;
-	private int ref;
+	public int ref;
 
 	/**
      * Build frogger!
@@ -79,7 +80,7 @@ public class Frogger extends MovingEntity {
 		super(Main.SPRITE_SHEET.get(i) + "#frog");
 		ref=i;
 		game = g;
-		vd= game.vd;
+		vd= game.observerRI;
 		resetFrog();
 		collisionObjects.add(new CollisionObject(position));
 	}
@@ -99,15 +100,16 @@ public class Frogger extends MovingEntity {
 	/**
 	 * Moving methods, called from Main upon key strokes
 	 */
-	public void moveLeft() {
+	public void moveLeft()  {
 		if (getCenterPosition().getX()-16 > 0 && isAlive && !isAnimating) {
 			currentFrame = 3;
 		  //  move(new Vector2D(-1,0));
 		    AudioEfx.frogJump.play(0.2);
 			try {
-				vd.sync_Frogger(new Vect(-1,0),vd.getRefe());
-			} catch (RemoteException e) {
-				throw new RuntimeException(e);
+				game.state2.getFrogposition().set(game.Refe,new Vect(-1,0) );
+
+			}catch (RemoteException ignored){
+
 			}
 		}
 	}
@@ -125,7 +127,8 @@ public class Frogger extends MovingEntity {
 		   // move(new Vector2D(-1,0));
 		    AudioEfx.frogJump.play(0.2);
 			try {
-				vd.sync_Frogger(new Vect(1,0),vd.getRefe());
+				game.state2.getFrogposition().set(game.Refe,new Vect(1,0) );
+
 			} catch (RemoteException e) {
 				throw new RuntimeException(e);
 			}
@@ -147,7 +150,7 @@ public class Frogger extends MovingEntity {
 		  //  move(new Vector2D(0,-1));
 		    AudioEfx.frogJump.play(0.2);
 			try {
-				vd.sync_Frogger(new Vect(0.0,-1),vd.getRefe());
+				game.state2.getFrogposition().set(game.Refe,new Vect(0,-1) );
 			} catch (RemoteException e) {
 				throw new RuntimeException(e);
 			}
@@ -165,10 +168,9 @@ public class Frogger extends MovingEntity {
 	public void moveDown() {
 		if (position.getY() < Main.WORLD_HEIGHT - MOVE_STEP && isAlive && !isAnimating) {
 			currentFrame = 1;
-		 //   move(new Vector2D(0,1));
 		    AudioEfx.frogJump.play(0.2);
 			try {
-				vd.sync_Frogger(new Vect(0,1),vd.getRefe());
+				game.state2.getFrogposition().set(ref,new Vect(0,1) );
 			} catch (RemoteException e) {
 				throw new RuntimeException(e);
 			}
@@ -313,9 +315,11 @@ public class Frogger extends MovingEntity {
 	public void die() throws RemoteException {
 
 
-		if (isAnimating || !vd.isMAster())
+		if (isAnimating )
 			return;
-		game.vd.FroggerSDie(ref,1);
+
+		game.state2.getIsDead().set(ref,1);
+
 		    /*AudioEfx.frogDie.play(0.2);
 		    followObject = null;
 		    isAlive = false;
@@ -331,30 +335,32 @@ public class Frogger extends MovingEntity {
 	 * Frogger reaches a goal
 	 */
 	public void reach(final Goal g) throws RemoteException {
-		if (!g.isReached && game.vd.isMAster()) {
+		if (!g.isReached && vd.isMAster()) {
 			AudioEfx.frogGoal.play(0.4);
-			game.GameScore+=180;
-			game.GameScore+= game.levelTimer;
-			if (g.isBonus) {
-				AudioEfx.bonus.play(0.2);
-				int au=vd.getGameLives()+1;
-				game.vd.setGameLives(au);
-			}
-			g.reached();
-			resetFrog();
+			game.state2.setLevelTimer(game.levelTimer+180);
+			game.GameScore+=game.levelTimer;
+
 		}
 		else {
 			setPosition(g.getPosition());
 		}
-	}
-	
-	public void update(final long deltaMs) {
-		try {
-			if (game.vd.getGameLives() <= 0)
-				return;
-		} catch (RemoteException e) {
-			throw new RuntimeException(e);
+		if (!g.isReached ){
+			if (g.isBonus) {
+				AudioEfx.bonus.play(0.2);
+				int au=game.state2.GameLives.get(ref)+1;
+				game.state2.GameLives.set(ref,au);
+			}
+			g.reached();
+			game.state2.setGameStage(5);
+			resetFrog();
 		}
+	}
+
+
+
+	public void update(final long deltaMs) {
+		if (game.state2.GameLives.get(ref) <= 0)
+			return;
 
 		// if dead, stay dead for 2 seconds.
 		if (!isAlive && timeOfDeath + 2000 < System.currentTimeMillis()) {
@@ -375,17 +381,17 @@ public class Frogger extends MovingEntity {
 			deltaTime = 0;
 			try {
 				if (vd.isMAster()) {
-					int g=game.levelTimer-1;
-					vd.sync_Timer(g);
+					int g=game.state2.getLevelTimer()-1;
+					game.state2.setLevelTimer(g);
 				}
-				game.levelTimer=vd.getLevelTimer();
+				game.levelTimer=game.state.getLevelTimer();
 			} catch (RemoteException e) {
 				throw new RuntimeException(e);
 			}
 		}
 
 		try {
-			if (	game.levelTimer <= 0)
+			if (game.levelTimer <= 0)
 
 				die();
 		} catch (RemoteException e) {
@@ -400,15 +406,15 @@ public class Frogger extends MovingEntity {
 		    followObject = null;
 		    isAlive = false;
 		    currentFrame = 4;	// dead sprite
-			if (vd.getRefe()==i) {
-				int au = vd.getGameLives() ;
-
-				game.vd.setGameLives(au-1);
+			if (vd.getRefference()==i) {
+				int au=game.state2.GameLives.get(ref)-1;
+				game.state2.GameLives.set(ref,au);
+				game.state2.getIsDead().set(i,0);
 			}
 		    hw_hasMoved = true;
 
 		}
 		timeOfDeath = getTime();
-		game.levelTimer=Main.DEFAULT_LEVEL_TIME;
+		game.state2.setLevelTimer(Main.DEFAULT_LEVEL_TIME);
 	}
 }

@@ -8,7 +8,7 @@ void LogOut() throws RemoteException;
 
    String Connect() throws RemoteException;
     String List_Games() throws RemoteException;
-    FroggerGameRI Create_Game() throws RemoteException;
+    boolean Create_Game(int Id) throws RemoteException;
     UtilRI getUtil()throws RemoteException;
     ProjectMainImpl getPM()throws RemoteException;
     String getToken()throws RemoteException;

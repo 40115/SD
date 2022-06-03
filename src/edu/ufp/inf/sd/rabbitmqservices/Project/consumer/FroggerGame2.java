@@ -1,8 +1,10 @@
 package edu.ufp.inf.sd.rabbitmqservices.Project.consumer;
 import com.rabbitmq.client.Channel;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class FroggerGame2 {
+public class FroggerGame2 implements Serializable {
     public boolean isrunning=false;
     Integer Id;
     String exhange_name;

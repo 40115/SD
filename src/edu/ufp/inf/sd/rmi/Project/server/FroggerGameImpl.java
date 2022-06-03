@@ -1,318 +1,182 @@
 package edu.ufp.inf.sd.rmi.Project.server;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import edu.ufp.inf.sd.rmi.Project.client.ObserverRI;
+import edu.ufp.inf.sd.rmi.Project.client.State;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameRI{
-    HashMap<UtilRI,GameStateRI> Utils;
-    private String Dific=String.valueOf(Difficulty.MEDIUM);
-    int N;
-    LocalDate myObj = LocalDate.now();
+    ArrayList<UtilRI> Util=new ArrayList<>();
+   ArrayList<ObserverRI> Obs=new ArrayList<>();
+   State state_Last;
+    private Integer Dific;
+
+
     protected boolean End=false;
     protected boolean Run=false;
-    private enum Difficulty{
-        LOW,
-        MEDIUM,
-        HIGH
-    }
     private final ProjectMainImpl PM;
 
-    public FroggerGameImpl( HashMap<UtilRI,GameStateRI>  utils,  Integer n, ProjectMainImpl pm) throws RemoteException {
+    public FroggerGameImpl(ProjectMainImpl pm, int Id) throws RemoteException {
         super();
-        this.Utils = utils;
-        this.N=n;
+this.Dific=Id;
         this.PM = pm;
-
+this.state_Last=new State(Id);
     }
     // Seleção da dificuldade do jogo
 
-    public String Difficulty(int difficulty) throws RemoteException {
-        switch (difficulty){
-            case 1:
-                this.Dific= String.valueOf(Difficulty.LOW);
-                return "Dificulty has been set at " + Dific;
 
-            case 2:
-                this.Dific= String.valueOf(Difficulty.MEDIUM);
-                return "Dificulty has been set at " + Dific;
 
-            case 3:
-                this.Dific= String.valueOf(Difficulty.HIGH);
-                return "Dificulty has been set at " + Dific;
-
-            default:
-                this.Dific= String.valueOf(Difficulty.MEDIUM);
-                return "Invalied option Default has been selected " + Dific;
-        }
-    }
 
     // Atualização do jogo entre todos os jogadores, fazendo a adição das ruas na ArrayList
 
-    public void update_the_game(GameStateRI j,int type,int nroad) throws RemoteException {
-        if (j.isMAster()) {
-            for (GameStateRI l : this.Utils.values()) {
-               l.getRoads().get(nroad).getTypes().add(type);
-            }
-        }
+public void NotifyAll()throws RemoteException{
 
-    }
-    // Atualização do jogo entre todos os jogadores, fazendo a adição dos rios  na ArrayList
-
-    public void update_the_gameloggs(GameStateRI j,int type,int nriver) throws RemoteException {
-        if (j.isMAster()) {
-            for (GameStateRI l : this.Utils.values()) {
-                    l.getRiver().get(nriver).getTypes().add(type);
-            }
-        }
-
-    }
-    // Atualiza o jogo, fazendo a remoção das ruas do ArrayList
-
-    public void update_the_game2(UtilRI g,int i) throws RemoteException {
-        for (UtilRI s : this.Utils.keySet()) {
-            if (s.hashCode() == g.hashCode()) {
-                GameStateRI l = this.Utils.get(s);
-                    if (l.getRoads().get(i).getTypes().size() > 0) {
-                        l.getRoads().get(i).getTypes().remove(0);
-                }
-
-            }
-        }
-
-    }
-    // Confirma se algum dos clientes morreu e tem de ser retirado da sync
-
-    public void I_HAVE_ENDED(UtilRI g) throws RemoteException {
-        for (UtilRI s : this.Utils.keySet()) {
-            if (s.hashCode() == g.hashCode()) {
-                GameStateRI l = this.Utils.get(s);
-l.setTerminated(true);
-
-            }
-        }
-
-    }
-    // Confirma se algum sapo dos jogadores morreu
-
-    public void Froogdie(UtilRI g,int i,int status) throws RemoteException {
-        if (status==1) {
-            for (UtilRI s : this.Utils.keySet()) {
-
-                    GameStateRI l = this.Utils.get(s);
-                    l.getIsDead().set(i, status);
-
-            }
-        }else {
-            for (UtilRI s : this.Utils.keySet()) {
-                if (s.hashCode() == g.hashCode()) {
-                    GameStateRI l = this.Utils.get(s);
-                    l.getIsDead().set(i, status);
-
-                }
-            }
-        }
-
-    }
-
-
-    // Atualiza o jogo, removendo da ArrayList os rios não necessarios
-
-    public void update_the_game2River(UtilRI g,int i) throws RemoteException {
-        for (UtilRI s : this.Utils.keySet()) {
-            if (s.hashCode() == g.hashCode()) {
-                GameStateRI l = this.Utils.get(s);
-
-                    if (l.getRiver().get(i).getTypes().size() > 0) {
-                        l.getRiver().get(i).getTypes().remove(0);
-                }
-
-            }
-        }
-
-    }
-    // Atualiza a posição do sapo no jogo e verifica a conecção do jogador ao jogo
-
-    public void update_the_Frogger(Vect d, int h, UtilRI g) throws RemoteException {
-        for (UtilRI s : this.Utils.keySet()) {
-                GameStateRI l = this.Utils.get(s);
-                    l.getFrogposition().get(h).setX(d.x);
-                    l.getFrogposition().get(h).setY(d.y);
-        }
-        Test_coonect();
-    }
-    // Atualiza a posição do sapo, neste caso, é usada para registar o movimento do sapo ao longo do jogo
-
-    public void update_the_Frogger2(UtilRI g,int h) throws RemoteException {
-        for (UtilRI s : this.Utils.keySet()) {
-            if (s.hashCode() == g.hashCode()) {
-                GameStateRI l = this.Utils.get(s);
-                l.getFrogposition().set(h,new Vect(0,0));
-            }
-        }
-
-    }
-    // Sincroniza o tempo do jogo entre os jogadores
-
-    public void Sync_Timer(int j, UtilRI g)throws RemoteException{
-        for (UtilRI s : this.Utils.keySet()) {
-                GameStateRI l = this.Utils.get(s);
-                l.setLevelTimer(j);
+    for (ObserverRI ob : this.Obs) {
+        try {
+            ob.setState(state_Last);
+        }catch (RemoteException s){
+Obs.remove(ob);
         }
     }
-    // Permite a saida do jogador do jogo
 
-    public void leve_the_game(GameSessionRI j) throws RemoteException{
-        for (UtilRI l : this.Utils.keySet()) {
-            if (l.hashCode()==j.getUtil().hashCode()){
-                this.Utils.remove(l);
-                if(this.Utils.size()==0){
-                    return;
-                }
+}
 
-                if ( this.check_Ready()){
-                    this.start_Game();
-                }
-                return;
-            }
+    @Override
+    public FroggerGameRI attach(ObserverRI h,UtilRI d)throws RemoteException {
+        for (ObserverRI ob : Obs) {
+            if (ob.hashCode() == h.hashCode()) return this;
         }
 
+Util.add(d);
+        h.setFroggerGameRI(this);
+
+        Obs.add(h);
+        return this;
     }
-    // Verifica se todos os jogadores estão prontos para o jogo
 
-    public void ready_the_game(UtilRI h) throws RemoteException{
-        for (UtilRI f:this.Utils.keySet()) {
-            if (f.hashCode()==h.hashCode()){
-                this.Utils.get(f).setReady(true);
-              if ( this.check_Ready()){
-                  this.start_Game();
-              }
-                return;
-            }
+    @Override
+    public boolean dettach(ObserverRI h,UtilRI d) throws RemoteException{
+        for (ObserverRI ob : Obs) {
+            if (ob.hashCode() == h.hashCode()){
 
-        }
-    }
-    // Após a verificação ter ocorrido, é inidicando aos client para começar o jogo
-
-    private void start_Game() throws RemoteException{
-
-        for (UtilRI f:this.Utils.keySet()) {
-            for (int i = 0; i <this.Utils.size() ; i++) {
-                this.Utils.get(f).getIsDead().add(0);
-                this.Utils.get(f).getFrogposition().add(new Vect(0.0,0.0));
-                this.Utils.get(f).setReady(false);
-            }
-
-
-        }
-        for (UtilRI f:this.Utils.keySet()) {
-            f.getProjectClientRI().start_Game(this.Utils.get(f));
-
-        }
-
-    }
-    // Verifica se existe 2 ou mais jogadores e se estão prontos para o jogo
-
-    private boolean check_Ready()throws RemoteException {
-
-        if (this.Utils.size()<2){
-            return false;
-        }
-        for (GameStateRI f:this.Utils.values()) {
-            if (!f.isReady()){
-             return false;
-            }
-
-        }
-return true;
-    }
-    // Verifica se os jogadores estão prontos para outro jogo
-
-    public boolean check_Ready2()throws RemoteException {
-        for (GameStateRI f:this.Utils.values()) {
-            if (!f.isReady()){
-                return false;
-            }
-
-        }
-        return true;
-    }
-    // Verifica se o jogo terminou
-
-    public boolean is_Ended() throws RemoteException{
-        return End;
-    }
-    // Testa a conecção dos jogadores ao jogo
-
-    public boolean Test_coonect() throws RemoteException{
-        for (UtilRI h:Utils.keySet()) {
-            if (!Utils.get(h).isTerminated()) {
-                try {
-                    h.getProjectClientRI().test();
-                } catch (RemoteException e) {
-                    if (Utils.get(h).isMAster()) {
-                        for (UtilRI h1 : Utils.keySet()) {
-                            if (h1.hashCode() != h.hashCode()) {
-                                Utils.get(h1).setMAster(true);
-                                Utils.get(h).setMAster(false);
-                                Utils.get(h).setTerminated(true);
-                                return false;
-                            }
-                        }
-
-                    }else {
-                        Utils.get(h).setTerminated(true);
+                Obs.remove(ob);
+                for (int i = 0; i <Util.size() ; i++) {
+                    if (d.hashCode()==Util.get(i).hashCode()){
+                        Util.remove(i);
+                        i--;
                     }
                 }
+                return true;
             }
         }
-        return true;
+        return false;
     }
-    // Se o jogador estiver conectado é retornado o connect
 
-    public void Return_coonect(UtilRI h) throws RemoteException{
-        for (UtilRI h1 : Utils.keySet()) {
-            if (h1.hashCode()==h.hashCode()){
-                Utils.get(h1).setTerminated(false);
-                return;
-            }
+    @Override
+    public void setState(State state,int stat)throws RemoteException {
 
+
+        switch (stat){
+    case 0:
+        this.state_Last.setRoads(state.getRoads());
+        this.state_Last.setRiver(state.getRiver());
+        this.state_Last.setLevelTimer(state.getLevelTimer());
+        this.state_Last.setGameStage(state.getGameStage());
+        this.state_Last.getFrogposition().set(0,state.getFrogposition().get(0));
+        this.state_Last.getIsDead().set(0,state.getIsDead().get(0));
+        this.state_Last.getGameLives().set(0,state.GameLives.get(0));
+        break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+        this.state_Last.getFrogposition().set(stat-1,state.getFrogposition().get(stat-1));
+        this.state_Last.getIsDead().set(stat-1,state.getIsDead().get(stat-1));
+        this.state_Last.getGameLives().set(stat-1,state.GameLives.get(stat-1));
+        break;
+
+}
+
+this.NotifyAll();
+
+    }
+public void finnished(ObserverRI y)throws RemoteException{
+    for (ObserverRI ob : this.Obs) {
+        if (!ob.isIsfinnsihed()) {
+            ob.setIsfinnsihed(true);
         }
-
-    }
-    // Após estarem todos os jogadores prontos, retorna a variavel a confirmar que pode começar o jogo
-
-    public HashMap<UtilRI, GameStateRI> getUtils() throws RemoteException{
-        return Utils;
     }
 
+}
+    @Override
+    public State get_State() throws RemoteException {
+return this.state_Last;
+    }
 
     // Obtêm o estado atual do jogo
-
-    public String getDific()throws RemoteException {
-        return Dific;
-    }
-
-
-
-    public int getN()throws RemoteException {
-        return N;
-    }
 
 
     public boolean isRun() throws RemoteException{
         return Run;
     }
-    public GameStateRI Get_The_Game_State(UtilRI h) throws RemoteException{
-        for (UtilRI s: this.Utils.keySet()) {
-            if (s.hashCode()==h.hashCode()){
-                return  this.Utils.get(s);
-            }
-        }
-        return null;
+
+    public ArrayList<UtilRI> getUtil()throws RemoteException {
+        return Util;
     }
 
+    @Override
+    public void Ready_UP_CHECK() throws RemoteException {
 
+        if (Obs.size()<2) return;
+        for (ObserverRI ob : Obs) {
+            if (!ob.isReady()){
+                return;}
 
+        }
+
+        state_Last.setDig(Dific);
+        state_Last.setLevelTimer(60);
+        state_Last.getRoads().get(0).getTypes().add(-1);
+        state_Last.getRoads().get(1).getTypes().add(-1);
+        state_Last.getRoads().get(2).getTypes().add(-1);
+        state_Last.getRoads().get(3).getTypes().add(-1);
+        state_Last.getRoads().get(4).getTypes().add(-1);
+state_Last.getRiver().get(0).getTypes().add(-1);
+        state_Last.getRiver().get(1).getTypes().add(-1);
+        state_Last.getRiver().get(2).getTypes().add(-1);
+        state_Last.getRiver().get(3).getTypes().add(-1);
+        state_Last.getRiver().get(4).getTypes().add(-1);
+        for (int i = 0; i <Obs.size() ; i++) {
+
+            Obs.get(i).setMAster(i == 0);
+            Obs.get(i).setRefference(i);
+            state_Last.getFrogposition().add(new Vect(0,0));
+            state_Last.getGameLives().add(5);
+            state_Last.getIsDead().add(0);
+            state_Last.getIsReached().add(0);
+            Obs.get(i).setState(state_Last);
+            Obs.get(i).setReady3(false);
+        }
+        for (UtilRI utilRI: this.Util){
+            utilRI.getProjectClientRI().start(state_Last);
+
+        }
+    }
+
+    @Override
+    public void Ready_UP_CHECK2() throws RemoteException {
+        for (ObserverRI ob : Obs) {
+            if (!ob.isReady()) return;
+        }
+        for (ObserverRI ob : Obs) {
+            ob.setStarted(true);
+        }
+    }
+
+    public void setUtil(ArrayList<UtilRI> util)throws RemoteException {
+        Util = util;
+    }
 }

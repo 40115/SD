@@ -1,11 +1,12 @@
 package edu.ufp.inf.sd.rabbitmqservices.Project.consumer;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class DB2 {
+public class DB2 implements Serializable {
     HashMap<String,String>Database=new HashMap();
     HashMap<String,String>Database_SERVERS=new HashMap();
     ArrayList<FroggerGame2> Games=new ArrayList<>();

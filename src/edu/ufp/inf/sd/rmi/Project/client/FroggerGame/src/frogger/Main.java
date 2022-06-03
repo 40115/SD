@@ -27,8 +27,12 @@ package edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger;
 import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import edu.ufp.inf.sd.rmi.Project.server.GameStateRI;
+
+import edu.ufp.inf.sd.rmi.Project.client.ObserverRI;
+import edu.ufp.inf.sd.rmi.Project.client.State;
+
 import edu.ufp.inf.sd.rmi.Project.server.Road_Line;
+import edu.ufp.inf.sd.rmi.Project.server.Vect;
 import jig.engine.ImageResource;
 import jig.engine.PaintableCanvas;
 import jig.engine.RenderingContext;
@@ -55,7 +59,9 @@ public class Main extends StaticScreenGame {
 	static final int GAME_INSTRUCTIONS = 3;
 	static final int GAME_OVER         = 4;
 	static final int GAME_INTRO        = 0;
-	public GameStateRI vd;
+
+	public State state;
+	public ObserverRI observerRI;
 	ArrayList<Frogger>Frog=new ArrayList<>();
 	ArrayList<FroggerCollisionDetection> frogCol=new ArrayList<>();
 	private ArrayList<AudioEfx> audiofx=new ArrayList<>();
@@ -66,7 +72,8 @@ public class Main extends StaticScreenGame {
 	private WindGust wind;
 	private HeatWave hwave;
 	private GoalManager goalmanager;
-	private int Refe;
+	public int Refe;
+	public State state2;
 	private AbstractBodyLayer<MovingEntity> movingObjectsLayer;
 	private AbstractBodyLayer<MovingEntity> particleLayer;
 
@@ -99,15 +106,16 @@ public class Main extends StaticScreenGame {
 	/**
 	 * Initialize game objects
 	 */
-	public Main (String[] args,GameStateRI j) throws RemoteException {
+	public Main (String[] args,ObserverRI j) throws RemoteException {
 
 		super(WORLD_WIDTH, WORLD_HEIGHT, false);
-		vd=j;
-
-Refe=vd.getRefe();
+		observerRI=j;
+state=j.getState();
+state2=state;
+Refe=observerRI.getRefference();
 		gameframe.setTitle("Frogger");
 		ResourceFactory.getFactory().loadResources(RSC_PATH, "resources.xml");
-		for (int i = 1; i <=vd.getC().getUtils().size() ; i++) {
+		for (int i = 1; i <=observerRI.getFroggerGameRI().getUtil().size() ; i++) {
 			SPRITE_SHEET.add(RSC_PATH+"frogger_sprites"+(i)+".png");
 		}
 		ImageResource bkg = ResourceFactory.getFactory().getFrames(SPRITE_SHEET.get(0) + "#background").get(0);
@@ -118,10 +126,10 @@ Refe=vd.getRefe();
 		//  4x4 is a tiny sphere
 		PaintableCanvas.loadDefaultFrames("col", 30, 30, 2, JIGSHAPE.RECTANGLE, null);
 		PaintableCanvas.loadDefaultFrames("colSmall", 4, 4, 2, JIGSHAPE.RECTANGLE, null);
-      dig=vd.getDig();
+      dig=observerRI.getState().getDig();
 
 		try {
-			for (int i = 0; i < vd.getC().getUtils().size(); i++) {
+			for (int i = 0; i < SPRITE_SHEET.size(); i++) {
 				Frog.add(new Frogger(this,i));
 				frogCol.add(i,new FroggerCollisionDetection(Frog.get(i)));
 				audiofx.add(new AudioEfx(frogCol.get(i),Frog.get(i)));
@@ -137,14 +145,14 @@ Refe=vd.getRefe();
 		movingObjectsLayer= new AbstractBodyLayer.IterativeUpdate<>();
 		particleLayer= new AbstractBodyLayer.IterativeUpdate<>();
 
-		initializeLevel(1);
+		initializeLevel(1+dig);
 	}
 
 
 	public void initializeLevel(int level) throws RemoteException {
 
 		/* dV is the velocity multiplier for all moving objects at the current game level */
-		double dV = level*0.05 + 1+dig;
+		double dV = level*0.05 + 1;
 		movingObjectsLayer.clear();
 
 		/* River Traffic */
@@ -199,73 +207,80 @@ riverLine2=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH,3*32),
 		/* Road traffic updates */
 
 		roadLine1.update(deltaMs);
-		if (this.vd.isMAster() ) {
+		if (this.observerRI.isMAster() ) {
 			if ((m = roadLine1.buildVehicle()) != null){
 				switch (m.getClass().getName()) {
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Car":
-						vd.sync_Road_Line(0, 0);
+						state2.getRoads().get(0).getTypes().add(0,0);
 					//	vd.getC().update_the_game(vd,0,0);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Truck":
 
-						vd.sync_Road_Line(1, 0);
+						state2.getRoads().get(0).getTypes().add(0,1);
 					//	vd.getC().update_the_game(vd,1,0);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.CopCar":
-						vd.sync_Road_Line(2, 0);
-					//	vd.getC().update_the_game(vd,2,0);
+						state2.getRoads().get(0).getTypes().add(0,2);
+
+						//	vd.getC().update_the_game(vd,2,0);
 						break;
 					default:
-						vd.sync_Road_Line(-1, 0);
-					//	vd.getC().update_the_game(vd,-1,0);
+						state2.getRoads().get(0).getTypes().add(0,-1);
+
+						//	vd.getC().update_the_game(vd,-1,0);
 						break;
 				}
+
+			}else {
+				state2.getRoads().get(0).getTypes().add(0,-1);
 
 			}
 		}
 
-			Road_Line h1=vd.getRoads().get(0);
+			Road_Line h1 =state.getRoads().get(0);
 	m = roadLine1.GetVehicle(h1);
-vd.getC().update_the_game2(vd.getUtil(),0);
 	if (m != null) {
 		movingObjectsLayer.add(m);
 }
 
 
 		roadLine2.update(deltaMs);
-		if (this.vd.isMAster() ) {
+		if (this.observerRI.isMAster() ) {
 			if ((m = roadLine2.buildVehicle()) != null){
 			//	movingObjectsLayer.add(m);
 				switch (m.getClass().getName()) {
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Car":
-						vd.sync_Road_Line(0, 1);
+						state2.getRoads().get(1).getTypes().add(0,0);
 					//	vd.getC().update_the_game(vd, 0,1);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Truck":
 
-						vd.sync_Road_Line(1, 1);
+						state2.getRoads().get(1).getTypes().add(0,1);
 
 					//	vd.getC().update_the_game(vd, 1,1);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.CopCar":
-						vd.sync_Road_Line(2, 1);
+						state2.getRoads().get(1).getTypes().add(0,2);
 					//	vd.getC().update_the_game(vd, 2,1);
 
 						break;
 					default:
-						vd.sync_Road_Line(-1, 1);
+						state2.getRoads().get(1).getTypes().add(0,-1);
 						//vd.getC().update_the_game(vd,-1,1);
 						break;
 
 				}
+			}else {
+				state2.getRoads().get(1).getTypes().add(0,-1);
+
 			}
 		}
-			Road_Line h2=vd.getRoads().get(1);
+			Road_Line h2=state.getRoads().get(1);
 				m = roadLine2.GetVehicle(h2);
-				vd.getC().update_the_game2(vd.getUtil(),1);
 				if (m != null) {
 
 					movingObjectsLayer.add(m);
+
 				}
 
 
@@ -273,37 +288,40 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 
 		roadLine3.update(deltaMs);
-		if (this.vd.isMAster() ) {
+		if (this.observerRI.isMAster() ) {
 			if ((m = roadLine3.buildVehicle()) != null){
 			//	movingObjectsLayer.add(m);
 				switch (m.getClass().getName()) {
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Car":
-						vd.sync_Road_Line(0, 2);
-				//		vd.getC().update_the_game(vd, 0,2);
+						state2.getRoads().get(2).getTypes().add(0,0);
+
+						//		vd.getC().update_the_game(vd, 0,2);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Truck":
 
-						vd.sync_Road_Line(1, 2);
+						state2.getRoads().get(2).getTypes().add(0,1);
 
 					//	vd.getC().update_the_game(vd, 1,2);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.CopCar":
-						vd.sync_Road_Line(2, 2);
+						state2.getRoads().get(2).getTypes().add(0,2);
 					//	vd.getC().update_the_game(vd, 2,2);
 
 						break;
 					default:
-						vd.sync_Road_Line(-1, 2);
+						state2.getRoads().get(2).getTypes().add(0,-1);
 					//	vd.getC().update_the_game(vd,-1,2);
 						break;
 
 				}
+			}else {
+				state2.getRoads().get(2).getTypes().add(0,-1);
+
 			}
 		}
 
-			Road_Line h3=vd.getRoads().get(2);
+			Road_Line h3=state.getRoads().get(2);
 				m = roadLine3.GetVehicle(h3);
-				vd.getC().update_the_game2(vd.getUtil(),2);
 				if (m != null) {
 
 					movingObjectsLayer.add(m);
@@ -311,36 +329,41 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 
 		roadLine4.update(deltaMs);
-		if (this.vd.isMAster() ) {
+		if (this.observerRI.isMAster()) {
 			if ((m = roadLine4.buildVehicle()) != null){
 			//	movingObjectsLayer.add(m);
 				switch (m.getClass().getName()) {
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Car":
-						vd.sync_Road_Line(0, 3);
-					//	vd.getC().update_the_game(vd, 0,3);
+						state2.getRoads().get(3).getTypes().add(0,0);
+
+						//	vd.getC().update_the_game(vd, 0,3);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Truck":
 
-						vd.sync_Road_Line(1, 3);
+						state2.getRoads().get(3).getTypes().add(0,1);
 
-					//	vd.getC().update_the_game(vd, 1,3);
+
+						//	vd.getC().update_the_game(vd, 1,3);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.CopCar":
-						vd.sync_Road_Line(2, 3);
+						state2.getRoads().get(3).getTypes().add(0,2);
 					//	vd.getC().update_the_game(vd, 2,3);
 
 						break;
 					default:
-						vd.sync_Road_Line(-1, 3);
+						state2.getRoads().get(3).getTypes().add(0,-1);
 					//	vd.getC().update_the_game(vd,-1,3);
 						break;
 
 				}
+			}else {
+
+				state2.getRoads().get(3).getTypes().add(0,-1);
+
 			}
 		}
-        Road_Line h4=vd.getRoads().get(3);
+        Road_Line h4=state.getRoads().get(3);
 			m = roadLine4.GetVehicle(h4);
-			vd.getC().update_the_game2(vd.getUtil(),3);
 			if (m != null) {
 
 				movingObjectsLayer.add(m);
@@ -348,35 +371,39 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 
 		roadLine5.update(deltaMs);
-		if (this.vd.isMAster() ) {
+		if (this.observerRI.isMAster() ) {
 			if ((m = roadLine5.buildVehicle()) != null){
 				//movingObjectsLayer.add(m);
 				switch (m.getClass().getName()) {
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Car":
-						vd.sync_Road_Line(0, 4);
+						state2.getRoads().get(4).getTypes().add(0,0);
 				//		vd.getC().update_the_game(vd, 0,4);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Truck":
 
-						vd.sync_Road_Line(1, 4);
+						state2.getRoads().get(4).getTypes().add(0,1);
 
 					//	vd.getC().update_the_game(vd, 1,4);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.CopCar":
-						vd.sync_Road_Line(2, 4);
-					//	vd.getC().update_the_game(vd, 2,4);
+						state2.getRoads().get(4).getTypes().add(0,2);
+
+						//	vd.getC().update_the_game(vd, 2,4);
 
 						break;
 					default:
-						vd.sync_Road_Line(-1, 4);
+						state2.getRoads().get(4).getTypes().add(0,-1);
+
 						break;
 
 				}
+			}else {
+				state2.getRoads().get(4).getTypes().add(0,-1);
+
 			}
 		}
-			Road_Line h5=vd.getRoads().get(4);
+			Road_Line h5=state.getRoads().get(4);
 			m = roadLine5.GetVehicle(h5);
-			vd.getC().update_the_game2(vd.getUtil(),4);
 			if (m != null) {
 
 				movingObjectsLayer.add(m);
@@ -386,98 +413,103 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 		/* River traffic updates */
 		riverLine1.update(deltaMs);
-		if (this.vd.isMAster() ){
+		if (observerRI.isMAster() ){
 			if ((m = riverLine1.buildShortLogWithTurtles(40)) != null){
 				//movingObjectsLayer.add(m);
 				switch (m.getClass().getName()) {
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.ShortLog":
-						vd.sync_River_Line(0,0);
+						state2.getRiver().get(0).getTypes().add(0,0);
+
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.LongLog":
 
-						vd.sync_River_Line(1,0);
+						state2.getRiver().get(0).getTypes().add(0,1);
 
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Turtles":
-						vd.sync_River_Line(2,0);
+						state2.getRiver().get(0).getTypes().add(0,2);
 						break;
 					default:
-						vd.sync_River_Line(-1,0);
+						state2.getRiver().get(0).getTypes().add(0,-1);
+
 						break;
 
 				}
+			}else {
+				state2.getRiver().get(0).getTypes().add(0,-1);
+
 			}
 		}
-			Road_Line h6=vd.getRiver().get(0);
+			Road_Line h6=state.getRiver().get(0);
 			m = riverLine1.GETWithTurtles(h6);
-			vd.getC().update_the_game2River(vd.getUtil(),0);
 			if (m != null) {
 				movingObjectsLayer.add(m);
 			}
 
 		//	if ((m = riverLine2.buildLongLogWithCrocodile(30)) != null)movingObjectsLayer.add(m);
 		riverLine2.update(deltaMs);
-		if (this.vd.isMAster() ){
+		if (observerRI.isMAster()){
 			if ((m = riverLine2.buildLongLogWithCrocodile(30)) != null){
 			//	movingObjectsLayer.add(m);
 				switch (m.getClass().getName()) {
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.ShortLog":
-						vd.sync_River_Line(0,1);
-						break;
+						state2.getRiver().get(1).getTypes().add(0,0);						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.LongLog":
 
-						vd.sync_River_Line(1,1);
-
+						state2.getRiver().get(1).getTypes().add(0,1);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Turtles":
-						vd.sync_River_Line(2,1);
+						state2.getRiver().get(1).getTypes().add(0,2);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Crocodile":
-						vd.sync_River_Line(3,1);
+						state2.getRiver().get(1).getTypes().add(0,3);
 						break;
 					default:
-						vd.sync_River_Line(-1,1);
+						state2.getRiver().get(1).getTypes().add(0,-1);
 						break;
 
 				}
+			}else {
+				state2.getRiver().get(1).getTypes().add(0,-1);
+
 			}
 		}
-			Road_Line h7=vd.getRiver().get(1);
+			Road_Line h7=state.getRiver().get(1);
 			m = riverLine2.GETWithTurtles(h7);
-			vd.getC().update_the_game2River(vd.getUtil(),1);
 			if (m != null) {
 				movingObjectsLayer.add(m);
 			}
 
 		riverLine3.update(deltaMs);
-		if (this.vd.isMAster() ) {
+		if (observerRI.isMAster() ) {
 			if ((m = riverLine3.buildShortLogWithTurtles(50)) != null) {
 			//	movingObjectsLayer.add(m);
 				switch (m.getClass().getName()) {
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.ShortLog":
-						vd.sync_River_Line(0,2);
+						state2.getRiver().get(2).getTypes().add(0,0);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.LongLog":
 
-						vd.sync_River_Line(1,2);
-
+						state2.getRiver().get(2).getTypes().add(0,1);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Turtles":
-						vd.sync_River_Line(2,2);
+						state2.getRiver().get(2).getTypes().add(0,2);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Crocodile":
-						vd.sync_River_Line(3,2);
+						state2.getRiver().get(2).getTypes().add(0,3);
 						break;
 					default:
-						vd.sync_River_Line(-1,2);
+						state2.getRiver().get(2).getTypes().add(0,-1);
 						break;
 
 				}
+			}else {
+				state2.getRiver().get(2).getTypes().add(0,-1);
+
 			}
 		}
-			Road_Line h8 = vd.getRiver().get(2);
+			Road_Line h8 = state.getRiver().get(2);
 			m = riverLine3.GETWithTurtles(h8);
-			vd.getC().update_the_game2River(vd.getUtil(), 2);
 			if (m != null) {
 				movingObjectsLayer.add(m);
 			}
@@ -485,68 +517,72 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 //	if ((m = riverLine4.buildLongLogWithCrocodile(20)) != null) movingObjectsLayer.add(m);
 		riverLine4.update(deltaMs);
-		if (this.vd.isMAster() ) {
+		if (observerRI.isMAster() ) {
 			if ((m = riverLine4.buildLongLogWithCrocodile(20)) != null) {
 				//movingObjectsLayer.add(m);
 				switch (m.getClass().getName()) {
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.ShortLog":
-						vd.sync_River_Line(0,3);
+						state2.getRiver().get(3).getTypes().add(0,0);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.LongLog":
 
-						vd.sync_River_Line(1,3);
+						state2.getRiver().get(3).getTypes().add(0,1);
 
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Turtles":
-						vd.sync_River_Line(2,3);
+						state2.getRiver().get(3).getTypes().add(0,2);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Crocodile":
-						vd.sync_River_Line(3,3);
+						state2.getRiver().get(3).getTypes().add(0,3);
 						break;
 					default:
-						vd.sync_River_Line(-1,3);
+						state2.getRiver().get(3).getTypes().add(0,-1);
 						break;
 
 				}
+			}else{
+				state2.getRiver().get(3).getTypes().add(0,-1);
+
 			}
 		}
-			Road_Line h9 = vd.getRiver().get(3);
+			Road_Line h9 = state.getRiver().get(3);
 			m = riverLine4.GETWithTurtles(h9);
-			vd.getC().update_the_game2River(vd.getUtil(), 3);
+
 			if (m != null) {
 				movingObjectsLayer.add(m);
 			}
 
 		//		if ((m =riverLine5.buildShortLogWithTurtles(10)) != null) movingObjectsLayer.add(m);
 		riverLine5.update(deltaMs);
-		if (this.vd.isMAster() ) {
+		if (observerRI.isMAster() ) {
 			if ((m =riverLine5.buildShortLogWithTurtles(10)) != null) {
 			//	movingObjectsLayer.add(m);
 				switch (m.getClass().getName()) {
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.ShortLog":
-						vd.sync_River_Line(0,4);
+						state2.getRiver().get(4).getTypes().add(0,0);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.LongLog":
-
-						vd.sync_River_Line(1,4);
+						state2.getRiver().get(4).getTypes().add(0,1);
 
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Turtles":
-						vd.sync_River_Line(2,4);
+						state2.getRiver().get(4).getTypes().add(0,2);
 						break;
 					case "edu.ufp.inf.sd.rmi.Project.client.FroggerGame.src.frogger.Crocodile":
-						vd.sync_River_Line(3,4);
+						state2.getRiver().get(4).getTypes().add(0,3);
 						break;
 					default:
-						vd.sync_River_Line(-1,4);
+						state2.getRiver().get(4).getTypes().add(0,-1);
 						break;
 
 				}
+			}else {
+				state2.getRiver().get(4).getTypes().add(0,-1);
+
 			}
 		}
-			Road_Line h10 = vd.getRiver().get(4);
+			Road_Line h10 = state.getRiver().get(4);
 			m = riverLine5.GETWithTurtles(h10);
-			vd.getC().update_the_game2River(vd.getUtil(), 4);
 			if (m != null) {
 				movingObjectsLayer.add(m);
 			}
@@ -555,8 +591,8 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 		if ((m = wind.genParticles(GameLevel)) != null) particleLayer.add(m);
 
 		// HeatWave
-		for (int i = 0; i < Frog.size(); i++) {
-			if ((m = hwave.genParticles(Frog.get(i).getCenterPosition())) != null)
+		for (Frogger frogger : Frog) {
+			if ((m = hwave.genParticles(frogger.getCenterPosition())) != null)
 				particleLayer.add(m);
 		}
 		movingObjectsLayer.update(deltaMs);
@@ -604,32 +640,27 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 			keyReleased = true;
 
 		if (listenInput) {
-			if (downPressed) Frog.get(vd.getRefe()).moveDown();
-			if (upPressed) Frog.get(vd.getRefe()).moveUp();
-			if (leftPressed) Frog.get(vd.getRefe()).moveLeft();
-			if (rightPressed) Frog.get(vd.getRefe()).moveRight();
+			if (downPressed) Frog.get(Refe).moveDown();
+			if (upPressed) Frog.get(Refe).moveUp();
+			if (leftPressed) Frog.get(Refe).moveLeft();
+			if (rightPressed) Frog.get(Refe).moveRight();
 
 			if (keyPressed)
 				listenInput=false;
 		}
-		for (int i = 0; i <vd.getFrogposition().size() ; i++) {
-			if ((vd.getFrogposition().get(i).getX()!=0 ||vd.getFrogposition().get(i).getY()!=0) ){
-				if (vd.getFrogposition().get(i).getX()==0.0 && vd.getFrogposition().get(i).getY()==-1.0){
+		for (int i = 0; i <state.getFrogposition().size() ; i++) {
+			if ((state.getFrogposition().get(i).getX()!=0 ||state.getFrogposition().get(i).getY()!=0) ){
+				if (state.getFrogposition().get(i).getX()==0.0 && state.getFrogposition().get(i).getY()==-1.0){
 					Frog.get(i).moveUpOther();
-					vd.getC().update_the_Frogger2(vd.getUtil(),i);
-
-				} else if (vd.getFrogposition().get(i).getX()==0.0 &&vd.getFrogposition().get(i).getY()==1.0) {
+				} else if (state.getFrogposition().get(i).getX()==0.0 &&state.getFrogposition().get(i).getY()==1.0) {
 					Frog.get(i).moveDownOther();
-					vd.getC().update_the_Frogger2(vd.getUtil(),i);
-				}else if (vd.getFrogposition().get(i).getX()==1.0 &&vd.getFrogposition().get(i).getY()==0.0) {
+				}else if (state.getFrogposition().get(i).getX()==1.0 &&state.getFrogposition().get(i).getY()==0.0) {
 					Frog.get(i).moveRightother();
-					vd.getC().update_the_Frogger2(vd.getUtil(),i);
-				}else if (vd.getFrogposition().get(i).getX()==-1.0 &&vd.getFrogposition().get(i).getY()==0.0) {
+				}else if (state.getFrogposition().get(i).getX()==-1.0 &&state.getFrogposition().get(i).getY()==0.0) {
 					Frog.get(i).moveLeftother();
-					vd.getC().update_the_Frogger2(vd.getUtil(),i);
 				}
 
-
+				if (Refe==i) state2.getFrogposition().set(i,new Vect(0,0));
 			}
 		}
 
@@ -666,10 +697,14 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 					break;
 				default:
-					vd.setReady(true);
-					while(!vd.Ready_up()){
+					observerRI.setReady2(true);
+					do {
+						try {
+							Thread.sleep(1000);
+						}
+						catch(Exception ignore) { }
 
-					}
+					}while (!observerRI.isStarted());
 					GameScore = 0;
 					GameLevel = STARTING_LEVEL;
 					levelTimer = DEFAULT_LEVEL_TIME;
@@ -680,7 +715,7 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 
 					GameState = GAME_PLAY;
 
-					initializeLevel(GameLevel*dig);
+					initializeLevel(GameLevel+dig);
 			}
 		}
 		if (keyboard.isPressed(KeyEvent.VK_H))
@@ -695,8 +730,8 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 		if (keyboard.isPressed(KeyEvent.VK_SPACE)) {
 		GameState=GAME_PLAY;
 
-			audiofx.get(vd.getRefe()).playGameMusic();
-			initializeLevel(GameLevel+vd.getDig());
+			audiofx.get(Refe).playGameMusic();
+			initializeLevel(GameLevel+state.getDig());
 		}
 	}
 
@@ -730,9 +765,9 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 					ui.update(deltaMs);
 				try {
 					for (int i = 0; i <Frog.size() ; i++) {
-						if (vd.getIsDead().get(i)==1 ){
+						if (state.getIsDead().get(i)==1 ){
 							Frog.get(i).die2(i);
-							vd.FroggerSDie(i,0);
+
 						}
 					}
 				}catch (RemoteException e){
@@ -749,6 +784,7 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 				for (int i = 0; i <Frog.size() ; i++) {
 					try {
 						frogCol.get(i).testCollision(movingObjectsLayer);
+
 					} catch (RemoteException e) {
 						throw new RuntimeException(e);
 					}
@@ -773,9 +809,20 @@ vd.getC().update_the_game2(vd.getUtil(),0);
 					particleLayer.clear();
 					}
 					try {
-						if (vd.getGameLives() < 1) {
+						if (state.getGameLives().get(Refe) < 1) {
 							GameState=GAME_OVER;
+
 						}
+						if (observerRI.isMAster()){
+							this.observerRI.getFroggerGameRI().setState(this.state2,0);
+						}else this.observerRI.getFroggerGameRI().setState(this.state2, Refe+1);
+
+
+this.state=this.observerRI.getState();
+if (this.state.getGameStage()==5){
+	observerRI.getFroggerGameRI().finnished(observerRI);
+	System.out.println("hello");
+}
 					} catch (RemoteException e) {
 						throw new RuntimeException(e);
 					}
@@ -801,8 +848,23 @@ break;
 				} catch (RemoteException e) {
 					throw new RuntimeException(e);
 				}
-				break;
+				try {
+					if (observerRI.isMAster()){
+						this.observerRI.getFroggerGameRI().setState(this.state2,0);
+					}else this.observerRI.getFroggerGameRI().setState(this.state2, Refe+1);
+				} catch (RemoteException e) {
+					throw new RuntimeException(e);
+				}
 
+
+				try {
+					this.state=this.observerRI.getState();
+				} catch (RemoteException e) {
+					throw new RuntimeException(e);
+				}
+
+
+				break;
 			case GAME_FINISH_LEVEL:
 				try {
 					finishLevelKeyboardHandler();
@@ -849,7 +911,7 @@ break;
 		}
 	}
 
-	public static void main (String[] args, GameStateRI j ) throws RemoteException {
+	public static void main (String[] args, ObserverRI j ) throws RemoteException {
 		Main f = new Main(args,j);
 		f.run();
 	}

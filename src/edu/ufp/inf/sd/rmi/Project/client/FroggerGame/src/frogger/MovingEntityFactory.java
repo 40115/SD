@@ -79,6 +79,7 @@ public class MovingEntityFactory {
 	 * @return MovingEntity on chance of success, otherwise return null
 	 * chance gives some holes in the production pattern, looks better.
 	 */
+	//r.nextInt(Car.TYPES)
 	public MovingEntity buildBasicObject(int type, int chance) {
 		if (updateMs > rateMs) {
 			updateMs = 0;
@@ -87,7 +88,7 @@ public class MovingEntityFactory {
 				switch(type) {
 					case 0: // CAR
 						rateMs = creationRate[CAR];
-						return new Car(position, velocity, r.nextInt(Car.TYPES));
+						return new Car(position, velocity, 1);
 					case 1: // TRUCK
 						rateMs = creationRate[TRUCK];
 						return new Truck(position, velocity);
@@ -171,13 +172,14 @@ public class MovingEntityFactory {
 /*		StringBuilder j= new StringBuilder("");
 		for (int i = 0; i <h.getTypes().size() ; i++) {
 		j.append(h.getTypes().get(i));
+
 		}
 
 		System.out.println(j);*/
 		switch (h.getTypes().get(0)) {
 			case 0:
 				rateMs = creationRate[CAR];
-				return new Car(position, velocity, r.nextInt(Car.TYPES));
+				return new Car(position, velocity, 1);
 			case 1:
 
 				rateMs = creationRate[TRUCK];

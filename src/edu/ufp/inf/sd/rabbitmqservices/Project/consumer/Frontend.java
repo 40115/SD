@@ -39,8 +39,8 @@ public class Frontend {
             Channel channel=RabbitUtils.createChannel2Server(connection);
             //Declare queue from which to consume (declare it also here, because consumer may start before publisher)
             channel.exchangeDeclare(Back,BuiltinExchangeType.FANOUT);
-            channel.queueDeclare(Front, true, false, false, null);
-            channel.queueDeclare(Workqueue, true, false, false, null);
+            channel.queueDeclare(Front, false, false, false, null);
+            channel.queueDeclare(Workqueue, false, false, false, null);
             //channel.queueDeclare(Send.QUEUE_NAME, true, false, false, null);
             Logger.getAnonymousLogger().log(Level.INFO, Thread.currentThread().getName()+": Will create Deliver Callback...");
             System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
@@ -71,7 +71,7 @@ System.out.println(Arrays.toString(decompiler));
                 switch (decompiler[0]){
                     case "I":
                         if (database.Insert_Util(decompiler[1],decompiler[2])){
-                            channel.queueDeclare(decompiler[2], true, false, false, null);
+                            channel.queueDeclare(decompiler[2], false, false, false, null);
                             //channel.queueDeclare(QUEUE_NAME, true, false, false, null);
                             String messageI="I|ACK";
                             // Publish a message to the queue (content is byte array encoded with UTF-8)
@@ -83,7 +83,7 @@ System.out.println(Arrays.toString(decompiler));
                             channel.basicPublish(Back,routingkey, null, messageII.getBytes(StandardCharsets.UTF_8));
 
                         }else{
-                            channel.queueDeclare(decompiler[2], true, false, false, null);
+                            channel.queueDeclare(decompiler[2], false, false, false, null);
                             //channel.queueDeclare(QUEUE_NAME, true, false, false, null);
                             String messageI="I|NACK";
                             // Publish a message to the queue (content is byte array encoded with UTF-8)
@@ -101,7 +101,7 @@ System.out.println(Arrays.toString(decompiler));
                             channel.basicPublish(Back,routingkey, null, messageI.getBytes(StandardCharsets.UTF_8));
                             System.out.println(" [x] Sent '" + messageI + "'");
                         }else{
-                            channel.queueDeclare(decompiler[2], true, false, false, null);
+                            channel.queueDeclare(decompiler[2], false, false, false, null);
                             //channel.queueDeclare(QUEUE_NAME, true, false, false, null);
                             String messageI="IS|NACK|"+decompiler[2];
                             // Publish a message to the queue (content is byte array encoded with UTF-8)
@@ -193,7 +193,7 @@ break;
 
                                 }
                             }
-                          channel.basicPublish(Back,"",null,message.getBytes(StandardCharsets.UTF_8));
+                          channel.basicPublish(Back,"",null,a1.getBytes(StandardCharsets.UTF_8));
                         }
                         break;
                     case "RIVER":
@@ -208,9 +208,12 @@ break;
                             }
                         }
                         if (d==null)break;
+
                         for (int i = 0; i <d.gameState2s.size() ; i++) {
+
                             if (Objects.equals(d.gameState2s.get(i).Name, mesg[2])){
                                 if (d.gameState2s.get(i).isMAster()){
+
                                     channel.basicPublish("",Workqueue,null,message.getBytes(StandardCharsets.UTF_8));
 break;
                                 }
@@ -218,17 +221,26 @@ break;
                             }
                         }
                         break;
+                    case "Frog"://0 section 1 type
+                        //	"Frog|-1,0,"+game.game2.getId()+","+game.vd.Name;
+                        mesg=decompiler[1].split(",");
+                        d=null;
+                        for (int i = 0; i <database.Games.size() ; i++) {
+                            if (database.Games.get(i).getId()==Integer.parseInt(mesg[2])){
+                                d=database.Games.get(i);
+                            }
+                        }
+                        if (d==null)break;
+                        for (int i = 0; i <d.gameState2s.size() ; i++) {
+                            if (Objects.equals(d.gameState2s.get(i).Name, mesg[3])){
+                                    channel.basicPublish("",Workqueue,null,message.getBytes(StandardCharsets.UTF_8));
+                                    break;
+                            }
+                        }
+                        break;
 
                         }
-                while (!run){
-                    try {
-                        long sleepMillis = 2000;
-                        Logger.getAnonymousLogger().log(Level.INFO, Thread.currentThread().getName()+": sleep " +sleepMillis);
-                        Thread.sleep(sleepMillis);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+
 
             };
             Logger.getAnonymousLogger().log(Level.INFO, Thread.currentThread().getName()+": Register Deliver Callback...");

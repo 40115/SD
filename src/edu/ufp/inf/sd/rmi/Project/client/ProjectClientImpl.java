@@ -12,13 +12,15 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectClientRI {
     private SetupContextRMI contextRMI;
     private boolean distrated=false;
-    private GameStateRI currentgamestate;
+
+    ObserverRI observerRI=new ObserverImpl(-1,new State(-1),null);
     /**
      * Remote interface that will hold the Servant proxy
      */
@@ -65,7 +67,7 @@ public class ProjectClientImpl  extends UnicastRemoteObject implements ProjectCl
     }
     // Recebe e coordena a interface inicial no registo do jogo
 
-    void playService() throws IOException, RemoteException{
+    void playService() throws IOException, RemoteException, InterruptedException {
         //============ Call HelloWorld remote service ============
 
         Logger.getLogger(this.getClass().getName()).log(Level.INFO, "going MAIL_TO_ADDR finish, bye. ;)");
@@ -145,7 +147,7 @@ Gamesession(h);
         return this.projectServerMainRI.Login(name,password,this);
     }
     // Permite listar os jogos, juntar a um jogo, criar um jogo e fazer log out
-    public void Gamesession(GameSessionRI Si) throws IOException ,RemoteException{
+    public void Gamesession(GameSessionRI Si) throws IOException, RemoteException, InterruptedException {
 if(Si==null){
     return;
 }
@@ -184,118 +186,91 @@ return;
 
     // Inicia o jogo recebendo a referenci a interface do estado do jogo
 
-    @Override
-    public boolean start_Game(GameStateRI j)throws RemoteException {
-        if (j==null)return false;
-currentgamestate=j;
-distrated=true;
-        System.out.println("\nHERE\n");
-return true;
 
-    }
+
     // Verifica se o client ainda eat disponovel apartir do server
 
     @Override
     public void test()throws RemoteException {
         System.out.println("Start ");
     }
-
+    public void start(State j)throws RemoteException {
+        observerRI.setState(j);
+        distrated=true;
+    }
 
     // Faz com que o jogador se junte ao jogo (attach)
 
-    public void Join_Game(GameSessionRI h) throws IOException {
+    public void Join_Game(GameSessionRI h) throws IOException, InterruptedException {
         System.out.println("\n What game would you like to play with\n");
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(System.in));
 
         // Reading data using readLine
-       int Id = Integer.parseInt(reader.readLine());
-        FroggerGameRI l=h.join_Game(Id);
-if (l==null){
-    System.out.println("\nGame not Found\n");
-    return;
-}
-        do{
-    System.out.println("\nGame Found\n 0-Ready\n 1-Left\n");
-    reader = new BufferedReader(
-            new InputStreamReader(System.in));
-    Id = Integer.parseInt(reader.readLine());
-    if (Id==1){
-        l.leve_the_game(h);
-        return;
-    }
-}while(Id!=0);
-        if (l.isRun()){
-            start_Game(l.Get_The_Game_State(h.getUtil()));
-        }else {
-            l.ready_the_game(h.getUtil());
+        int Id = Integer.parseInt(reader.readLine());
+        FroggerGameRI l = h.join_Game(Id);
+        if (l == null) {
+            System.out.println("\nGame not Found\n");
+            return;
         }
-        while(!distrated){
-    System.out.println("\nGame Ready\n1-Left\n");
-    reader = new BufferedReader(
-            new InputStreamReader(System.in));
-    Id = Integer.parseInt(reader.readLine());
-    if (Id==1){
-        l.leve_the_game(h);
-        return;
+
+        do {
+            System.out.println("\nGame Found\n 0-Join\n 1-Left\n");
+            reader = new BufferedReader(
+                    new InputStreamReader(System.in));
+            Id = Integer.parseInt(reader.readLine());
+            if (Id == 1) {
+                l.dettach(observerRI, h.getUtil());
+                return;
+            }
+
+        } while (Id != 0);
+        FroggerGameRI s= l.attach(observerRI,h.getUtil());
+         if (s==null) return;
+         Id=-1;
+         while(Id!=0){
+             System.out.println("\nGame Found\n 0-Ready\n 1-Left\n");
+             reader = new BufferedReader(
+                     new InputStreamReader(System.in));
+             Id = Integer.parseInt(reader.readLine());
+             if (Id == 1) {
+                 l.dettach(observerRI,h.getUtil());
+                 return;
+             }
+         }
+         observerRI.setReady(true);
+while (true){
+    TimeUnit.MILLISECONDS.sleep(50);
+    if (distrated){
+        break;
     }
-System.out.println("\nNot valied");
+}
+
+String []strings={"ss","ss"};
+/*Main g=new Main(strings,observerRI);
+g.run();
+*/
+        ClienteGame clienteGame=new ClienteGame(strings,observerRI);
+        clienteGame.start();
 
 }
-        String[] f =new String[2];
-        System.out.println("Start ");
-        Main.main(f,currentgamestate);
 
-    }
     // Permite ao jogador criar um jogo como o servidor
 
-    public void Create_Game(GameSessionRI h) throws IOException {
+    public void Create_Game(GameSessionRI h) throws IOException,RemoteException {
         System.out.println("\n Creating Game\n");
-        int n=0;
-        FroggerGameRI l=h.Create_Game();
-        if (l==null){
-            System.out.println("\nGame not Made \n your probably already in a game\n");
-            return;
-        }
-        do{
-            System.out.println("\n Select Dificulty 1-Low 2-Medium 3-Hard\n");
-            BufferedReader   reader = new BufferedReader(
+        int n = 0;
+        System.out.println("\nSelect dificulty \n 1-Low\n2-Medium\n 3-High\n");
+        int Id=-1;
+        do {
+           BufferedReader reader = new BufferedReader(
                     new InputStreamReader(System.in));
-           n = Integer.parseInt(reader.readLine());
-           System.out.println(l.Difficulty(n));
-        }while (n<0 ||n>3);
-        int Id;
-        do{
-        System.out.println("\nGame Created\n 0-Ready\n 1-Left\n");
-     BufferedReader   reader = new BufferedReader(
-                new InputStreamReader(System.in));
-        Id = Integer.parseInt(reader.readLine());
-        if (Id==1){
-            l.leve_the_game(h);
-            return;
-        }
-       l.ready_the_game(h.getUtil());
-    }while(Id!=0);
+            Id = Integer.parseInt(reader.readLine());
 
-do{
-    System.out.println("\nGame Ready\n1-Left\n0-check\n");
-    BufferedReader   reader = new BufferedReader(
-            new InputStreamReader(System.in));
-    Id = Integer.parseInt(reader.readLine());
-    if (Id==1){
-        l.leve_the_game(h);
-        return;
+        }while(Id<1 || Id>3);
+        h.Create_Game(Id);
+
+
     }
-
-
-
-}while(!distrated);
-        String[] f =new String[2];
-        System.out.println("Start ");
-        Main f1=new Main(f,currentgamestate);
-        f1.run();
-        l.I_HAVE_ENDED(h.getUtil());
-    }
-
 
 }

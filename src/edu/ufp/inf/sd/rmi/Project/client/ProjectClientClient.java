@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class ProjectClientClient {
     // Inicia o programa do lado do cliente e liga-se ao ProjectClientImpl
 
-    public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, RemoteException {
+    public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, RemoteException, InterruptedException {
         if (args != null && args.length < 2) {
             System.err.println("usage: java [options] edu.ufp.sd.inf.rmi._01_helloworld.server.HelloWorldClient <rmi_registry_ip> <rmi_registry_port> <service_name>");
             System.exit(-1);
