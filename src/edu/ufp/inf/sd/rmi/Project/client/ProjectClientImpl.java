@@ -272,5 +272,8 @@ g.run();
 
 
     }
+    public void Victory(String m) throws RemoteException{
+        System.out.println(m+" HAs won");
 
+    }
 }

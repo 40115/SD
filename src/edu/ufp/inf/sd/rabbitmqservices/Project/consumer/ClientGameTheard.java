@@ -87,10 +87,53 @@ break;
                     mes=decompiler[1].split(",");
                     for (int i = 0; i <g.gameState2s.size() ; i++) {
 if (Objects.equals(g.gameState2s.get(i).Name, Name)){
-    g.gameState2s.get(i).getFrogposition().set(Integer.parseInt(mes[4]),new Vect(Double.parseDouble(mes[0]),Double.parseDouble(mes[1])));
+if (g.gameState2s.get(i).Frogposition.size()<=Integer.parseInt(mes[4])){
+    while(g.gameState2s.get(i).Frogposition.size()<=Integer.parseInt(mes[4])){
+        g.gameState2s.get(i).getFrogposition().add(new Vect(0,0));
+    }
+
+}
+    g.gameState2s.get(i).Frogposition.set(Integer.parseInt(mes[4]),new Vect(Double.parseDouble(mes[0]),Double.parseDouble(mes[1])));
+break;
 }
                     }
+                    break;
+                case "Die2":
+                    mes=decompiler[1].split(",");
+                    for (int i = 0; i <g.gameState2s.size() ; i++) {
+                        if (Objects.equals(g.gameState2s.get(i).Name, Name)) {
+                            if (g.gameState2s.get(i).getIsDead().size() <= Integer.parseInt(mes[4])) {
+                                while (g.gameState2s.get(i).getIsDead().size() <= Integer.parseInt(mes[4])) {
+                                    g.gameState2s.get(i).getIsDead().add(0);
+                                }
 
+                            }
+                            System.out.println(Integer.parseInt(mes[4]));
+                            for (int j = 0; j <g.gameState2s.size() ; j++) {
+                                g.gameState2s.get(j).getIsDead().set(Integer.parseInt(mes[4]),1);
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                case "Timer2":
+                    mes=decompiler[1].split(",");
+                    for (int i = 0; i <g.gameState2s.size() ; i++) {
+                        g.gameState2s.get(i).setLevelTimer(Integer.parseInt(mes[0]));
+                    }
+                    break;
+                case "Finish2":
+                    mes=decompiler[1].split(",");
+                    for (int i = 0; i <g.gameState2s.size() ; i++) {
+                        g.gameState2s.get(i).setHAsended(true);
+                    }
+                    if (Objects.equals(mes[1], Name)){
+                        System.out.println("You have won");
+                    }else {
+                        System.out.println("You have LOst");
+
+                    }
+                    break;
 
             }
 

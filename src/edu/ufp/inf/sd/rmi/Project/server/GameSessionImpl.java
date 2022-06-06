@@ -35,44 +35,53 @@ public class GameSessionImpl extends UnicastRemoteObject implements GameSessionR
     // Lista os jogos presentes na ArrayList
 
     public String List_Games()throws RemoteException{
-        StringBuilder j= new StringBuilder("List of Games:\n");
-        for (int i = 0; i <this.PM.Game.size() ; i++) {
-            j.append(i).append("- ");
-            for (UtilRI k :this.PM.Game.get(i).getUtil()) {
-           j.append(k.getEmail()).append(" ");
+        if (this.PM.Valid(this.Token,this.Util)) {
+            StringBuilder j = new StringBuilder("List of Games:\n");
+            for (int i = 0; i < this.PM.Game.size(); i++) {
+                j.append(i).append("- ");
+                for (UtilRI k : this.PM.Game.get(i).getUtil()) {
+                    j.append(k.getEmail()).append(" ");
 
+                }
+                j.append("\n ");
             }
-            j.append("\n ");
+            return j.toString();
         }
-return j.toString();
-
+        return "Token not valied";
     }
     // Cria um jogo e adiciona a ArrayList
 
     public boolean Create_Game(int Id) throws RemoteException{
-        for (int i = 0; i <this.PM.Game.size() ; i++) {
-            for (int j = 0; j <this.PM.Game.get(i).getUtil().size() ; j++) {
-                if (Objects.equals(this.PM.Game.get(i).getUtil().get(j).getEmail(), Util.getEmail())){
-                    return false;
+        Remove_Game();
+        if (this.PM.Valid(this.Token,this.Util)) {
+            for (int i = 0; i < this.PM.Game.size(); i++) {
+                for (int j = 0; j < this.PM.Game.get(i).getUtil().size(); j++) {
+                    if (Objects.equals(this.PM.Game.get(i).getUtil().get(j).getEmail(), Util.getEmail())) {
+                        return false;
+                    }
                 }
             }
+            this.PM.Game.add(new FroggerGameImpl(this.PM, Id));
+            return true;
         }
-        this.PM.Game.add(new FroggerGameImpl(this.PM,Id));
-        return true;
+        return false;
     }
     // Junta o jogador ao jogo escolhido
 
     public FroggerGameRI join_Game(Integer I) throws RemoteException {
-        if (this.PM.Game.size()<I) return null;
-        for (int i = 0; i <this.PM.Game.size() ; i++) {
-            for (int j = 0; j <this.PM.Game.get(i).getUtil().size() ; j++) {
-                if (Objects.equals(this.PM.Game.get(i).getUtil().get(j).getEmail(), Util.getEmail())){
-                    return null;
+        Remove_Game();
+        if (this.PM.Valid(this.Token,this.Util)) {
+            if (this.PM.Game.size() < I) return null;
+            for (int i = 0; i < this.PM.Game.size(); i++) {
+                for (int j = 0; j < this.PM.Game.get(i).getUtil().size(); j++) {
+                    if (Objects.equals(this.PM.Game.get(i).getUtil().get(j).getEmail(), Util.getEmail())) {
+                        return null;
+                    }
                 }
             }
+            return this.PM.Game.get(I);
         }
-        return this.PM.Game.get(I);
-
+        return null;
     }
     // Verifica se existe jogos começados no servidor
 
@@ -91,5 +100,14 @@ return j.toString();
     public String getToken()throws RemoteException {
         return Token;
     }
+    public void Remove_Game() throws RemoteException {
 
+        for (int i = 0; i <this.PM.Game.size() ; i++) {
+            if (this.PM.Game.get(i).get_State().isHAsended()){
+                this.PM.Game.remove(i);
+                i--;
+            }
+        }
+
+    }
 }

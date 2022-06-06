@@ -238,7 +238,59 @@ break;
                             }
                         }
                         break;
+                        //"Die|"+vd.getRefe()+vd.Name+","+game.game2.getId();
+                    case "Die":
+                        mesg=decompiler[1].split(",");
+                        d=null;
+                        for (int i = 0; i <database.Games.size() ; i++) {
+                            if (database.Games.get(i).getId()==Integer.parseInt(mesg[2])){
+                                d=database.Games.get(i);
+                            }
+                        }
+                        if (d==null)break;
+                        for (int i = 0; i <d.gameState2s.size() ; i++) {
+                            if (Objects.equals(d.gameState2s.get(i).Name, mesg[1])){
+                                channel.basicPublish("",Workqueue,null,message.getBytes(StandardCharsets.UTF_8));
+                                break;
+                            }
+                        }
+                        break;
 
+                    case "Timer":
+                        //"Timer|"+timer+","+game.game2.getId()+","+Name;
+                        mesg=decompiler[1].split(",");
+                        d=null;
+                        for (int i = 0; i <database.Games.size() ; i++) {
+                            if (database.Games.get(i).getId()==Integer.parseInt(mesg[1])){
+                                d=database.Games.get(i);
+                            }
+                        }
+                        if (d==null)break;
+                        for (int i = 0; i <d.gameState2s.size() ; i++) {
+                            if (Objects.equals(d.gameState2s.get(i).Name, mesg[2])){
+                                channel.basicPublish("",Workqueue,null,message.getBytes(StandardCharsets.UTF_8));
+                                break;
+                            }
+                        }
+                        break;
+                    case "Finish":
+//"Finish"|game.game2.getId()+","+Name
+                        mesg=decompiler[1].split(",");
+                        d=null;
+                        for (int i = 0; i <database.Games.size() ; i++) {
+                            if (database.Games.get(i).getId()==Integer.parseInt(mesg[0])){
+                                d=database.Games.get(i);
+                            }
+                        }
+                        if (d==null)break;
+
+                        for (int i = 0; i <d.gameState2s.size() ; i++) {
+                            if (Objects.equals(d.gameState2s.get(i).Name, mesg[1])){
+                                channel.basicPublish("",Workqueue,null,message.getBytes(StandardCharsets.UTF_8));
+                                break;
+                            }
+                        }
+                        break;
                         }
 
 

@@ -7,6 +7,7 @@ import edu.ufp.inf.sd.rmi.Project.client.State;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
 public class FroggerGameImpl extends UnicastRemoteObject implements FroggerGameRI{
     ArrayList<UtilRI> Util=new ArrayList<>();
@@ -37,7 +38,7 @@ public void NotifyAll()throws RemoteException{
     for (ObserverRI ob : this.Obs) {
         try {
             ob.setState(state_Last);
-        }catch (RemoteException s){
+        }catch (RemoteException exception ){
 Obs.remove(ob);
         }
     }
@@ -93,6 +94,7 @@ Util.add(d);
     case 2:
     case 3:
     case 4:
+        this.state_Last.setGameStage(state.getGameStage());
         this.state_Last.getFrogposition().set(stat-1,state.getFrogposition().get(stat-1));
         this.state_Last.getIsDead().set(stat-1,state.getIsDead().get(stat-1));
         this.state_Last.getGameLives().set(stat-1,state.GameLives.get(stat-1));
@@ -105,12 +107,34 @@ this.NotifyAll();
     }
 public void finnished(ObserverRI y)throws RemoteException{
     for (ObserverRI ob : this.Obs) {
-        if (!ob.isIsfinnsihed()) {
+        if (y.hashCode()==ob.hashCode()) {
             ob.setIsfinnsihed(true);
+            finnished2();
+            this.state_Last.setHAsended(true);
         }
     }
 
+
 }
+    public void finnished2()throws RemoteException{
+        for (ObserverRI ob : this.Obs) {
+            if (!ob.isIsfinnsihed()) {
+                return;
+            }
+        }
+String name="";
+        int points=0;
+        for (int i = 0; i <Obs.size() ; i++) {
+            if (points<Obs.get(i).getPoints()){
+               name= Util.get(i).getEmail();
+               points=Obs.get(i).getPoints();
+            }
+        }
+        for (UtilRI utilRI : Util) {
+            utilRI.getProjectClientRI().Victory(name);
+        }
+
+    }
     @Override
     public State get_State() throws RemoteException {
 return this.state_Last;

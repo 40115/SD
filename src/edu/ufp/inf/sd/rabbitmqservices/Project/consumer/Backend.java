@@ -2,6 +2,7 @@ package edu.ufp.inf.sd.rabbitmqservices.Project.consumer;
 
 import com.rabbitmq.client.*;
 import edu.ufp.inf.sd.rabbitmqservices.util.RabbitUtils;
+import edu.ufp.inf.sd.rmi.Project.server.Vect;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -75,6 +76,7 @@ public class Backend {
 
         // Reading data using readLine
         final String[] name = {reader[0].readLine()};
+
         BackThreadGame backThreadGame=new BackThreadGame(Workqueue,database,channel,name[0]);
         backThreadGame.start();
         AtomicReference<String> messageI = new AtomicReference<>("IS|" + name[0] + "|" + pass);
@@ -148,11 +150,20 @@ public class Backend {
                             }
                         }
                     }
+                    for (int i = 0; i <f.gameState2s.size() ; i++) {
+                        for (int j = 0; j <f.gameState2s.size() ; j++) {
+                            f.gameState2s.get(i).getFrogposition().add(new Vect(0,0));
+                            f.gameState2s.get(i).getIsDead().add(0);
 
+                        }
+
+                    }
                     BackendTHread tHread=new BackendTHread(channel,f.exhange_name, name[0],f);
                     tHread.start();
                     break;
+                case "IRE":
 
+                    break;
             }
 
         };

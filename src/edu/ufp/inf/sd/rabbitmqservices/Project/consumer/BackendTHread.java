@@ -23,7 +23,7 @@ public class BackendTHread extends  Thread{
     }
 
     public void run() {
-        String pass="";
+        String pass;
         try {
 
 
@@ -73,12 +73,44 @@ public class BackendTHread extends  Thread{
                     // String msg=decompiler[0]+"2"+"|"+mesg[0]+","+mesg[1]+","+mesg[2]+","+ name;
                     //String msg=decompiler[0]+"2"+"|"+mesg[0]+","+mesg[1]+","+mesg[2]+","+ name;
                     if (!Objects.equals(mesf[3], name)){
-                            if (s.gameState2s.get(Integer.parseInt(mesf[2])).Frogposition.size()==0){
-                              s.gameState2s.get(Integer.parseInt(mesf[2])).Frogposition.add(new Vect(Double.parseDouble(mesf[0]),Double.parseDouble(mesf[1])));
-                            }else {
-                                s.gameState2s.get(Integer.parseInt(mesf[2])).Frogposition.set(0,new Vect(Double.parseDouble(mesf[0]),Double.parseDouble(mesf[1])));
+                        for (int i = 0; i <s.gameState2s.size() ; i++) {
+                            if (Objects.equals(s.gameState2s.get(i).Name, mesf[2])){
+                                if (s.gameState2s.get(i).getFrogposition().size()==0){
+                                    s.gameState2s.get(i).getFrogposition().add(new Vect(Double.parseDouble(mesf[0]),Double.parseDouble(mesf[1])));
+                                }else {
+                                    s.gameState2s.get(i).getFrogposition().set(0,new Vect(Double.parseDouble(mesf[0]),Double.parseDouble(mesf[1])));
+                                }
                             }
 
+                        }
+
+                    }
+                    break;
+                //'Die|0,Ruben,0'
+                    //String msg=decompiler[0]+"2"+"|"+mesg[0]+","+mesg[1]+","+mesg[2]+","+ name+","+i;
+                case "Die2":
+                    mesf=decompiler[1].split(",");
+                    if (!Objects.equals(mesf[3], name)){
+                        for (int i = 0; i <s.gameState2s.size() ; i++) {
+                       s.gameState2s.get(i).getIsDead().set(Integer.parseInt(mesf[4]),1);
+                        }
+                    }
+break;
+                //"Timer|"+timer+","+game.game2.getId()+","+Name;
+                case "Timer2":
+                    mesf=decompiler[1].split(",");
+                    if (!Objects.equals(mesf[3], name)){
+                        for (int i = 0; i <s.gameState2s.size() ; i++) {
+                            s.gameState2s.get(i).setLevelTimer(Integer.parseInt(mesf[0]));
+                        }
+                    }
+                break;
+                case "Finish2":
+                    mesf=decompiler[1].split(",");
+                    if (!Objects.equals(mesf[2], name)){
+                        for (int i = 0; i <s.gameState2s.size() ; i++) {
+                            s.gameState2s.get(i).setHAsended(true);
+                        }
                     }
                     break;
             }

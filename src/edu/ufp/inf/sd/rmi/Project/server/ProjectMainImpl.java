@@ -10,6 +10,7 @@ import edu.ufp.inf.sd.rmi.Project.client.ProjectClientRI;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -42,6 +43,7 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
 
             for (UtilRI l:this.users.keySet()) {
                 if (Objects.equals(l.getEmail(), Email) && Objects.equals(l.getPassword(), Password)){
+
                     return this.users.get(l);
                 }
 
@@ -49,7 +51,7 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
 
             try {
                 Algorithm algorithm = Algorithm.HMAC256(Email+Password);
-                String token = JWT.create().withIssuer("auth0").sign(algorithm);
+                String token = JWT.create().withIssuer("auth0").withExpiresAt(new Date(System.currentTimeMillis() + ( 60 * 1000))).sign(algorithm);
                 UtilRI aj=new Util(Email,Password,projectClientRI);
                 GameSessionRI j=new GameSessionImpl(this,aj,token);
                 this.users.put(aj,j);
@@ -72,7 +74,6 @@ public class ProjectMainImpl extends UnicastRemoteObject implements ProjectMainR
 
                     Algorithm algorithm = Algorithm.HMAC256(j.getEmail() + j.getPassword());
                     JWTVerifier verifier = JWT.require(algorithm)   .acceptLeeway(1)   //1 sec for nbf and iat
-                            .acceptExpiresAt(500)
                             .withIssuer("auth0")
                             .build(); //Reusable verifier instance
                      verifier.verify(Token);

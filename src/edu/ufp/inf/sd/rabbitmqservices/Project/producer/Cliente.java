@@ -174,11 +174,6 @@ DB2 database=new DB2();
                     }else {
                         s.setExhange_name(decompiler[2]);
                     }
-                    for (int i = 0; i <s.getGameState2s().size() ; i++) {
-                        s.getGameState2s().get(i).getFrogposition().add(new Vect(0,0));
-                        s.getGameState2s().get(i).getIsDead().add(0);
-                    }
-
                     for (int i = 1; i <f.length ; i++) {
                         boolean f2=false;
                         for (int k = 0; k <s.getGameState2s().size() ; k++) {
@@ -188,11 +183,23 @@ DB2 database=new DB2();
                             }
                         }
                         if (!f2  && i==1){
+
                             s.getGameState2s().add(new GameState2(0,true,f[i]))    ;
                         }else if (!f2){
+
                             s.getGameState2s().add(new GameState2(i-1,false,f[i]))    ;
                         }
                     }
+
+                    for (int i = 0; i <s.getGameState2s().size() ; i++) {
+                        for (int k = 0; k <s.getGameState2s().size() ; k++) {
+                            s.getGameState2s().get(i).getFrogposition().add(new Vect(0,0));
+                            s.getGameState2s().get(i).getIsDead().add(0);
+                        }
+
+                    }
+
+
 
 
 

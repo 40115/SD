@@ -820,8 +820,9 @@ riverLine2=new MovingEntityFactory(new Vector2D(Main.WORLD_WIDTH,3*32),
 
 this.state=this.observerRI.getState();
 if (this.state.getGameStage()==5){
+	observerRI.setPoints(GameScore);
 	observerRI.getFroggerGameRI().finnished(observerRI);
-	System.out.println("hello");
+	this.GameState=4;
 }
 					} catch (RemoteException e) {
 						throw new RuntimeException(e);
@@ -848,21 +849,6 @@ break;
 				} catch (RemoteException e) {
 					throw new RuntimeException(e);
 				}
-				try {
-					if (observerRI.isMAster()){
-						this.observerRI.getFroggerGameRI().setState(this.state2,0);
-					}else this.observerRI.getFroggerGameRI().setState(this.state2, Refe+1);
-				} catch (RemoteException e) {
-					throw new RuntimeException(e);
-				}
-
-
-				try {
-					this.state=this.observerRI.getState();
-				} catch (RemoteException e) {
-					throw new RuntimeException(e);
-				}
-
 
 				break;
 			case GAME_FINISH_LEVEL:

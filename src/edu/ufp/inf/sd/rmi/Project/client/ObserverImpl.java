@@ -16,6 +16,7 @@ public class ObserverImpl extends UnicastRemoteObject implements ObserverRI {
 boolean MAster=false;
     public  boolean started=false;
     public  boolean isfinnsihed=false;
+    public  int points=0;
 
     protected ObserverImpl(int ref,State state,FroggerGameRI froggerGameRI) throws RemoteException {
         super();
@@ -91,5 +92,13 @@ boolean MAster=false;
 
     public void setIsfinnsihed(boolean isfinnsihed) throws  RemoteException{
         this.isfinnsihed = isfinnsihed;
+    }
+
+    public int getPoints()throws  RemoteException {
+        return points;
+    }
+
+    public void setPoints(int points)throws  RemoteException {
+        this.points = points;
     }
 }

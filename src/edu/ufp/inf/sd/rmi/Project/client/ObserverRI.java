@@ -29,4 +29,6 @@ public interface ObserverRI extends Remote {
 
     boolean isStarted()throws RemoteException;
     void setStarted(boolean started) throws  RemoteException;
+    public void setPoints(int points)throws  RemoteException;
+    public int getPoints()throws  RemoteException;
     }
